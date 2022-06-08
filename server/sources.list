@@ -1,0 +1,8 @@
+deb https://mirrors.163.com/debian/ bullseye main non-free contrib
+deb-src https://mirrors.163.com/debian/ bullseye main non-free contrib
+deb https://mirrors.163.com/debian-security/ bullseye-security main
+deb-src https://mirrors.163.com/debian-security/ bullseye-security main
+deb https://mirrors.163.com/debian/ bullseye-updates main non-free contrib
+deb-src https://mirrors.163.com/debian/ bullseye-updates main non-free contrib
+deb https://mirrors.163.com/debian/ bullseye-backports main non-free contrib
+deb-src https://mirrors.163.com/debian/ bullseye-backports main non-free contrib

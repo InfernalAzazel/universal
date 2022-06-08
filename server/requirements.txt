@@ -1,0 +1,15 @@
+fastapi
+python-multipart
+python-ldap
+motor~=2.5.1
+uvicorn[standard]
+python-jose[cryptography]
+pymongo~=3.12.3
+starlette
+pydantic
+jieba~=0.42.1
+pytz~=2022.1
+schedule~=1.1.0
+exchangelib~=4.7.3
+pandas~=1.4.2
+gunicorn
