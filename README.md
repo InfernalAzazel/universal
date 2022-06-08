@@ -30,19 +30,19 @@ English | [简体中文](./README-zh_CN.md)
 
 ## Frame
 
- - FastAPI 拥有高性能的服务器开发，特点 轻量级 语法简单 方便 灵活 高效率开发
- - Vue3 国内非常流行的 web 开发框架 特点 易上手 性能不错
- - Vite2 目前非常流行的构建web项目框架 特点 热更新
- - TailWindCSS 样式美观 简洁 特点 高效率 文档全面 
- - Antdv 是 Vue 版本的 Antd 非常流行的UI库 特点 优美 方便 强大的功能 企业级别UI框架
- - MongoDB 特点 灵活 高性能 查询能力强的非关系数据库
+ - FastAPI High-performance server development, features lightweight, simple syntax, convenient, flexible, and efficient development
+ - Vue3 A very popular web development framework in China Features Easy to use Good performance
+ - Vite2 Currently very popular framework for building web projects Features Hot updates
+ - TailWindCSS Beautiful style, concise, features, high efficiency, comprehensive documentation
+ - Antdv It is the Vue version of Antd. A very popular UI library. Features Beautiful, convenient, powerful, and enterprise-level UI framework.
+ - MongoDB Features Flexible, high-performance, non-relational database with strong query capabilities
  
 ## Project Structure  
 
 ```
         universal  
-        --|client         # 前端
-        --|server         # 后端
+        --|client         # front end
+        --|server         # front end
 ```
 
 ## Work List
