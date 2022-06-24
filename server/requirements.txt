@@ -13,3 +13,4 @@ schedule~=1.1.0
 exchangelib~=4.7.3
 pandas~=1.4.2
 gunicorn
+configupdater

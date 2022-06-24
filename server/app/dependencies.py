@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
+from configupdater import ConfigUpdater
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -90,3 +91,9 @@ def get_db_client():
     return motor.motor_asyncio.AsyncIOMotorClient(
         DATABASE_URL
     )
+
+
+def get_conf():
+    updater = ConfigUpdater()
+    updater.read('settings.cfg', 'utf-8')
+    updater.write()

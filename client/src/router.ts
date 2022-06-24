@@ -8,6 +8,12 @@ const routes: RouteRecordRaw[] = [
 
     },
     {
+        path: '/init',
+        meta:{hidden: true},
+        component: () => import('./layout/init.vue'),
+
+    },
+    {
         path: '/',
         name: 'layout',
         meta: {title: 'home', icon: 'HomeFilled', hidden: false},
