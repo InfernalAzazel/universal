@@ -1,17 +1,10 @@
-import datetime as dt
-from datetime import datetime
 from typing import Optional
 
-import jieba
-import pytz
-from bson import ObjectId
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
-from pymongo import ReturnDocument
 from starlette.responses import JSONResponse
 
-from app.dependencies import UserAndRole, get_current_active_user_and_role, get_db_client
-from app.settings import DATABASE_NAME, COLL_USERS, COLL_SUB
+from app.dependencies import UserAndRole, get_current_active_user_and_role
 
 router = APIRouter(
     prefix="/api",

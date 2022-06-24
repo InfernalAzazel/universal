@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.internal import users, news, vulnerability, sub
+from app.internal import users
 from app.routers import auth
 
 app = FastAPI(
