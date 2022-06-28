@@ -1,10 +1,3 @@
-from urllib.parse import quote_plus
-
-# Mongodb 配置 -----------------------------------------------------------------
-DATABASE_URL = "mongodb://%s:%s@%s" \
-               % (quote_plus('spb0122003'),
-                  quote_plus('dcaGRzkJpuKsHgMs8hoS'),
-                  '127.0.0.1')
 # 数据库名称
 DATABASE_NAME = 'universal'
 # 集合 用户
@@ -18,14 +11,35 @@ COLL_SUB = 'sub'
 # 集合 漏洞
 COLL_VULNERABILITY = 'vulnerability'
 
-# 令牌配置 -------------------------------------------------------------------------
 
-# jwt 加密
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-# jwt 加密类型
-ALGORITHM = "HS256"
-# 令牌有效时间/分钟
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
-
-
+ini = """
+# 初始化激活-程序变量请问请勿设置
+[init]
+switch=True
+# 共用
+[shared]
+tz_info=Asia/Shanghai
+# 数据库
+[mongodb]
+db_host=127.0.0.1
+db_username=spb0122003
+db_password=dcaGRzkJpuKsHgMs8hoS
+# 令牌配置
+[jwt]
+secret_key=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+algorithm=HS256
+access_token_expire_minutes=30
+# 邮箱
+[email]
+email_server=
+email_domain=
+email=
+email_user=
+email_pwd=
+email_attachment_file_name=
+# 定时推送任务
+[push]
+push_email_task_hour=
+push_email_task_minute=
+push_email_task_second=
+"""
