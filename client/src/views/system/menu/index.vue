@@ -1,5 +1,8 @@
 <template>
- 7777
+  <div class="flex flex-row space-x-2">
+    <tree-box></tree-box>
+    <new-menu></new-menu>
+  </div>
 </template>
 <script lang="ts" setup>
 import TreeBox from "./components/TreeBox/index.vue";

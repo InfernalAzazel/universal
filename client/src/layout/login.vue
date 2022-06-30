@@ -80,6 +80,9 @@ const submit = defineFormSubmit(async (done, isValid) => {
     await execute()
     if (data.value) {
       state.value = data.value as ResLogin
+
+      state.value.token = '777'
+      state.value.avatar = 'hello'
       router.push('/')
     }
   }

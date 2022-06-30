@@ -26,7 +26,7 @@
       <pro-breadcrumb separator=">"/>
     </template>
     <template #header-right>
-      <span>header-right</span>
+      <avatar-list></avatar-list>
     </template>
 
     <template #header-bottom>
@@ -46,6 +46,7 @@
           <pro-card
               :key="route.fullPath"
               shadow="never"
+              :ghost="true"
           >
             <component :is="Component"/>
           </pro-card>
@@ -58,7 +59,9 @@
 
 <script setup lang="ts">
 import {inject, shallowRef} from "vue";
-
+import AvatarList from '../components/AvatarList/index.vue'
 const tabs = inject('tabs', undefined) // Get top-level `Tabs` inject
 const childTabs = shallowRef({})
+
+
 </script>

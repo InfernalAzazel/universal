@@ -1,40 +1,66 @@
 <template>
-  <div style="margin-right: 12px">
-    <a-dropdown :trigger="['click']">
-      <div>
-        <a-avatar :size="32">
-          <template #icon>
-            <UserOutlined />
-          </template>
-        </a-avatar>
-        <DownOutlined />
-      </div>
-
-      <template #overlay>
-        <a-menu>
-          <a-menu-item key="0">
-            <a href="http://www.alipay.com/"><UserOutlined />个人中心</a>
-          </a-menu-item>
-          <a-menu-item key="1">
-            <a href="http://www.taobao.com/"><UserOutlined />个人设置</a>
-          </a-menu-item>
-          <a-menu-divider />
-          <a-menu-item key="3"><UserOutlined />退出登录</a-menu-item>
-        </a-menu>
-      </template>
-
-    </a-dropdown>
-  </div>
+  <el-dropdown>
+        <span class="el-dropdown-link">
+          <el-image
+              v-if="state.avatar"
+              :src="state.avatar"
+              class="avatar"
+          />
+          {{ state.name }}
+          <arrow-down class="el-icon-arrow-down el-icon--right" />
+        </span>
+    <template #dropdown>
+      <el-dropdown-menu>
+        <el-dropdown-item @click="loginOut">
+          退出
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </template>
+  </el-dropdown>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import {AppstoreOutlined, LockOutlined} from '@ant-design/icons-vue';
+// defineProps<{ name: string }>()
+import {useRoute, useRouter} from "vue-router";
+import {useGlobalState} from "../../composables";
 
-defineProps<{ name: string }>()
+const route = useRoute()
+const router = useRouter()
+const state = useGlobalState()
 
+async function loginOut() {
+  state.value = {
+    name: '',
+    avatar: '',
+    token: '',
+  }
+  await router.push('/login')
+}
 
 </script>
 <style scoped>
-
+.header-icon {
+  margin: 0 16px 0 0;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+}
+.header-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: var(--el-text-color-primary);
+}
+.el-dropdown-link .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  vertical-align: middle;
+}
+.el-icon-arrow-down {
+  width: var(--el-font-size-base);
+  height: var(--el-font-size-base);
+  vertical-align: middle;
+}
 </style>

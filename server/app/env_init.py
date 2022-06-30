@@ -21,10 +21,10 @@ class EnvInit:
         index = await coll.index_information()
         print(index)
         if str_search in index.keys():
-            coll.drop_index(str_search)
-            coll.create_index(key, name=str_search)
+            await coll.drop_index(str_search)
+            await coll.create_index(key, name=str_search)
         else:
-            coll.create_index(key, name=str_search)
+            await coll.create_index(key, name=str_search)
         index = await coll.index_information()
         print(index)
         print(
