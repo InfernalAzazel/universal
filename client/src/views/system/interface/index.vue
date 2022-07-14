@@ -1,20 +1,40 @@
 <template>
-  <pro-crud
-      v-model="form"
-      v-model:search="serachForm"
-      :columns="columns"
-      :menu="menu"
-      :data="data"
-      :detail="detail"
-      :before-open="beforeOpen"
-      label-width="100px"
-      @search="search"
-      @search-reset="reset"
-      @submit="submit"
-      @reset="reset"
-      @delete="deleteRow"
-  >
-  </pro-crud>
+  <pro-card>
+    <pro-crud
+        v-loading="isFetching"
+        v-model="form"
+        v-model:search="serachForm"
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        :columns="columns"
+        :menu="menu"
+        :data="list"
+        :detail="detail"
+        :before-open="beforeOpen"
+        @search="search"
+        @submit="submit"
+        @delete="deleteRow"
+        row-key="key"
+        :table-columns="tableColumns"
+        :total="total"
+        @load="loadList"
+        @search-reset="loadList"
+        layout="total, ->, jumper, prev, pager, next, sizes"
+        border
+        stripe
+        show-overflow-tooltip
+    >
+      <template #action>
+        <pro-column-setting
+            v-model="tableColumns"
+            :allow-drag="(node) => console.log(node)"
+            :allow-drop="(draggingNode, dropNode, type)=>console.log(draggingNode)"
+            default-expand-all
+            icon="SettingOutlined"
+        />
+      </template>
+    </pro-crud>
+  </pro-card>
 
 </template>
 <script lang="ts" setup>
@@ -27,6 +47,8 @@ import {
   defineCrudSearch,
   defineCrudBeforeOpen,
 } from 'element-pro-components'
+import {useCrud} from "../../../composables/crud";
+import { Api } from "../../../utils";
 
 const menu = defineCrudMenuColumns({
   label: 'Operations',
@@ -47,9 +69,7 @@ const menu = defineCrudMenuColumns({
   // delProps: { type: 'info', plain: true },
 })
 
-const form = ref({})
-const serachForm = ref({})
-const detail = ref({})
+
 const selectData = ref([
   { value: 'GET', label: 'GET' },
   { value: 'POST', label: 'POST' },
@@ -61,7 +81,6 @@ const columns = defineCrudColumns([
     label: 'ID',
     prop: 'id',
     component: 'el-input',
-    form: true,
     detail: true,
     props:{
       disabled: true
@@ -85,15 +104,17 @@ const columns = defineCrudColumns([
   },
   {
     label: '接口简介(标志)',
-    prop: 'interface_introduction',
+    prop: 'describe',
     component: 'el-input',
+    props: {
+      type: 'textarea',
+    },
     form: true,
-    search: true,
     detail: true,
   },
   {
     label: '请求方式',
-    prop: 'request_method',
+    prop: 'method',
     component: 'pro-select',
     form: true,
     search: true,
@@ -103,82 +124,29 @@ const columns = defineCrudColumns([
     }
   },
 ])
-const data = ref([
-  {
-    id: '2016-05-03',
-    path: 'Tom',
-    group:'a',
-    interface_introduction:'a',
-    request_method:'GET',
-  },
-  {
-    id: '2016-05-02',
-    path: 'Tom',
-    group:'a',
-    interface_introduction:'a',
-    request_method:'GET',
-    children: [
-      {
-        id: '2016-05-02',
-        path: 'Tom',
-        group:'a',
-        interface_introduction:'a',
-        request_method:'GET',
-      }
-    ]
-  },
-  {
-    id: '2016-05-04',
-    path: 'Tom',
-    group:'a',
-    interface_introduction:'a',
-    request_method:'GET',
-  },
-  {
-    id: '2016-05-01',
-    path: 'Tom',
-    group:'a',
-    interface_introduction:'a',
-    request_method:'GET',
-  },
-])
 
-const beforeOpen = defineCrudBeforeOpen((done, type, row) => {
-  if (type === 'edit') {
-    form.value = row || {}
-  } else if (type === 'detail') {
-    detail.value = row || {}
-  }
-  done()
-})
+const tableColumns = ref(JSON.parse(JSON.stringify(columns)))
 
-const search = defineCrudSearch((done, isValid, invalidFields) => {
-  ElMessage(`search: ${isValid}`)
-  console.log('search', serachForm.value, isValid, invalidFields)
-  setTimeout(() => {
-    done()
-  }, 1000)
-})
+const {
+  form,
+  serachForm,
+  detail,
+  loadList,
+  currentPage,
+  pageSize,
+  list,
+  total,
+  isFetching,
+  beforeOpen,
+  submit,
+  search,
+  deleteRow
+} = useCrud(Api.interfaceList, Api.interfaceAdd, Api.interfaceEdit, Api.interfaceDelete, true)
 
-const submit = defineCrudSubmit(
-    (close, done, type, isValid, invalidFields) => {
-      ElMessage(`submit: ${type}, ${isValid}`)
-      console.log('submit', form.value, type, isValid, invalidFields)
-      setTimeout(() => {
-        isValid ? close() : done()
-      }, 1000)
-    }
-)
 
-const reset = () => {
-  ElMessage('reset')
-  console.log('reset')
-}
 
-const deleteRow = (row: any) => {
-  ElMessage('deleteRow')
-  console.log('deleteRow', row)
-}
+
+
 
 
 </script>

@@ -1,59 +1,102 @@
 <template>
-  <pro-crud
-      v-model="form"
-      v-model:search="serachForm"
-      :columns="columns"
-      :menu="menu"
-      :data="data"
-      :detail="detail"
-      :before-open="beforeOpen"
-      label-width="100px"
-      @search="search"
-      @search-reset="reset"
-      @submit="submit"
-      @reset="reset"
-      @delete="deleteRow"
-  >
-    <template #menu="{ size }">
-      <el-button
-          :size="size"
-          type="success"
-          link
-          @click="drawer = true"
-      >
-        设置权限
-      </el-button>
-    </template>
-  </pro-crud>
-
-  <el-drawer v-model="drawer" direction="rtl">
-    <template #title>
-      <h2>权限设置</h2>
-    </template>
-    <template #default>
-      <el-tabs type="border-card">
-        <el-tab-pane label="角色菜单">角色菜单</el-tab-pane>
-        <el-tab-pane label="角色接口">角色接口</el-tab-pane>
-      </el-tabs>
-    </template>
-    <template #footer>
-      <div style="flex: auto">
-       666
-      </div>
-    </template>
-  </el-drawer>
+  <pro-card>
+    <pro-crud
+        v-model="form"
+        v-model:search="serachForm"
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        v-loading="isFetching"
+        :columns="columns"
+        :menu="menu"
+        :data="list"
+        :total="total"
+        :detail="detail"
+        :before-open="beforeOpen"
+        @search="search"
+        @load="loadList"
+        @search-reset="loadList"
+        @submit="submit"
+        @delete="deleteRow"
+        :table-columns="tableColumns"
+        :rules="rules"
+        layout="total, ->, jumper, prev, pager, next, sizes"
+        border
+        stripe
+    >
+      <template #action>
+        <pro-column-setting
+            v-model="tableColumns"
+        />
+      </template>
+      <template #menu="{row, size }">
+        <el-button
+            :size="size"
+            type="success"
+            link
+            @click="openDrawer(row)"
+        >
+          设置权限
+        </el-button>
+      </template>
+    </pro-crud>
+    <el-drawer v-model="drawer" direction="rtl">
+      <template #title>
+        <h2>权限设置</h2>
+      </template>
+      <template #default>
+        <el-tabs type="border-card">
+          <el-tab-pane label="角色菜单">
+            <div class="relative w-full h-10">
+              <el-button class="absolute top-0 right-0" type="primary" @click="handleMenuTreeOK">确定</el-button>
+            </div>
+            <el-tree
+                ref="menuTreeRef"
+                :data="menuTreeData"
+                show-checkbox
+                :default-checked-keys="menuCheckedKeys"
+                node-key="id"
+                :props="menuDefaultProps"
+            />
+          </el-tab-pane>
+          <el-tab-pane label="角色接口">
+            <div class="relative w-full h-10">
+              <el-button class="absolute top-0 right-0" type="primary" @click="handleInterfaceTreeOK">确定</el-button>
+            </div>
+            <el-tree
+                ref="interfaceTreeRef"
+                :data="interfaceTreeData"
+                show-checkbox
+                :default-checked-keys="interfaceCheckedKeys"
+                node-key="id"
+                :props="interfaceDefaultProps"
+            />
+          </el-tab-pane>
+        </el-tabs>
+      </template>
+    </el-drawer>
+  </pro-card>
 
 </template>
 <script lang="ts" setup>
-import { defineComponent, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import {ref, markRaw} from 'vue'
+import {useGlobalState, useGet, usePost, usePut, useDelete} from '../../../composables'
+import RichEditor from '../../../components/RichEditor/index.vue'
+import {ElMessage, ElTree} from 'element-plus'
 import {
   defineCrudColumns,
   defineCrudMenuColumns,
-  defineCrudSubmit,
-  defineCrudSearch,
-  defineCrudBeforeOpen,
 } from 'element-pro-components'
+import {Api} from "../../../utils";
+import {useCrud, useList} from "../../../composables/crud";
+
+interface Role {
+  id: string
+  key: string
+  name: string
+  description: string
+  menu_nodes: any
+  interface_nodes: any
+}
 
 const menu = defineCrudMenuColumns({
   label: 'Operations',
@@ -73,17 +116,35 @@ const menu = defineCrudMenuColumns({
   // editProps: { type: 'default', plain: true },
   // delProps: { type: 'info', plain: true },
 })
-
 const drawer = ref(false)
-const form = ref({})
-const serachForm = ref({})
-const detail = ref({})
+// 当前
+const currentRoleRow = ref<Role>({
+  id: '',
+  key: '',
+  name: '',
+  description: '',
+  menu_nodes: [],
+  interface_nodes: [],
+})
+const menuCheckedKeys = ref<string[]>([])
+const interfaceCheckedKeys = ref<string[]>([])
 const columns = defineCrudColumns([
   {
     label: 'ID',
     prop: 'id',
     component: 'el-input',
+    hide: true,
+    detail: true,
+    props: {
+      disabled: true
+    }
+  },
+  {
+    label: '角色ID',
+    prop: 'key',
+    component: 'el-input',
     form: true,
+    search: true,
     detail: true,
   },
   {
@@ -94,62 +155,101 @@ const columns = defineCrudColumns([
     search: true,
     detail: true,
   },
-])
-const data = ref([
   {
-    id: '2016-05-03',
-    name: 'Tom',
-  },
-  {
-    id: '2016-05-02',
-    name: 'Tom',
-  },
-  {
-    id: '2016-05-04',
-    name: 'Tom',
-  },
-  {
-    id: '2016-05-01',
-    name: 'Tom',
+    label: '描述',
+    prop: 'description',
+    component: 'el-input',
+    props: {
+      type: 'textarea',
+      rows: 14,
+      minRows: 12,
+      maxRows: 24,
+    },
+    form: true,
+    detail: true,
   },
 ])
-
-const beforeOpen = defineCrudBeforeOpen((done, type, row) => {
-  if (type === 'edit') {
-    form.value = row || {}
-  } else if (type === 'detail') {
-    detail.value = row || {}
-  }
-  done()
-})
-
-const search = defineCrudSearch((done, isValid, invalidFields) => {
-  ElMessage(`search: ${isValid}`)
-  console.log('search', serachForm.value, isValid, invalidFields)
-  setTimeout(() => {
-    done()
-  }, 1000)
-})
-
-const submit = defineCrudSubmit(
-    (close, done, type, isValid, invalidFields) => {
-      ElMessage(`submit: ${type}, ${isValid}`)
-      console.log('submit', form.value, type, isValid, invalidFields)
-      setTimeout(() => {
-        isValid ? close() : done()
-      }, 1000)
-    }
-)
-
-const reset = () => {
-  ElMessage('reset')
-  console.log('reset')
+const tableColumns = ref(JSON.parse(JSON.stringify(columns)))
+const menuTreeRef = ref<InstanceType<typeof ElTree>>()
+const menuDefaultProps = {
+  children: 'children',
+  label: 'title',
+}
+const interfaceTreeRef = ref<InstanceType<typeof ElTree>>()
+const interfaceDefaultProps = {
+  children: 'children',
+  label: 'describe',
+}
+const rules = {
+  key: {required: true, message: '请输入角色ID', trigger: 'blur'},
+  name: {required: true, message: '请输入角色名称', trigger: 'blur'},
+  description: {required: true, message: '请输入描述内容', trigger: 'blur'},
 }
 
-const deleteRow = (row: any) => {
-  ElMessage('deleteRow')
-  console.log('deleteRow', row)
+
+const {
+  list: menuTreeData,
+  serachForm: searchMenuForm,
+  loadList: exeMenuList,
+} = useList(Api.menuList)
+const {
+  data: interfaceTreeData,
+  execute: exeInterfaceGroup,
+} = useGet(Api.interfaceGroup)
+const {execute: exeRoleMenuNodesEdit} = usePut(Api.roleEdit, currentRoleRow)
+
+searchMenuForm.value.page_size = 1000000
+
+const {
+  form,
+  serachForm,
+  detail,
+  loadList,
+  currentPage,
+  pageSize,
+  list,
+  total,
+  isFetching,
+  beforeOpen,
+  submit,
+  search,
+  deleteRow
+} = useCrud(Api.roleList, Api.roleAdd, Api.roleEdit, Api.roleDelete, true)
+
+
+// 抽屉
+const openDrawer = (row: any) => {
+  drawer.value = true
+  currentRoleRow.value = row
+  // 更新菜单Tree
+  exeMenuList()
+  // 添加菜单Tree状态
+  menuCheckedKeys.value = []
+  currentRoleRow.value.menu_nodes.forEach((item: { id: any }) => {
+    menuCheckedKeys.value.push(item.id)
+  })
+
+  // 更新接口Tree
+  exeInterfaceGroup()
+  // 添加接口Tree状态
+  interfaceCheckedKeys.value = []
+  currentRoleRow.value.interface_nodes.forEach((item: { id: any }) => {
+    interfaceCheckedKeys.value.push(item.id)
+  })
 }
+
+// 处理菜单提交
+const handleMenuTreeOK = () => {
+  currentRoleRow.value.menu_nodes = menuTreeRef.value?.getCheckedNodes()
+  exeRoleMenuNodesEdit()
+}
+
+// 处理接口提交
+const handleInterfaceTreeOK = () => {
+  currentRoleRow.value.interface_nodes = interfaceTreeRef.value?.getCheckedNodes()
+  exeRoleMenuNodesEdit()
+}
+
 
 
 </script>

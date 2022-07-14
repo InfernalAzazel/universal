@@ -94,9 +94,17 @@ export function usePut<T = unknown>(
  */
 export function useDelete<T = unknown>(
     url: MaybeRef<string>,
-    payload?: MaybeRef<unknown>
+    query?: MaybeRef<unknown>
 ): UseFetchReturn<T> {
-    return useRequest<T>(url).delete(payload).json()
+    const _url = computed(() => {
+        const _url = unref(url)
+        const _query = unref(query)
+        const queryString = isObject(_query)
+            ? stringifyQuery(_query as LocationQueryRaw)
+            : _query || ''
+        return `${_url}${queryString ? '?' : ''}${queryString}`
+    })
+    return useRequest<T>(_url).delete().json()
 }
 
 /**

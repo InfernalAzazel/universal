@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException
 
 
 # 自定义异常
@@ -39,6 +39,20 @@ class CustomHttpException:
         令牌过期
         """
         return HTTPException(461, 'token expired')
+
+    @staticmethod
+    def client_err_role_key_already_exists():
+        """
+        角色键已存在
+        """
+        return HTTPException(462, 'Role key already exists')
+
+    @staticmethod
+    def client_err_role_not_found():
+        """
+        找不到角色
+        """
+        return HTTPException(462, 'Role not found')
 
     # 服务器异常 ---------------------------------------------------------------------------------------------------
     @staticmethod

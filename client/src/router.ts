@@ -60,7 +60,6 @@ const asyncRoutes: Router[] = [
         path: '/system',
         title: 'system',
         icon: 'Setting',
-        redirect: '/system/menu',
         component: 'layout/base.vue',
         children: [
             {

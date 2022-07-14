@@ -1,40 +1,148 @@
+import {
+    ICrudSubmit,
+    ICrudBeforeOpen,
+    IFormSubmit,
+    StringObject,
+    UnknownObject,
+    MaybeRef, defineCrudBeforeOpen, defineCrudSearch, defineCrudSubmit,
+} from 'element-pro-components'
+import {reactive, ref, unref} from "vue";
+import {useDelete, useGet, usePost, usePut} from "./request";
+import {Api} from "../utils";
+import {PagesData} from "../utils/pubilc";
+
+
+
+
+export function useList(urlSerach: string, immediate: boolean = false){
+    const currentPage = ref(1)
+    const pageSize = ref(10)
+    const list = ref<any[]>([])
+    const total = ref(0)
+    const serachForm = ref({
+        current_page: currentPage.value,
+        page_size: pageSize.value,
+    })
+    const {isFetching, data, execute: exeList} = useGet<PagesData<any>>(urlSerach, serachForm)
+
+    const loadList = async () => {
+        if (isFetching.value) return
+        serachForm.value.current_page = currentPage.value
+        serachForm.value.page_size = pageSize.value
+        await exeList()
+        if (data.value) {
+            list.value = data.value.data
+            total.value = data.value.total
+        }
+
+    }
+
+    unref(immediate) && loadList()
+    return {
+        currentPage,
+        pageSize,
+        list,
+        total,
+        serachForm,
+        loadList,
+        isFetching,
+    }
+}
+
 /**
- * 封装表单提交
- * @param config.url 请求地址
- * @param config.showTip 显示提示，默认: `true`
- * @param config.type 提交请求方式 post | put，默认: `post`
- * @param config.transform 转换表单
+ * 封装 CRUD操作
+ * @param urlSerach Search 请求地址
+ * @param urlAdd Add 请求地址
+ * @param urlEdit URL 请求地址
+ * @param urlDelete URL 请求地址
+ * @param immediate 是否立即获取数据列表
  */
-// import {IFormSubmit, StringObject} from "element-pro-components";
-// import {computed, Ref, ref, unref} from "vue";
-// import {usePost, usePut} from "./request";
-//
-//
-// export function useForm<Form = StringObject, Data = unknown>({
-//                                                                  url,
-//                                                                  transform,
-//                                                                  showTip = true,
-//                                                                  type = 'post',
-//                                                              }: UseFormConfig<Form>): UseFormReturn<Form, Data> {
-//     const isFetching = ref(false)
-//     const form = ref({}) as Ref<Form>
-//     const payload = computed(() => {
-//         return transform ? transform(unref(form)) : form.value
-//     })
-//     const _url = computed(() => {
-//         return replaceId(unref(url), (payload.value as { id?: string }).id)
-//     })
-//     const postForm = usePost<Data>(url, payload)
-//     const putForm = usePut<Data>(_url, payload)
-//     const submit: IFormSubmit = async (done, isValid) => {
-//         if (isValid) {
-//             const res = await submitForm()
-//
-//             if (res.value) {
-//                 unref(showTip) && appMessage('success', '提交成功！')
-//             } else if (res.value !== null) {
-//                 unref(showTip) && appMessage('warning', '提交失败！')
-//             }
-//         }
-//         done()
-//     }
+export function useCrud(urlSerach: string, urlAdd: string, urlEdit: string, urlDelete: string, immediate: boolean = false) {
+
+    const detail = ref({})
+    const currentRowID = reactive({
+        id: '',
+    })
+    const currentPage = ref(1)
+    const pageSize = ref(10)
+    const list = ref<any[]>([])
+    const total = ref(0)
+    const form = ref({})
+    const serachForm = ref({
+        current_page: currentPage.value,
+        page_size: pageSize.value,
+    })
+
+    const {isFetching, data, execute: exeList} = useGet<PagesData<any>>(urlSerach, serachForm)
+    const {execute: exeAdd} = usePost(urlAdd, form)
+    const {execute: exeEdit} = usePut(urlEdit, form)
+    const {execute: exeDel} = useDelete(urlDelete, currentRowID)
+
+    const loadList = async () => {
+        if (isFetching.value) return
+        serachForm.value.current_page = currentPage.value
+        serachForm.value.page_size = pageSize.value
+        await exeList()
+        if (data.value) {
+            list.value = data.value.data
+            total.value = data.value.total
+        }
+
+    }
+
+    unref(immediate) && loadList()
+
+    const beforeOpen = defineCrudBeforeOpen((done, type, row) => {
+        if (type === 'edit') {
+            form.value = row || {}
+        } else if (type === 'detail') {
+            detail.value = row || {}
+        }
+        done()
+    })
+
+    const search = defineCrudSearch(async (done, isValid, invalidFields) => {
+        if (isValid) {
+            await loadList()
+        }
+        done()
+    })
+
+    const submit = defineCrudSubmit(
+        async (close, done, type, isValid, invalidFields) => {
+            if (type === 'add') {
+                await exeAdd()
+                close()
+                done()
+            } else if (type === 'edit') {
+                await exeEdit()
+                close()
+                done()
+            }
+            await loadList()
+
+        }
+    )
+
+    const deleteRow = async (row: any) => {
+        currentRowID.id = row.id
+        await exeDel()
+        await loadList()
+    }
+    return {
+        form,
+        serachForm,
+        detail,
+        loadList,
+        currentPage,
+        pageSize,
+        list,
+        total,
+        isFetching,
+        currentRowID,
+        beforeOpen,
+        submit,
+        search,
+        deleteRow,
+    }
+}

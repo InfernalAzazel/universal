@@ -1,5 +1,9 @@
 <template>
-  <pro-layout class="docs-layout">
+  <pro-layout
+      transition="el-fade-in"
+      keep-alive
+      :include="/^Keep/"
+  >
     <template #logo="{ collapse }" class="">
         <el-image
             v-if="collapse" class="mt-2 ml-2.5"
@@ -53,6 +57,7 @@
         </transition>
       </template>
     </router-view>
+
   </pro-layout>
 </template>
 
@@ -62,6 +67,5 @@ import {inject, shallowRef} from "vue";
 import AvatarList from '../components/AvatarList/index.vue'
 const tabs = inject('tabs', undefined) // Get top-level `Tabs` inject
 const childTabs = shallowRef({})
-
 
 </script>

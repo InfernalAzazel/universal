@@ -4,13 +4,10 @@ DATABASE_NAME = 'universal'
 COLL_USERS = 'users'
 # 集合 角色
 COLL_ROLE = 'role'
-# 集合 新闻
-COLL_NEWS = 'news'
-# 集合 订阅
-COLL_SUB = 'sub'
-# 集合 漏洞
-COLL_VULNERABILITY = 'vulnerability'
-
+# 集合 菜单
+COLL_MENU = 'menu'
+# 集合 接口
+COLL_INTERFACE = 'interface'
 
 ini = """
 # 初始化激活-程序变量请问请勿设置

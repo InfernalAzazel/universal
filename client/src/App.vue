@@ -1,20 +1,12 @@
 <template>
-<a-config-provider :getPopupContainer="getPopupContainer">
+<el-config-provider >
   <router-view />
-</a-config-provider>
+</el-config-provider>
 </template>
 <script lang="ts" setup>
-const getPopupContainer = (el: Element, dialogContext: any) => {
-  if (dialogContext) {
-    return dialogContext.getDialogWrap();
-  }
-  return document.body;
-};
-
-
 </script>
 <style>
 #app {
-  height: 100%;
+  @apply h-screen;
 }
 </style>

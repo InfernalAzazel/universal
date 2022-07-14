@@ -1,21 +1,40 @@
 <template>
-  <pro-crud
-      v-model="form"
-      v-model:search="serachForm"
-      :columns="columns"
-      :menu="menu"
-      :data="data"
-      :detail="detail"
-      :before-open="beforeOpen"
-      label-width="100px"
-      @search="search"
-      @search-reset="reset"
-      @submit="submit"
-      @reset="reset"
-      @delete="deleteRow"
-  >
-  </pro-crud>
-
+  <pro-card shadow="never">
+    <pro-crud
+        v-loading="isFetching"
+        v-model="form"
+        v-model:search="serachForm"
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        :columns="columns"
+        :menu="menu"
+        :data="list"
+        :detail="detail"
+        :before-open="beforeOpen"
+        @search="search"
+        @submit="submit"
+        @delete="deleteRow"
+        row-key="key"
+        :table-columns="tableColumns"
+        :total="total"
+        @load="loadList"
+        @search-reset="loadList"
+        layout="total, ->, jumper, prev, pager, next, sizes"
+        border
+        stripe
+        show-overflow-tooltip
+    >
+      <template #action>
+        <pro-column-setting
+            v-model="tableColumns"
+            :allow-drag="(node) => console.log(node)"
+            :allow-drop="(draggingNode, dropNode, type)=>console.log(draggingNode)"
+            default-expand-all
+            icon="SettingOutlined"
+        />
+      </template>
+    </pro-crud>
+  </pro-card>
 </template>
 <script lang="ts" setup>
 import { defineComponent, ref } from 'vue'
@@ -27,6 +46,8 @@ import {
   defineCrudSearch,
   defineCrudBeforeOpen,
 } from 'element-pro-components'
+import {useCrud} from "../../../composables/crud";
+import {Api} from "../../../utils";
 
 const menu = defineCrudMenuColumns({
   label: 'Operations',
@@ -47,17 +68,7 @@ const menu = defineCrudMenuColumns({
   // delProps: { type: 'info', plain: true },
 })
 
-// company: Optional[str] = None  # 公司
-// department: Optional[str] = None  # 部门
-// username: Optional[str] = None  # 帐号： quid1111
-// name: Optional[str] = None  # 姓名拼音： DeSai
-// mail: Optional[str] = None  # 邮箱
-// disabled: Optional[bool] = False  # 禁用：True == 禁用
-// role_name: Optional[str] = None  # 角色名称： user == 普通用户
 
-const form = ref({})
-const serachForm = ref({})
-const detail = ref({})
 const selectData = ref([
   { value: true, label: '是' },
   { value: false, label: '否' },
@@ -127,62 +138,24 @@ const columns = defineCrudColumns([
   },
 
 ])
-const data = ref([
-  {
-    id: '2016-05-03',
-    name: 'Tom',
-  },
-  {
-    id: '2016-05-02',
-    name: 'Tom',
-  },
-  {
-    id: '2016-05-04',
-    name: 'Tom',
-  },
-  {
-    id: '2016-05-01',
-    name: 'Tom',
-  },
-])
-
-const beforeOpen = defineCrudBeforeOpen((done, type, row) => {
-  if (type === 'edit') {
-    form.value = row || {}
-  } else if (type === 'detail') {
-    detail.value = row || {}
-  }
-  done()
-})
-
-const search = defineCrudSearch((done, isValid, invalidFields) => {
-  ElMessage(`search: ${isValid}`)
-  console.log('search', serachForm.value, isValid, invalidFields)
-  setTimeout(() => {
-    done()
-  }, 1000)
-})
-
-const submit = defineCrudSubmit(
-    (close, done, type, isValid, invalidFields) => {
-      ElMessage(`submit: ${type}, ${isValid}`)
-      console.log('submit', form.value, type, isValid, invalidFields)
-      setTimeout(() => {
-        isValid ? close() : done()
-      }, 1000)
-    }
-)
-
-const reset = () => {
-  ElMessage('reset')
-  console.log('reset')
-}
-
-const deleteRow = (row: any) => {
-  ElMessage('deleteRow')
-  console.log('deleteRow', row)
-}
+const tableColumns = ref(JSON.parse(JSON.stringify(columns)))
 
 
+const {
+  form,
+  serachForm,
+  detail,
+  loadList,
+  currentPage,
+  pageSize,
+  list,
+  total,
+  isFetching,
+  beforeOpen,
+  submit,
+  search,
+  deleteRow
+} = useCrud(Api.usersList,Api.usersAdd,Api.usersEdit, Api.usersDelete, true)
 </script>
+
 <style></style>

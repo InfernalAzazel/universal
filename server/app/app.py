@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.internal import users
+from app.internal.system import menu, role, interface, users
 from app.routers import auth
 from app.routers import init
 
@@ -15,6 +15,9 @@ app = FastAPI(
 app.include_router(auth.router)
 app.include_router(init.router)
 app.include_router(users.router)
+app.include_router(menu.router)
+app.include_router(role.router)
+app.include_router(interface.router)
 
 
 # app.mount('/', StaticFiles(directory='app/static/dist', html=True), name='static')
