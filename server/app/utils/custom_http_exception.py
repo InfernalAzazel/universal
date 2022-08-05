@@ -61,3 +61,12 @@ class CustomHttpException:
         获取当前用户路由失败
         """
         return HTTPException(520, 'Failed to get current user route')
+
+
+MESSAGE_401_1 = 'Incorrect username or password'
+MESSAGE_401_2 = 'token expired'
+MESSAGE_401_3 = 'Role key already exists'
+MESSAGE_401_4 = '请求头中 Authorization 字段中 token 格式错误'
+MESSAGE_401_5 = 'Role not found'
+MESSAGE_401_6 = '请求头中 Authorization 字段中 token 无效'
+MESSAGE_401_7 = '请求头中 Authorization 字段中 token 没有权限'

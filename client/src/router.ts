@@ -1,20 +1,12 @@
 import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 import { NP } from "./np"
 import {AllowList} from "./utils";
-import {useGlobalState} from "./composables";
+import {useGet, useGlobalState} from "./composables";
+import {Api} from "./utils";
 import {defineAsyncComponent} from "vue";
+import {Router} from "./types";
 
-interface Router {
-    path: string
-    redirect?: string
-    component: string // NOTE: 页面组件路径，相对于 src 目录
-    name?: string
-    title?: string
-    icon?: string // NOTE: icon 需要通过全局注册
-    hide?: string
-    roles?: string[]
-    children?: Router[]
-}
+
 
 const routes: RouteRecordRaw[] = [
     {
@@ -36,79 +28,31 @@ const router = createRouter({
     routes,
 })
 
-
-/**
- * 模拟后台返回的路由数据，或者是需要筛选权限的路由数据
- * 如果是路由来自后台，最好将数据存储在 localStorage 或者 sessionStorage 中
- */
-const asyncRoutes: Router[] = [
-    {
-        path: '/',
-        redirect: '/home',
-        component: 'layout/base.vue',
-        title: 'home',
-        icon: 'House',
-        children: [
-            {
-                path: '/home',
-                component: 'views/home/index.vue',
-                title: '首页',
-            }
-        ],
-    },
-    {
-        path: '/system',
-        title: 'system',
-        icon: 'Setting',
-        component: 'layout/base.vue',
-        children: [
-            {
-                path: '/system/menu',
-                title: 'menu',
-                icon: 'CreditCard',
-                component: 'views/system/menu/index.vue',
-            },
-            {
-                path: '/system/role',
-                title: 'role',
-                icon: 'Bicycle',
-                component: 'views/system/role/index.vue',
-            },
-            {
-                path: '/system/interface',
-                title: 'interface',
-                icon: 'Paperclip',
-                component: 'views/system/interface/index.vue',
-            },
-            {
-                path: '/system/users',
-                title: 'users',
-                icon: 'User',
-                component: 'views/system/users/index.vue',
-            },
-        ]
-    },
-]
-
 const np = NP.init()
 // 防止首次或者刷新界面路由失效
 let initRoute = false
+// const {data: routesData, execute: exeUsersRoutes} = useGet<Router[]>(Api.usersRoutes)
 
 // 路由守卫
-router.beforeEach((to, form, next) => {
+router.beforeEach(async (to, form, next) => {
     const state = useGlobalState()
+    const {data: routesData, execute: exeUsersRoutes} = useGet<Router[]>(Api.usersRoutes)
     np.start()
-    if (!AllowList.includes(to.path) && !state.value.token) {
+    if (!AllowList.includes(to.path) && !state.value.access_token) {
         next(`/login?redirect=${to.path}`)
-    } else if (to.path === '/login' && state.value.token) {
+    } else if (to.path === '/login' && state.value.access_token) {
         next('/')
-    } else if (!initRoute && to.path !== '/login' && state.value.token) {
-        // 获取路由 -> 转化 -> addRoute
-        generateRoutes(asyncRoutes).forEach((item) => {
-            router.addRoute(item)
-            router.options.routes.push(item)
-        })
+    } else if (!initRoute && to.path !== '/login' && state.value.access_token) {
         initRoute = true
+        await exeUsersRoutes()
+        // 获取路由 -> 转化 -> addRoute
+        if (routesData.value){
+            generateRoutes(routesData.value).forEach((item) => {
+                router.addRoute(item)
+                //@ts-ignore
+                router.options.routes.push(item)
+            })
+        }
         next({ ...to, replace: true })
     } else {
         next()
@@ -121,14 +65,15 @@ router.beforeEach((to, form, next) => {
  * @param list 需要转化的路由
  */
 function generateRoutes(list: Router[]): RouteRecordRaw[] {
+    const state = useGlobalState()
     return list.reduce((all, item) => {
         // NOTE: 这里可以进行一些权限筛选，排除没有权限的路由
-        if (item.roles?.length && item.roles.includes('admin')) return all
+        // if (item.roles?.length && item.roles.includes('admin')) return all
 
         const children = item.children?.length
             ? generateRoutes(item.children)
             : undefined
-
+        //@ts-ignore
         const current: RouteRecordRaw = {
             path: item.path,
             redirect: item.redirect,
@@ -136,7 +81,7 @@ function generateRoutes(list: Router[]): RouteRecordRaw[] {
             component: () => defineAsyncComponent(() => import( /* @vite-ignore */ `./${item.component}`)) ,
             children,
             meta: {
-                title: item.title,
+                title: state.value.locales === 'en-us' ? item.title_en_us: item.title_zh_cn ,
                 icon: item.icon,
                 hide: item.hide,
             },

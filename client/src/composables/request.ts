@@ -4,35 +4,46 @@ import {useGlobalState} from "./store";
 import { isObject, MaybeRef, UseFetchReturn } from '@vueuse/core'
 import {computed, unref} from "vue";
 import {stringifyQuery, LocationQueryRaw} from "vue-router";
+import router from "../router";
+import {ElMessage} from "element-plus";
 
 const useRequest = createFetch({
-    baseUrl: '', // 基础路由
+    // baseUrl: '', // 基础路由
     options: {
         immediate: false, // 是否在使用 useMyFetch 时自动运行 (推荐手动运行)
         timeout: 30000, // 请求过期时间
         // 在请求前修改配置，如：注入 token 值
         async beforeFetch({ options }) {
             const state = useGlobalState()
-            if (RequestAuthKey && state.value.token) {
+            if (RequestAuthKey && state.value.access_token) {
                 options.headers = Object.assign(options.headers || {}, {
-                    [RequestAuthKey]: `Bearer ${state.value.token}`,
+                    [RequestAuthKey]: `${state.value.token_type} ${state.value.access_token}`,
                 })
             }
             return { options }
         },
         // 在请求后处理数据，如：拦截错误、处理过期
-        afterFetch({ data, response }) {
+        // 获取请求返回后将立即运行。在任何 2xx 响应后运行
+        async afterFetch({ data, response }) {
             const state = useGlobalState()
-            const status = data.code
-            if (status === 401) {
-                console.error(status)
-                data = null
-            }
             return { data, response }
         },
         // 请求错误
-        onFetchError({ data, error }) {
-            console.error(error)
+        // 获取请求返回后将立即运行。在任何 4xx 和 5xx 响应之后运行
+        async onFetchError({ data, response, error }) {
+            const state = useGlobalState()
+            if (response?.status === 401) {
+                state.value.access_token = ''
+                ElMessage.error({
+                    message: '登录已过期，请重新登录',
+                    type: 'success',
+                })
+                // console.error(status)
+                data = null
+                await router.push({path: `/login?redirect=${router.currentRoute.value.path}`})
+            }
+
+            // console.error(error)
             return { data, error }
         },
     },
@@ -49,7 +60,7 @@ const useRequest = createFetch({
  */
 export function useGet<T = unknown>(
     url: MaybeRef<string>,
-    query?: MaybeRef<unknown>
+    query?: MaybeRef<unknown>,
 ): UseFetchReturn<T> {
     const _url = computed(() => {
         const _url = unref(url)

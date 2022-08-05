@@ -1,17 +1,20 @@
-from typing import Any, TYPE_CHECKING
+from datetime import datetime
 
+import pymongo
+import pytz
 from bson import ObjectId
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Query
 from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel
 from pymongo import ReturnDocument
 from starlette.responses import JSONResponse
 
-from app.cfg import Config
-from app.custom_http_exception import CustomHttpException as http_exp
-from app.dependencies import get_config, get_db_client_c
-from app.menu_node_tree import list_to_tree
-from app.settings import DATABASE_NAME, COLL_MENU
+from app.utils.cfg import Config
+from app.utils.custom_http_exception import CustomHttpException as http_exp
+from app.utils.dependencies import get_config, get_db_client_c, auto_current_user_permission
+from app.utils.menu_node_tree import list_to_tree
+from app.models.system.menu import Menu, SearchMenu
+from app.models.system.users import User
+from app.settings import DATABASE_NAME, COLL_MENU, COLL_ROLE
 
 router = APIRouter(
     prefix="/api",
@@ -19,58 +22,32 @@ router = APIRouter(
 )
 
 
-class Menu(BaseModel):
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        for k, v in data.items():
-            if k == '_id':
-                self.__dict__['id'] = str(data['_id'])
-            else:
-                self.__dict__[k] = data[k]
+@router.get('/v1/system/menu/all')
+async def all(
+        cfg: Config = Depends(get_config),
+        current_user: User = Depends(auto_current_user_permission),
+):
+    db_client = get_db_client_c(cfg)
+    coll = db_client[DATABASE_NAME][COLL_MENU]
 
-    if TYPE_CHECKING:
-        id: str = None
-    key: int
-    father: int
-    hide: bool
-    path: str
-    title: str
-    icon: str
-    component: str
+    query = {}
 
+    cursor = coll.find(query).sort([
+        ('order', pymongo.ASCENDING),
+    ])
 
-class SearchMenu(BaseModel):
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        for k, v in data.items():
-            if k == '_id' and v == '':
-                self.__dict__['id'] = None
-            if k == 'key' and v == '':
-                self.__dict__['key'] = None
-            elif k == 'father' and v == '':
-                self.__dict__['father'] = None
-            elif k == 'hide' and v == '':
-                self.__dict__['hide'] = None
-            elif k == 'path' and v == '':
-                self.__dict__['path'] = None
-            elif k == 'title' and v == '':
-                self.__dict__['title'] = None
-            elif k == 'icon' and v == '':
-                self.__dict__['icon'] = None
-            elif k == 'component' and v == '':
-                self.__dict__['component'] = None
-            else:
-                self.__dict__[k] = data[k]
+    try:
+        menu_list = [Menu(**x) async for x in cursor]
+        data = list_to_tree(jsonable_encoder(menu_list), 0)
+    except Exception as _:
+        print(_)
+        data = []
+    db_client.close()
 
-    if TYPE_CHECKING:
-        id: str = None
-    key: int = None
-    father: int = None
-    hide: bool = None
-    path: str = None
-    title: str = None
-    icon: str = None
-    component: str = None
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content=jsonable_encoder(data)
+    )
 
 
 @router.get('/v1/system/menu/list')
@@ -80,31 +57,44 @@ async def lists(
         father: int = None,
         hide: bool = None,
         path: str = None,
-        title: str = None,
+        title_zh_cn: str = None,
+        title_en_us: str = None,
         icon: str = None,
         component: str = None,
+        order: int = None,
+        create_at: list[datetime] = Query(None),
+        update_at: list[datetime] = Query(None),
         current_page: int = 1,  # 跳过
         page_size: int = 10,  # 跳过
-        cfg: Config = Depends(get_config)
+        cfg: Config = Depends(get_config),
+        current_user: User = Depends(auto_current_user_permission)
 ):
     skip = (current_page - 1) * page_size
     db_client = get_db_client_c(cfg)
     coll = db_client[DATABASE_NAME][COLL_MENU]
-
     search_menu = SearchMenu(
         key=key,
         father=father,
         hide=hide,
         path=path,
-        title=title,
+        title_zh_cn=title_zh_cn,
+        title_en_us=title_en_us,
         icon=icon,
-        component=component
+        component=component,
+        order=order,
     )
     query = search_menu.dict(exclude_none=True)
+
     if id is not None and id != '':
         query['_id'] = ObjectId(id)
+    if update_at:
+        query['update_at'] = {'$gte': update_at[0].astimezone(pytz.utc), '$lte': update_at[1].astimezone(pytz.utc)}
+    if create_at:
+        query['create_at'] = {'$gte': create_at[0].astimezone(pytz.utc), '$lte': create_at[1].astimezone(pytz.utc)}
 
-    cursor = coll.find(query).skip(skip).limit(page_size)
+    cursor = coll.find(query).skip(skip).limit(page_size).sort([
+        ('order', pymongo.ASCENDING),
+    ])
     count = await coll.count_documents(query)
     try:
         menu_list = [Menu(**x) async for x in cursor]
@@ -121,15 +111,20 @@ async def lists(
 
 
 @router.post('/v1/system/menu/add')
-async def add(menu: Menu, cfg: Config = Depends(get_config)):
+async def add(
+        menu: Menu,
+        cfg: Config = Depends(get_config),
+        current_user: User = Depends(auto_current_user_permission),
+):
     db_client = get_db_client_c(cfg)
     coll = db_client[DATABASE_NAME][COLL_MENU]
     doc = await coll.find_one({'key': menu.key})
     if doc:
         raise http_exp.client_err_role_key_already_exists()
+    menu.create_at = datetime.now(pytz.utc)
     await coll.find_one_and_update(
         {'key': menu.key},
-        {'$inc': {'version': 1}, '$set': menu.dict()},
+        {'$set': menu.dict()},
         upsert=True,
         return_document=ReturnDocument.AFTER
     )
@@ -141,12 +136,18 @@ async def add(menu: Menu, cfg: Config = Depends(get_config)):
 
 
 @router.put('/v1/system/menu/edit')
-async def edit(menu: Menu, cfg: Config = Depends(get_config)):
+async def edit(
+        menu: Menu,
+        cfg: Config = Depends(get_config),
+   current_user: User = Depends(auto_current_user_permission),
+):
     db_client = get_db_client_c(cfg)
     coll = db_client[DATABASE_NAME][COLL_MENU]
+    menu.update_at = datetime.now(pytz.utc)
     await coll.find_one_and_update(
         {'_id': ObjectId(menu.id)},
-        {'$inc': {'version': 1}, '$set': menu.dict(exclude={'version', 'id'})},
+        # 前端会自带 id create_at children 字段，所以这里不需要更新
+        {'$set': menu.dict(exclude={'id', 'create_at', 'children'})},
     )
     db_client.close()
     return JSONResponse(
@@ -156,8 +157,18 @@ async def edit(menu: Menu, cfg: Config = Depends(get_config)):
 
 
 @router.delete('/v1/system/menu/delete')
-async def delete(id: str, cfg: Config = Depends(get_config)):
+async def delete(
+        id: str,
+        cfg: Config = Depends(get_config),
+        current_user: User = Depends(auto_current_user_permission),
+):
     db_client = get_db_client_c(cfg)
+    coll = db_client[DATABASE_NAME][COLL_ROLE]
+    await coll.update_many(
+        {},
+        {'$pull': {
+            'menu_permission': {'id': id}
+        }})
     coll = db_client[DATABASE_NAME][COLL_MENU]
     await coll.delete_one({'_id': ObjectId(id)})
     db_client.close()

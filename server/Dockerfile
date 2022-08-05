@@ -3,7 +3,11 @@ FROM python:3.10
 WORKDIR /code
 
 COPY ./universal/server/requirements.txt /code/requirements.txt
+COPY ./universal/server/rbac_model.conf /code/rbac_model.conf
+COPY ./universal/server/save_db.py /code/save_db.py
+COPY ./universal/server/settings.default.toml /code/settings.default.toml
 COPY ./universal/server/app /code/app
+
 ADD ./universal/server/sources.list /etc/apt/sources.list
 
 RUN apt-get clean

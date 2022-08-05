@@ -10,9 +10,32 @@ import {reactive, ref, unref} from "vue";
 import {useDelete, useGet, usePost, usePut} from "./request";
 import {Api} from "../utils";
 import {PagesData} from "../utils/pubilc";
+import {isObject} from "@vueuse/core";
 
 
+export function useAll(urlSerach: string, immediate: boolean = false){
 
+    const list = ref<any[]>([])
+
+    const {isFetching, data, execute: exeList} = useGet(urlSerach)
+
+    const loadAll = async () => {
+        if (isFetching.value) return
+        await exeList()
+        if (data.value) {
+            list.value = data.value as any[]
+        }
+
+    }
+
+    unref(immediate) && loadAll()
+    return {
+
+        list,
+        loadAll,
+        isFetching,
+    }
+}
 
 export function useList(urlSerach: string, immediate: boolean = false){
     const currentPage = ref(1)
@@ -82,6 +105,7 @@ export function useCrud(urlSerach: string, urlAdd: string, urlEdit: string, urlD
         if (isFetching.value) return
         serachForm.value.current_page = currentPage.value
         serachForm.value.page_size = pageSize.value
+
         await exeList()
         if (data.value) {
             list.value = data.value.data

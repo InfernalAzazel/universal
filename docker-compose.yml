@@ -23,17 +23,17 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin
     ports:
       - "27017:27017"
-  vmsServer:
+  server:
     image: server
     build:
       context: .
       dockerfile: server/Dockerfile
-    container_name: vms-server
-    hostname: vms-server
+    container_name: server
+    hostname: server
     restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - vmsServer:/code
+      - server:/code
     ports:
       - "80:80"
 volumes:

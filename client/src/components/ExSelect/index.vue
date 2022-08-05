@@ -21,7 +21,8 @@
 
 <script lang="ts" setup>
 import {ElSelect} from "element-plus";
-defineProps({
+import {toRefs, watch} from "vue";
+const props = defineProps({
   modelValue: {
     type: String,
     default: '',
@@ -31,9 +32,9 @@ defineProps({
     default: [],
   },
 })
+const {modelValue} = toRefs(props)
 const emit = defineEmits(['update:modelValue'])
 const Change = (val:any) => {
   emit('update:modelValue', val)
 }
-
 </script>

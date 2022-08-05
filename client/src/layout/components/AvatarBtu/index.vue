@@ -2,11 +2,9 @@
   <el-dropdown>
         <span class="el-dropdown-link">
           <el-image
-              v-if="state.avatar"
-              :src="state.avatar"
+              :src="avatar"
               class="avatar"
           />
-          {{ state.name }}
           <arrow-down class="el-icon-arrow-down el-icon--right" />
         </span>
     <template #dropdown>
@@ -20,20 +18,15 @@
 </template>
 
 <script setup lang="ts">
-// defineProps<{ name: string }>()
-import {useRoute, useRouter} from "vue-router";
-import {useGlobalState} from "../../composables";
-
-const route = useRoute()
+import {useRouter} from "vue-router";
+import {useGlobalState} from "../../../composables";
+const avatar = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif";
 const router = useRouter()
 const state = useGlobalState()
 
 async function loginOut() {
-  state.value = {
-    name: '',
-    avatar: '',
-    token: '',
-  }
+  state.value.access_token = ""
+  state.value.token_type = ""
   await router.push('/login')
 }
 

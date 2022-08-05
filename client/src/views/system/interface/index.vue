@@ -8,12 +8,12 @@
         v-model:page-size="pageSize"
         :columns="columns"
         :menu="menu"
+        :rules="rules"
         :data="list"
         :detail="detail"
         :before-open="beforeOpen"
         @search="search"
         @submit="submit"
-        @delete="deleteRow"
         row-key="key"
         :table-columns="tableColumns"
         :total="total"
@@ -33,6 +33,19 @@
             icon="SettingOutlined"
         />
       </template>
+      <template #menu="{ row, size }">
+        <el-popconfirm :title="$t(`crud.isDelText`)" @confirm="deleteRow(row)">
+          <template #reference>
+            <el-button
+                :size="size"
+                type="danger"
+                link
+            >
+              {{$t(`crud.delText`)}}
+            </el-button>
+          </template>
+        </el-popconfirm>
+      </template>
     </pro-crud>
   </pro-card>
 
@@ -49,24 +62,24 @@ import {
 } from 'element-pro-components'
 import {useCrud} from "../../../composables/crud";
 import { Api } from "../../../utils";
+import {useI18n} from "vue-i18n";
 
+const {t} = useI18n()
 const menu = defineCrudMenuColumns({
-  label: 'Operations',
-  addText: 'New',
-  detailText: '详细',
-  editText: '编辑',
-  delText: '删除',
-  searchText: 'Search',
-  searchResetText: 'Reset Search',
-  submitText: '提交',
-  resetText: 'Reset Form',
+  label: t(`crud.label`),
+  addText: t(`crud.addText`),
+  detailText: t(`crud.detailText`),
+  editText: t(`crud.editText`),
+  searchText: t(`crud.searchText`),
+  searchResetText: t(`crud.searchResetText`),
+  submitText: t(`crud.submitText`),
+  resetText: t(`crud.resetText`),
   detail: true,
   edit: true,
-  del: true,
+  del: false,
   searchReset: true,
-  // detailProps: { type: 'success', plain: false },
-  // editProps: { type: 'default', plain: true },
-  // delProps: { type: 'info', plain: true },
+  fixed: 'right',
+  width: '200'
 })
 
 
@@ -78,7 +91,7 @@ const selectData = ref([
 ])
 const columns = defineCrudColumns([
   {
-    label: 'ID',
+    label: t(`system.interface.id`),
     prop: 'id',
     component: 'el-input',
     detail: true,
@@ -87,7 +100,7 @@ const columns = defineCrudColumns([
     }
   },
   {
-    label: '路径',
+    label: t(`system.interface.path`),
     prop: 'path',
     component: 'el-input',
     form: true,
@@ -95,7 +108,7 @@ const columns = defineCrudColumns([
     detail: true,
   },
   {
-    label: '分组',
+    label: t(`system.interface.group`),
     prop: 'group',
     component: 'el-input',
     form: true,
@@ -103,17 +116,21 @@ const columns = defineCrudColumns([
     detail: true,
   },
   {
-    label: '接口简介(标志)',
-    prop: 'describe',
+    label: t(`system.interface.describe_zh_cn`),
+    prop: 'describe_zh_cn',
     component: 'el-input',
-    props: {
-      type: 'textarea',
-    },
     form: true,
     detail: true,
   },
   {
-    label: '请求方式',
+    label: t(`system.interface.describe_en_us`),
+    prop: 'describe_en_us',
+    component: 'el-input',
+    form: true,
+    detail: true,
+  },
+  {
+    label: t(`system.interface.method`),
     prop: 'method',
     component: 'pro-select',
     form: true,
@@ -122,6 +139,36 @@ const columns = defineCrudColumns([
     props:{
       data: selectData.value
     }
+  },
+  {
+    label: t(`el-date-picker.create_at`),
+    prop: 'create_at',
+    component: 'el-date-picker',
+    props: {
+      type: 'datetimerange',
+      rangeSeparator: '-',
+      startPlaceholder: 'start',
+      endPlaceholder: 'end',
+      format:"YYYY-MM-DD",
+      valueFormat:"YYYY-MM-DDTHH:mm:ss"
+    },
+    search: true,
+    detail: true,
+  },
+  {
+    label: t(`el-date-picker.update_at`),
+    prop: 'update_at',
+    component: 'el-date-picker',
+    props: {
+      type: 'datetimerange',
+      rangeSeparator: '-',
+      startPlaceholder: 'start',
+      endPlaceholder: 'end',
+      format:"YYYY-MM-DD",
+      valueFormat:"YYYY-MM-DDTHH:mm:ss"
+    },
+    search: true,
+    detail: true,
   },
 ])
 
@@ -144,7 +191,13 @@ const {
 } = useCrud(Api.interfaceList, Api.interfaceAdd, Api.interfaceEdit, Api.interfaceDelete, true)
 
 
-
+const rules = {
+  path: { required: true, message: t(`rules.interface.path`), trigger: 'blur' },
+  group: { required: true, message: t(`rules.interface.group`), trigger: 'blur' },
+  describe_zh_cn: { required: true, message: t(`rules.interface.describe_zh_cn`), trigger: 'blur' },
+  describe_en_us: { required: true, message: t(`rules.interface.describe_en_us`), trigger: 'blur' },
+  method: { required: true, message: t(`rules.interface.method`), trigger: 'blur' },
+}
 
 
 

@@ -1,234 +1,191 @@
 <template>
-  <div class="login">
-    <el-card class="w-3/12 max-w[90%] login-button">
-      <h1 class="mb-2 text-center text-3xl">
-        初始化
-      </h1>
+  <div class="bg-image">
+    <el-card class="w-3/12 max-w[90%] bg-white/0">
+      <div class="flex flex-row-reverse">
+        <lang-btu/>
+      </div>
+      <h2 class="mb-2 text-center">
+        {{ $t('layout.init.title') }}
+      </h2>
+      <el-scrollbar class="w-full" style="height: 600px">
       <pro-form
           ref="login"
+          class="init_button pro-form"
           v-model="form"
           :columns="columns"
           :menu="menu"
           label-position="top"
           @submit="submit"
-      >
-        <template #menu-left>
-          <div class="w-full">
-            <el-collapse v-model="activeNames" @change="handleChange">
-              <el-collapse-item title="其他系统参数" name="1">
-                <el-scrollbar class="w-full" style="height: 300px">
-                  <el-divider content-position="left">共用</el-divider>
-                  <el-space class="w-full" :fill="true" direction="vertical">
-                    <el-input v-model="form.tz_info" placeholder="Please input">
-                      <template #prepend>时区</template>
-                    </el-input>
-                  </el-space>
-                  <el-divider content-position="left">数据库</el-divider>
-                  <el-space class="w-full" :fill="true" direction="vertical">
-                    <el-input v-model="form.db_host" placeholder="Please input">
-                      <template #prepend>IP/域名</template>
-                    </el-input>
-                    <el-input v-model="form.db_username" placeholder="Please input">
-                      <template #prepend>帐号</template>
-                    </el-input>
-                    <el-input v-model="form.db_password" placeholder="Please input">
-                      <template #prepend>密码</template>
-                    </el-input>
-                  </el-space>
-                  <el-divider content-position="left">令牌配置</el-divider>
-                  <el-space class="w-full" :fill="true" direction="vertical">
-                    <el-input v-model="form.secret_key" placeholder="Please input">
-                      <template #prepend>密钥</template>
-                    </el-input>
-                    <el-input v-model="form.algorithm" placeholder="Please input">
-                      <template #prepend>算法</template>
-                    </el-input>
-                    <el-input v-model="form.access_token_expire_minutes" placeholder="Please input">
-                      <template #prepend>令牌有效时间/分钟</template>
-                    </el-input>
-                  </el-space>
-                  <el-divider content-position="left">Exchange 邮箱配置</el-divider>
-                  <el-space class="w-full" :fill="true" direction="vertical">
-                    <el-input v-model="form.email_server" placeholder="Please input">
-                      <template #prepend>服务器</template>
-                    </el-input>
-                    <el-input v-model="form.email_domain" placeholder="Please input">
-                      <template #prepend>域名</template>
-                    </el-input>
-                    <el-input v-model="form.email" placeholder="Please input">
-                      <template #prepend>邮箱</template>
-                    </el-input>
-                    <el-input v-model="form.email_user" placeholder="Please input">
-                      <template #prepend>用户</template>
-                    </el-input>
-                    <el-input v-model="form.email_pwd" placeholder="Please input">
-                      <template #prepend>密码</template>
-                    </el-input>
-                    <el-input v-model="form.email_attachment_file_name" placeholder="Please input">
-                      <template #prepend>附件文件名</template>
-                    </el-input>
-                    <el-divider content-position="left">定时推送任务</el-divider>
-                    <el-space class="w-full" :fill="true" direction="vertical">
-                      <el-input v-model="form.push_email_task_hour" placeholder="Please input">
-                        <template #prepend>时</template>
-                      </el-input>
-                      <el-input v-model="form.push_email_task_minute" placeholder="Please input">
-                        <template #prepend>分</template>
-                      </el-input>
-                      <el-input v-model="form.push_email_task_second" placeholder="Please input">
-                        <template #prepend>秒</template>
-                      </el-input>
-                    </el-space>
-                  </el-space>
-                </el-scrollbar>
-
-              </el-collapse-item>
-            </el-collapse>
-          </div>
-        </template>
+     >
       </pro-form>
+      </el-scrollbar>
+
     </el-card>
 
   </div>
 </template>
 
 <script setup lang="ts">
-import {markRaw, reactive, ref, watch} from 'vue'
+import {markRaw, onMounted, ref} from 'vue'
 import {useRouter} from 'vue-router'
-import {useDark, useMagicKeys, useTitle} from '@vueuse/core'
-import {Lock, User} from '@element-plus/icons-vue'
 import {
-  defineFormColumns,
   defineFormMenuColumns,
   defineFormSubmit,
   IFormExpose,
 } from 'element-pro-components'
-import {useGlobalState, usePost} from '../composables'
+import {useGet, useGlobalState, usePost, usePut} from '../composables'
 import {Api} from '../utils'
-import type {LoginForm, ResLogin} from '../types'
-import {InitSystemForm} from "../types";
-
+import {InitState, Settings} from "../types";
+import LangBtu from './components/LangBtu/index.vue'
+import EXDivider from "../components/EXDivider/index.vue";
+import {useI18n} from "vue-i18n";
+const {t} = useI18n()
 const router = useRouter()
 const state = useGlobalState()
-const {enter} = useMagicKeys()
 const login = ref({} as IFormExpose)
-const columns = defineFormColumns<InitSystemForm>([
+const columns = [
   {
-    label: '用户',
-    prop: 'username',
-    component: 'el-input',
-    rules: {required: true, message: '请输入用户名', trigger: 'blur'},
+    component: markRaw(EXDivider),
+    prop: 'null',
     props: {
-      clearable: true,
-      prefixIcon: markRaw(User),
-      placeholder: '请输入用户名',
-    },
+      title: t(`layout.init.form.shared`),
+    }
   },
   {
-    label: '密码',
-    prop: 'password',
+    prop: 'shared.tz_info',
     component: 'el-input',
-    rules: [
-      {required: true, message: '请输入密码', trigger: 'blur'},
-      {min: 5, max: 16, message: '长度 5 到 16 个字符', trigger: 'blur'},
-    ],
     props: {
-      type: 'password',
-      clearable: true,
-      showPassword: true,
-      prefixIcon: markRaw(Lock),
-      placeholder: '请输入密码',
-    },
-  }, {
-    label: '确认密码',
-    prop: 'verify_password',
-    component: 'el-input',
-    rules: [
-      {required: true, message: '请输入密码', trigger: 'blur'},
-      {min: 5, max: 16, message: '长度 5 到 16 个字符', trigger: 'blur'},
-      {
-        validator: (rule, value, callback) => {
-          if (value === '') {
-            callback(new Error('请再次输入密码'))
-            // password 是表单上绑定的字段
-          } else if (value !== form.password) {
-            callback(new Error('两次输入密码不一致!'))
-          } else {
-            callback()
-          }
-        },
-        trigger: 'change'
-      },
-    ],
-    props: {
-      type: 'password',
-      clearable: true,
-      showPassword: true,
-      prefixIcon: markRaw(Lock),
-      placeholder: '请输入密码',
-
-    },
+      placeholder: t(`layout.init.form.placeholder`),
+      slots: {
+        prepend: t(`layout.init.form.shared.tz_info`),
+      }
+    }
   },
-
-])
-
-
+  {
+    component: markRaw(EXDivider),
+    prop: 'null',
+    props: {
+      title: t(`layout.init.form.mongodb`),
+    }
+  },
+  {
+    prop: 'mongodb.host',
+    component: 'el-input',
+    props: {
+      placeholder: t(`layout.init.form.placeholder`),
+      slots: {
+        prepend: t(`layout.init.form.mongodb.host`),
+      }
+    }
+  },
+  {
+    prop: 'mongodb.username',
+    component: 'el-input',
+    props: {
+      placeholder: t(`layout.init.form.placeholder`),
+      slots: {
+        prepend: t(`layout.init.form.mongodb.username`),
+      }
+    }
+  },
+  {
+    prop: 'mongodb.password',
+    component: 'el-input',
+    props: {
+      placeholder: t(`layout.init.form.placeholder`),
+      slots: {
+        prepend: t(`layout.init.form.mongodb.password`),
+      }
+    }
+  },
+  {
+    component: markRaw(EXDivider),
+    prop: 'null',
+    props: {
+      title: t(`layout.init.form.jwt`),
+    }
+  },
+  {
+    prop: 'jwt.secret_key',
+    component: 'el-input',
+    props: {
+      placeholder: t(`layout.init.form.placeholder`),
+      slots: {
+        prepend: t(`layout.init.form.jwt.secret_key`),
+      }
+    }
+  },
+  {
+    prop: 'jwt.algorithm',
+    component: 'el-input',
+    props: {
+      placeholder: t(`layout.init.form.placeholder`),
+      slots: {
+        prepend: t(`layout.init.form.jwt.algorithm`),
+      }
+    }
+  },
+  {
+    prop: 'jwt.minutes',
+    component: 'el-input',
+    props: {
+      placeholder: t(`layout.init.form.placeholder`),
+      type: 'number',
+      slots: {
+        prepend: t(`layout.init.form.jwt.minutes`),
+      }
+    }
+  },
+]
 const menu = defineFormMenuColumns({
-  submitText: '创建管理员',
+  submit:true,
+  submitText: t(`layout.init.form.submit`),
   reset: false,
 })
-const form = reactive<InitSystemForm>({
-  username: '',
-  password: '',
-  verify_password: '',
-  tz_info: 'Asia/Shanghai',
-  db_host: '127.0.0.1',
-  db_username: 'universal',
-  db_password: '123456',
-  secret_key: '09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7',
-  algorithm: 'HS256',
-  access_token_expire_minutes: 30,
-  email_server: 'mail.x.com',
-  email_domain: 'v01',
-  email: 'x.x@x.com',
-  email_user: 'uidp821321321',
-  email_pwd: '12456',
-  email_attachment_file_name: 'vul.csv',
-  push_email_task_hour: '16',
-  push_email_task_minute: '0',
-  push_email_task_second: '0'
-})
+
+
+const form = ref<Settings>({} as Settings)
+const {data: initStateData, execute: exeInitState} = useGet<InitState>(Api.initState)
+const {data: initData, execute: exeInitData} = useGet<Settings>(Api.initData)
+const {data: initSystemData, execute: exeInitSystem} = usePut(Api.initSystem, form)
 
 
 const submit = defineFormSubmit(async (done, isValid) => {
-  const valid = await login.value.validate()
-  console.log(valid)
-  if (valid) {
-    const {data, execute} = usePost(Api.login, form)
-    await execute()
-    if (data.value) {
-      state.value = data.value as ResLogin
-      router.push('/')
+  if (isValid) {
+    await exeInitSystem()
+    if (initSystemData.value) {
+      await router.push('/login')
     }
   }
 
   done()
 })
 
+onMounted(async () => {
+  await exeInitState()
+  await exeInitData()
+  if (initStateData.value?.switch !== true) {
+    await router.push('/login')
+  }else {
+    form.value = initData.value as any
+  }
+})
 </script>
 
 <style>
-.login {
+.bg-image {
   @apply flex justify-center items-center flex-col;
   @apply w-full h-screen;
-  @apply bg-[url('https://api.ixiaowai.cn/gqapi/gqapi.php')];
+  @apply bg-[url('../src/assets/background.svg')];
 }
-
-.login-button .el-button {
-  @apply w-full
-}
-
 .collapse {
   overflow-y: auto /* 开启滚动显示溢出内容 */
+}
+
+.init_button .el-button{
+  @apply w-full
+}
+.pro-form .pro-form-menu {
+  @apply w-full sticky bottom-0 m-0;
 }
 </style>

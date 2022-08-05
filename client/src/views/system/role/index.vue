@@ -16,7 +16,6 @@
         @load="loadList"
         @search-reset="loadList"
         @submit="submit"
-        @delete="deleteRow"
         :table-columns="tableColumns"
         :rules="rules"
         layout="total, ->, jumper, prev, pager, next, sizes"
@@ -29,25 +28,36 @@
         />
       </template>
       <template #menu="{row, size }">
+        <el-popconfirm :title="$t(`crud.isDelText`)" @confirm="deleteRow(row)">
+          <template #reference>
+            <el-button
+                :size="size"
+                type="danger"
+                link
+            >
+              {{$t(`crud.delText`)}}
+            </el-button>
+          </template>
+        </el-popconfirm>
         <el-button
             :size="size"
             type="success"
             link
             @click="openDrawer(row)"
         >
-          设置权限
+          {{ $t(`system.role.set_permissions`) }}
         </el-button>
       </template>
     </pro-crud>
     <el-drawer v-model="drawer" direction="rtl">
-      <template #title>
-        <h2>权限设置</h2>
+      <template #header>
+        <h2>{{ $t(`system.role.set_permissions`) }}</h2>
       </template>
       <template #default>
         <el-tabs type="border-card">
-          <el-tab-pane label="角色菜单">
+          <el-tab-pane :label="$t(`system.role.menu_tab_label`)">
             <div class="relative w-full h-10">
-              <el-button class="absolute top-0 right-0" type="primary" @click="handleMenuTreeOK">确定</el-button>
+              <el-button class="absolute top-0 right-0" type="primary" @click="handleMenuTreeOK">{{ $t(`system.role.permission_btu`) }}</el-button>
             </div>
             <el-tree
                 ref="menuTreeRef"
@@ -58,9 +68,9 @@
                 :props="menuDefaultProps"
             />
           </el-tab-pane>
-          <el-tab-pane label="角色接口">
+          <el-tab-pane :label="$t(`system.role.interface_tab_label`)">
             <div class="relative w-full h-10">
-              <el-button class="absolute top-0 right-0" type="primary" @click="handleInterfaceTreeOK">确定</el-button>
+              <el-button class="absolute top-0 right-0" type="primary" @click="handleInterfaceTreeOK">{{ $t(`system.role.permission_btu`) }}</el-button>
             </div>
             <el-tree
                 ref="interfaceTreeRef"
@@ -69,7 +79,22 @@
                 :default-checked-keys="interfaceCheckedKeys"
                 node-key="id"
                 :props="interfaceDefaultProps"
-            />
+            >
+              <template #default="{ node, data }">
+                <span class="custom-tree-node">
+                  <span>{{ node.label }}</span>
+                  <el-divider direction="vertical" />
+                  <span>{{ data.group }}</span>
+                  <el-divider direction="vertical" />
+                  <el-tag v-if="data.method === 'GET'" type="" >{{ data.method }}</el-tag>
+                  <el-tag v-if="data.method === 'POST'" type="success">{{ data.method }}</el-tag>
+                  <el-tag v-if="data.method === 'PUT'" type="warning">{{ data.method }}</el-tag>
+                  <el-tag v-if="data.method === 'DELETE'" type="danger">{{ data.method }}</el-tag>
+                  <el-divider direction="vertical" />
+                  <span>{{ data.path}}</span>
+                </span>
+              </template>
+            </el-tree>
           </el-tab-pane>
         </el-tabs>
       </template>
@@ -78,86 +103,88 @@
 
 </template>
 <script lang="ts" setup>
-import {ref, markRaw} from 'vue'
+import {ref, toRefs, reactive} from 'vue'
 import {useGlobalState, useGet, usePost, usePut, useDelete} from '../../../composables'
-import RichEditor from '../../../components/RichEditor/index.vue'
 import {ElMessage, ElTree} from 'element-plus'
 import {
   defineCrudColumns,
   defineCrudMenuColumns,
 } from 'element-pro-components'
 import {Api} from "../../../utils";
-import {useCrud, useList} from "../../../composables/crud";
+import {useCrud} from "../../../composables/crud";
+import {useI18n} from "vue-i18n";
+const {t} = useI18n()
 
 interface Role {
   id: string
   key: string
-  name: string
-  description: string
-  menu_nodes: any
-  interface_nodes: any
+  name_zh_ch: string
+  name_en_us: string
+  describe: string
+  menu_permission: any
+  interface_permission: any
 }
 
 const menu = defineCrudMenuColumns({
-  label: 'Operations',
-  addText: 'New',
-  detailText: '详细',
-  editText: '编辑',
-  delText: '删除',
-  searchText: 'Search',
-  searchResetText: 'Reset Search',
-  submitText: '提交',
-  resetText: 'Reset Form',
+  label: t(`crud.label`),
+  addText: t(`crud.addText`),
+  detailText: t(`crud.detailText`),
+  editText: t(`crud.editText`),
+  searchText: t(`crud.searchText`),
+  searchResetText: t(`crud.searchResetText`),
+  submitText: t(`crud.submitText`),
+  resetText: t(`crud.resetText`),
   detail: true,
   edit: true,
-  del: true,
+  del: false,
   searchReset: true,
-  // detailProps: { type: 'success', plain: false },
-  // editProps: { type: 'default', plain: true },
-  // delProps: { type: 'info', plain: true },
+  fixed: 'right',
+  width: '300'
 })
+
+const state = useGlobalState()
 const drawer = ref(false)
 // 当前
 const currentRoleRow = ref<Role>({
   id: '',
   key: '',
-  name: '',
-  description: '',
-  menu_nodes: [],
-  interface_nodes: [],
+  name_zh_ch: '',
+  name_en_us: '',
+  describe: '',
+  menu_permission: [],
+  interface_permission: [],
 })
 const menuCheckedKeys = ref<string[]>([])
 const interfaceCheckedKeys = ref<string[]>([])
 const columns = defineCrudColumns([
   {
-    label: 'ID',
+    label: t(`system.role.id`),
     prop: 'id',
     component: 'el-input',
-    hide: true,
     detail: true,
     props: {
       disabled: true
     }
   },
   {
-    label: '角色ID',
-    prop: 'key',
+    label: t(`system.role.name_zh_cn`),
+    prop: 'name_zh_cn',
     component: 'el-input',
     form: true,
     search: true,
     detail: true,
   },
   {
-    label: '角色名称',
-    prop: 'name',
+    label: t(`system.role.name_en_us`),
+    prop: 'name_en_us',
     component: 'el-input',
     form: true,
     search: true,
     detail: true,
   },
   {
-    label: '描述',
-    prop: 'description',
+    label: t(`system.role.describe`),
+    prop: 'describe',
     component: 'el-input',
     props: {
       type: 'textarea',
@@ -168,37 +195,60 @@ const columns = defineCrudColumns([
     form: true,
     detail: true,
   },
+  {
+    label: t(`el-date-picker.create_at`),
+    prop: 'create_at',
+    component: 'el-date-picker',
+    props: {
+      type: 'datetimerange',
+      rangeSeparator: '-',
+      startPlaceholder: 'start',
+      endPlaceholder: 'end',
+      format:"YYYY-MM-DD",
+      valueFormat:"YYYY-MM-DDTHH:mm:ss"
+    },
+    search: true,
+    detail: true,
+  },
+  {
+    label: t(`el-date-picker.update_at`),
+    prop: 'update_at',
+    component: 'el-date-picker',
+    props: {
+      type: 'datetimerange',
+      rangeSeparator: '-',
+      startPlaceholder: 'start',
+      endPlaceholder: 'end',
+      format:"YYYY-MM-DD",
+      valueFormat:"YYYY-MM-DDTHH:mm:ss"
+    },
+    search: true,
+    detail: true,
+  },
 ])
 const tableColumns = ref(JSON.parse(JSON.stringify(columns)))
 const menuTreeRef = ref<InstanceType<typeof ElTree>>()
-const menuDefaultProps = {
+const menuDefaultProps = ref({
   children: 'children',
-  label: 'title',
-}
+  label: 'title_en_us',
+})
+
 const interfaceTreeRef = ref<InstanceType<typeof ElTree>>()
-const interfaceDefaultProps = {
+const interfaceDefaultProps = ref({
   children: 'children',
-  label: 'describe',
-}
-const rules = {
-  key: {required: true, message: '请输入角色ID', trigger: 'blur'},
-  name: {required: true, message: '请输入角色名称', trigger: 'blur'},
-  description: {required: true, message: '请输入描述内容', trigger: 'blur'},
-}
+  label: 'describe_en_us',
+})
 
-
-const {
-  list: menuTreeData,
-  serachForm: searchMenuForm,
-  loadList: exeMenuList,
-} = useList(Api.menuList)
-const {
-  data: interfaceTreeData,
-  execute: exeInterfaceGroup,
-} = useGet(Api.interfaceGroup)
+const {data: menuTreeData,  execute: exeMenuAll} = useGet(Api.menuAll)
+const {data: interfaceTreeData, execute: exeInterfaceAll} = useGet(Api.interfaceAll)
 const {execute: exeRoleMenuNodesEdit} = usePut(Api.roleEdit, currentRoleRow)
 
-searchMenuForm.value.page_size = 1000000
+const rules = {
+  key: {required: true, message: t(`rules.role.key`), trigger: 'blur'},
+  name_zh_cn: {required: true, message: t(`rules.role.name_zh_cn`), trigger: 'blur'},
+  name_en_us: {required: true, message: t(`rules.role.name_en_us`), trigger: 'blur'},
+  describe: {required: true, message: t(`rules.role.describe`), trigger: 'blur'},
+}
 
 const {
   form,
@@ -221,33 +271,38 @@ const {
 const openDrawer = (row: any) => {
   drawer.value = true
   currentRoleRow.value = row
+  menuDefaultProps.value.label = state.value.locales==='en-us' ?'title_en_us' : 'title_zh_cn'
+  interfaceDefaultProps.value.label = state.value.locales==='en-us' ?'describe_en_us' : 'describe_zh_cn'
   // 更新菜单Tree
-  exeMenuList()
+  exeMenuAll()
   // 添加菜单Tree状态
   menuCheckedKeys.value = []
-  currentRoleRow.value.menu_nodes.forEach((item: { id: any }) => {
+  currentRoleRow.value.menu_permission.forEach((item: { id: any }) => {
     menuCheckedKeys.value.push(item.id)
   })
-
   // 更新接口Tree
-  exeInterfaceGroup()
+  exeInterfaceAll()
   // 添加接口Tree状态
   interfaceCheckedKeys.value = []
-  currentRoleRow.value.interface_nodes.forEach((item: { id: any }) => {
+  currentRoleRow.value.interface_permission.forEach((item: { id: any }) => {
     interfaceCheckedKeys.value.push(item.id)
   })
 }
 
 // 处理菜单提交
-const handleMenuTreeOK = () => {
-  currentRoleRow.value.menu_nodes = menuTreeRef.value?.getCheckedNodes()
-  exeRoleMenuNodesEdit()
+const handleMenuTreeOK = async () => {
+  currentRoleRow.value.menu_permission = menuTreeRef.value?.getCheckedNodes()
+  await exeRoleMenuNodesEdit()
+  ElMessage.success(t(`system.role.permission_ok`))
+  await loadList()
 }
 
 // 处理接口提交
-const handleInterfaceTreeOK = () => {
-  currentRoleRow.value.interface_nodes = interfaceTreeRef.value?.getCheckedNodes()
-  exeRoleMenuNodesEdit()
+const handleInterfaceTreeOK = async () => {
+  currentRoleRow.value.interface_permission = interfaceTreeRef.value?.getCheckedNodes()
+  await exeRoleMenuNodesEdit()
+  ElMessage.success(t(`system.role.permission_ok`))
+  await loadList()
 }
 
 

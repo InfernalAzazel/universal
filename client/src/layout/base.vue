@@ -30,17 +30,22 @@
       <pro-breadcrumb separator=">"/>
     </template>
     <template #header-right>
-      <avatar-list></avatar-list>
+      <div class="flex space-x-5 items-center ">
+        <LangBtu></LangBtu>
+        <AvatarBtu></AvatarBtu>
+      </div>
+
     </template>
 
     <template #header-bottom>
       <pro-tabs
           ref="childTabs"
-          style="margin-bottom: 15px"
-      />
+          type="border-card"
+      >
+      </pro-tabs>
     </template>
 
-    <router-view>
+    <router-view >
       <template #default="{ Component, route }">
         <transition
             name="el-fade-in"
@@ -64,8 +69,11 @@
 
 <script setup lang="ts">
 import {inject, shallowRef} from "vue";
-import AvatarList from '../components/AvatarList/index.vue'
+import AvatarBtu from './components/AvatarBtu/index.vue'
+import LangBtu from './components/LangBtu/index.vue'
+import { ref, nextTick, provide } from "vue";
 const tabs = inject('tabs', undefined) // Get top-level `Tabs` inject
 const childTabs = shallowRef({})
+
 
 </script>

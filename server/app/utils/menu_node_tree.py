@@ -1,3 +1,19 @@
+
+def list_bubble_sort(data, order='order'):
+    """
+    list[dict] 冒泡排序
+
+    :param data: list[dict] 源数据列表
+    :param order: 排序字段
+    :return: 排序后的数据列表
+    """
+    for i in range(len(data)):
+        for j in range(len(data) - i - 1):
+            if data[j][order] > data[j + 1][order]:
+                data[j], data[j + 1] = data[j + 1], data[j]
+    return data
+
+
 def list_to_tree(data, parent_id, is_add_redirect=False, children="children", depth=0):
     """
     将列表转换为树结构
@@ -23,6 +39,6 @@ def list_to_tree(data, parent_id, is_add_redirect=False, children="children", de
                 item[children] = item_children
             res.append({
                 **item,
-                **{'depth': depth}
+                # **{'depth': depth}
             })
     return res
