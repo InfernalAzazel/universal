@@ -103,6 +103,7 @@ const submit = defineFormSubmit(async (done, isValid) => {
       state.value.access_token = data.value.access_token
       state.value.token_type = data.value?.token_type
       await router.push('/')
+      router.go(0)
     }
   }
 
@@ -122,7 +123,7 @@ onMounted(async () => {
 .login {
   @apply flex justify-center items-center;
   @apply w-full h-screen;
-  @apply bg-[url('../src/assets/background.svg')];
+  @apply bg-[url('../assets/background.svg')];
 }
 
 

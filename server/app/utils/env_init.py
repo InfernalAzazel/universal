@@ -11,7 +11,7 @@ class EnvInit:
     mongodb_path = 'app' + os.sep + 'database' + os.sep + 'mongodb'
 
     def __init__(self):
-        self.cfg = Config(Config.default_file_name)
+        self.cfg = Config()
         self.settings = Settings(**self.cfg.updater)
 
     def __mongo_client(self):
@@ -28,7 +28,9 @@ class EnvInit:
             coll_name = name.split('.')[0]
             with open(self.mongodb_path + os.sep + name, 'r', encoding='utf-8') as f:
                 data = json_util.loads(f.read())
-                client[DATABASE_NAME][coll_name].insert_many(data)
+                # 过滤空值，空值会引发插入异常
+                if data:
+                    client[DATABASE_NAME][coll_name].insert_many(data)
         client.close()
 
     def export_mongodb(self):

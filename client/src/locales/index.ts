@@ -5,6 +5,7 @@ import {useGlobalState} from "../composables";
 const state = useGlobalState()
 
 const i18n = createI18n({
+    legacy: false,
     locale: state.value.locales = state.value.locales===''?'en-us':state.value.locales, // 设置语言环境
     // fallbackLocale: 'en-us', // 没有中文的话默认英文
     messages: {

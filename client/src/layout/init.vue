@@ -176,7 +176,7 @@ onMounted(async () => {
 .bg-image {
   @apply flex justify-center items-center flex-col;
   @apply w-full h-screen;
-  @apply bg-[url('../src/assets/background.svg')];
+  @apply bg-[url('../assets/background.svg')];
 }
 .collapse {
   overflow-y: auto /* 开启滚动显示溢出内容 */

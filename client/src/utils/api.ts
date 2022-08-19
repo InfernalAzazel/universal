@@ -68,4 +68,5 @@ export const Api = {
     settingsDefault: '/api/v1/system/settings/default',
     /** 获取设置编辑 */
     settingsEdit: '/api/v1/system/settings/edit',
+
 }

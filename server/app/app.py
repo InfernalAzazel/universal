@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from starlette.staticfiles import StaticFiles
 
 from app.internal.system import menu, role, interface, users, syslog, settings
 from app.routers import auth, init
@@ -21,7 +22,7 @@ app.include_router(syslog.router)
 app.include_router(settings.router)
 
 
-# app.mount('/', StaticFiles(directory='app/static/dist', html=True), name='static')
+app.mount('/', StaticFiles(directory='app/static/dist', html=True), name='static')
 
 
 @app.on_event('startup')

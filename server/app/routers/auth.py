@@ -27,6 +27,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), cfg: Config = 
     # 数据库校验
     db_client = get_db_client_c(cfg)
     doc = await db_client[DATABASE_NAME][COLL_USERS].find_one({'$and': [{'username': form_data.username}, {'password': form_data.password}]})
+
+    print(doc)
     if not doc:
         raise http_exp.client_err_user_or_pwd()
 

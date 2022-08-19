@@ -1,9 +1,8 @@
-import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
+import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
 import { NP } from "./np"
 import {AllowList} from "./utils";
 import {useGet, useGlobalState} from "./composables";
 import {Api} from "./utils";
-import {defineAsyncComponent} from "vue";
 import {Router} from "./types";
 
 
@@ -24,7 +23,7 @@ const routes: RouteRecordRaw[] = [
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes,
 })
 
@@ -43,16 +42,16 @@ router.beforeEach(async (to, form, next) => {
     } else if (to.path === '/login' && state.value.access_token) {
         next('/')
     } else if (!initRoute && to.path !== '/login' && state.value.access_token) {
-        initRoute = true
+
         await exeUsersRoutes()
         // 获取路由 -> 转化 -> addRoute
         if (routesData.value){
             generateRoutes(routesData.value).forEach((item) => {
                 router.addRoute(item)
-                //@ts-ignore
-                router.options.routes.push(item)
+                    ;(router.options.routes as RouteRecordRaw[]).push(item)
             })
         }
+        initRoute = true
         next({ ...to, replace: true })
     } else {
         next()
@@ -73,12 +72,15 @@ function generateRoutes(list: Router[]): RouteRecordRaw[] {
         const children = item.children?.length
             ? generateRoutes(item.children)
             : undefined
+
+
+        const modules = import.meta.glob('./**.vue');
         //@ts-ignore
         const current: RouteRecordRaw = {
             path: item.path,
             redirect: item.redirect,
             name: item.name,
-            component: () => defineAsyncComponent(() => import( /* @vite-ignore */ `./${item.component}`)) ,
+            component: modules[`./${item.component}`],
             children,
             meta: {
                 title: state.value.locales === 'en-us' ? item.title_en_us: item.title_zh_cn ,
