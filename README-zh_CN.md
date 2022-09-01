@@ -16,7 +16,8 @@
 - FastAPI - [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
 - Vite2 - [https://vitejs.dev/](https://vitejs.dev/)
 - TailWindCSS - [https://tailwindcss.com/docs/installation](https://tailwindcss.com/docs/installation)
-- Antdv - [https://3x.antdv.com/docs/vue/introduce](https://2x.antdv.com/docs/vue/introduce)
+- ElementPlus - [https://element-plus.gitee.io/zh-CN/component/button.html](https://element-plus.gitee.io/zh-CN/component/button.html)
+- ElementProComponents  - [https://tolking.github.io/element-pro-components/zh-CN/guide/introduction](https://tolking.github.io/element-pro-components/zh-CN/guide/introduction)
 - MongoDB - [https://docs.mongodb.com/manual/tutorial/getting-started/](https://docs.mongodb.com/manual/tutorial/getting-started/)
 
  
@@ -25,7 +26,7 @@
 ## 特征
 
 - 国际化，从源代码中提取翻译字段，按需加载语言包
-- 优雅美丽, Ant Design system
+- 优雅美丽, ElementPlus Design system
 - 流畅的用户后端和前端
 
 ## 框架
@@ -34,7 +35,8 @@
  - Vue3 国内非常流行的 web 开发框架 特点 易上手 性能不错
  - Vite2 目前非常流行的构建web项目框架 特点 热更新
  - TailWindCSS 样式美观 简洁 特点 高效率 文档全面 
- - Antdv 是 Vue 版本的 Antd 非常流行的UI库 特点 优美 方便 强大的功能 企业级别UI框架
+ - ElementPlus 非常流行的UI库 特点 优美 方便 强大的功能 企业级别UI框架
+ - ElementProComponents 基于 ElementPlus 进一步封装常用的高级组件
  - MongoDB 特点 灵活 高性能 查询能力强的非关系数据库
  
 ## 项目结构  
@@ -48,10 +50,14 @@
 ## 办事列表
 
 - [ ] 添加 Demo
-- [ ] 添加 前端
-- [ ] 添加 后端
-- [ ] 添加 部署方式
+- [x] 添加 前端
+- [x] 添加 后端
+- [x] 添加 部署方式
 
 ## 沟通
 
 如果您有任何问题或想法，您可以发送 [Issues]() 或者 [Pull Requests]()
+
+## 许可证
+
+### [MIT](https://opensource.org/licenses/MIT)
