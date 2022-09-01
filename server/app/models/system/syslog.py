@@ -6,22 +6,18 @@ from pydantic import BaseModel
 class SysLog(BaseModel):
     def __init__(self, **data: Any):
         super().__init__(**data)
-        for k, v in list(data.items()):
+        for k, v in data.items():
             match k:
                 case "_id":
-                    self.__dict__['id'] = str(data[k])
+                    self.__dict__['uid'] = str(data[k])
                 case _:
                     self.__dict__[k] = data[k]
 
     def __setattr__(self, key, value):
-        match key:
-            case 'create_at':
-                self.__dict__[key] = value
-            case 'update_at':
-                self.__dict__[key] = value
+        self.__dict__[key] = value
 
     if TYPE_CHECKING:
-        id: str = None
+        uid: str = None
         create_at: datetime = None  # 创建时间
         update_at: datetime = None  # 更新时间
 

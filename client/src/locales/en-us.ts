@@ -64,7 +64,7 @@ export default {
 
     'system.users.association_role_delete': 'Please Choose A New Role',
 
-    'system.users.id': 'ID',
+    'system.users.uid': 'UID',
     'system.users.username': 'UserName',
     'system.users.name': 'Name',
     'system.users.mail': 'Mail',
@@ -73,7 +73,7 @@ export default {
     'system.users.disabled': 'Disabled',
     'system.users.association_role': 'Association Role',
 
-    'system.role.id': 'ID',
+    'system.role.uid': 'UID',
     'system.role.name_zh_cn': 'RoleName (Chinese)',
     'system.role.name_en_us': 'RoleName (English)',
     'system.role.describe': 'Describe',
@@ -84,7 +84,7 @@ export default {
     'system.role.permission_btu': 'Save',
     'system.role.permission_ok': 'Successfully Saved',
 
-    'system.menu.id': 'ID',
+    'system.menu.uid': 'UID',
     'system.menu.key': 'Node',
     'system.menu.father': 'ParentNode',
     'system.menu.path': 'Path',
@@ -95,14 +95,14 @@ export default {
     'system.menu.order': 'Order',
     'system.menu.create_time': 'CreateTime',
 
-    'system.interface.id': 'ID',
+    'system.interface.uid': 'UID',
     'system.interface.path': 'Path',
     'system.interface.group': 'Group',
     'system.interface.describe_zh_cn': 'Describe (Chinese)',
     'system.interface.describe_en_us': 'Describe (English)',
     'system.interface.method': 'Method',
 
-    'system.syslog.id': 'ID',
+    'system.syslog.uid': 'UID',
     'system.syslog.username':'UserName',
     'system.syslog.host':'Host',
     'system.syslog.browser':'Browser',

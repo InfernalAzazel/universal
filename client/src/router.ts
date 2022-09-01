@@ -14,12 +14,6 @@ const routes: RouteRecordRaw[] = [
         component: () => import('./layout/login.vue'),
 
     },
-    {
-        path: '/init',
-        meta:{hidden: true},
-        component: () => import('./layout/init.vue'),
-
-    },
 ]
 
 const router = createRouter({

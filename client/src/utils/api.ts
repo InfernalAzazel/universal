@@ -1,11 +1,7 @@
 /** 储存 api 请求地址 */
 export const Api = {
-    /** 获取初始化状态 */
-    initState: '/api/v1/auth/init/state',
-    /** 获取初始化数据 */
-    initData: '/api/v1/auth/init/data',
-    /** 初始化系统 */
-    initSystem: '/api/v1/auth/init/system',
+    /** 自动判断初始化 */
+    init: '/api/v1/auth/init',
     /** 登陆 */
     login: '/api/v1/auth/login',
     /** 用户帐户 */
@@ -62,11 +58,5 @@ export const Api = {
     syslogEdit: '/api/v1/system/syslog/edit',
     /** 系统日志删除 */
     syslogDelete: '/api/v1/system/syslog/delete',
-    /** 获取设置数据 */
-    settingsData: '/api/v1/system/settings/data',
-    /** 获取设置默认 */
-    settingsDefault: '/api/v1/system/settings/default',
-    /** 获取设置编辑 */
-    settingsEdit: '/api/v1/system/settings/edit',
 
 }

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class AssociationRole(BaseModel):
-    id: str = None  # id
+    uid: str = None  # id
     name_zh_cn: str = None  # 中文名称
     name_en_us: str = None  # 英文名称
 
@@ -13,24 +13,20 @@ class AssociationRole(BaseModel):
 class User(BaseModel):
     def __init__(self, **data: Any):
         super().__init__(**data)
-        for k, v in list(data.items()):
+        for k, v in data.items():
             match k:
                 case "_id":
-                    self.__dict__['id'] = str(data[k])
+                    self.__dict__['uid'] = str(data[k])
                 case "association_role":
                     self.__dict__[k] = AssociationRole(**v)
                 case _:
                     self.__dict__[k] = v
 
     def __setattr__(self, key, value):
-        match key:
-            case 'create_at':
-                self.__dict__[key] = value
-            case 'update_at':
-                self.__dict__[key] = value
+        self.__dict__[key] = value
 
     if TYPE_CHECKING:
-        id: str = None  # id
+        uid: str = None  # id
         name: str = None  # 姓名:  张三
         mail: str = None  # 邮箱
         company: str = None  # 公司

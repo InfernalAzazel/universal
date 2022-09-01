@@ -8,9 +8,8 @@ from fastapi.encoders import jsonable_encoder
 from pymongo import ReturnDocument
 from starlette.responses import JSONResponse
 
-from app.utils.cfg import Config
 from app.utils.custom_http_exception import CustomHttpException as http_exp
-from app.utils.dependencies import get_config, get_db_client_c, auto_current_user_permission
+from app.utils.dependencies import async_db_engine, auto_current_user_permission
 from app.utils.menu_node_tree import list_to_tree
 from app.models.system.menu import Menu, SearchMenu
 from app.models.system.users import User
@@ -24,11 +23,10 @@ router = APIRouter(
 
 @router.get('/v1/system/menu/all')
 async def all(
-        cfg: Config = Depends(get_config),
-        current_user: User = Depends(auto_current_user_permission),
+        db_engine=Depends(async_db_engine),
+        _: User = Depends(auto_current_user_permission),
 ):
-    db_client = get_db_client_c(cfg)
-    coll = db_client[DATABASE_NAME][COLL_MENU]
+    coll = db_engine[DATABASE_NAME][COLL_MENU]
 
     query = {}
 
@@ -42,7 +40,7 @@ async def all(
     except Exception as _:
         print(_)
         data = []
-    db_client.close()
+    db_engine.close()
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
@@ -52,7 +50,7 @@ async def all(
 
 @router.get('/v1/system/menu/list')
 async def lists(
-        id: str = None,
+        uid: str = None,
         key: int = None,
         father: int = None,
         hide: bool = None,
@@ -66,12 +64,12 @@ async def lists(
         update_at: list[datetime] = Query(None),
         current_page: int = 1,  # 跳过
         page_size: int = 10,  # 跳过
-        cfg: Config = Depends(get_config),
-        current_user: User = Depends(auto_current_user_permission)
+        db_engine=Depends(async_db_engine),
+        _: User = Depends(auto_current_user_permission)
 ):
     skip = (current_page - 1) * page_size
-    db_client = get_db_client_c(cfg)
-    coll = db_client[DATABASE_NAME][COLL_MENU]
+
+    coll = db_engine[DATABASE_NAME][COLL_MENU]
     search_menu = SearchMenu(
         key=key,
         father=father,
@@ -85,8 +83,8 @@ async def lists(
     )
     query = search_menu.dict(exclude_none=True)
 
-    if id is not None and id != '':
-        query['_id'] = ObjectId(id)
+    if uid is not None and uid != '':
+        query['_id'] = ObjectId(uid)
     if update_at:
         query['update_at'] = {'$gte': update_at[0].astimezone(pytz.utc), '$lte': update_at[1].astimezone(pytz.utc)}
     if create_at:
@@ -96,14 +94,13 @@ async def lists(
         ('order', pymongo.ASCENDING),
     ])
     count = await coll.count_documents(query)
+
     try:
         menu_list = [Menu(**x) async for x in cursor]
         data = list_to_tree(jsonable_encoder(menu_list), 0)
     except Exception as _:
-        print(_)
         data = []
-    db_client.close()
-
+    db_engine.close()
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content=jsonable_encoder({'data': data, 'total': count})
@@ -113,11 +110,10 @@ async def lists(
 @router.post('/v1/system/menu/add')
 async def add(
         menu: Menu,
-        cfg: Config = Depends(get_config),
-        current_user: User = Depends(auto_current_user_permission),
+        db_engine=Depends(async_db_engine),
+        _: User = Depends(auto_current_user_permission),
 ):
-    db_client = get_db_client_c(cfg)
-    coll = db_client[DATABASE_NAME][COLL_MENU]
+    coll = db_engine[DATABASE_NAME][COLL_MENU]
     doc = await coll.find_one({'key': menu.key})
     if doc:
         raise http_exp.client_err_role_key_already_exists()
@@ -128,7 +124,7 @@ async def add(
         upsert=True,
         return_document=ReturnDocument.AFTER
     )
-    db_client.close()
+    db_engine.close()
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={'message': 'menu added ok'}
@@ -138,18 +134,17 @@ async def add(
 @router.put('/v1/system/menu/edit')
 async def edit(
         menu: Menu,
-        cfg: Config = Depends(get_config),
-   current_user: User = Depends(auto_current_user_permission),
+        db_engine=Depends(async_db_engine),
+        _: User = Depends(auto_current_user_permission),
 ):
-    db_client = get_db_client_c(cfg)
-    coll = db_client[DATABASE_NAME][COLL_MENU]
+    coll = db_engine[DATABASE_NAME][COLL_MENU]
     menu.update_at = datetime.now(pytz.utc)
     await coll.find_one_and_update(
-        {'_id': ObjectId(menu.id)},
+        {'_id': ObjectId(menu.uid)},
         # 前端会自带 id create_at children 字段，所以这里不需要更新
-        {'$set': menu.dict(exclude={'id', 'create_at', 'children'})},
+        {'$set': menu.dict(exclude={'uid', 'create_at', 'children'})},
     )
-    db_client.close()
+    db_engine.close()
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={'message': 'menu edit ok'}
@@ -158,20 +153,19 @@ async def edit(
 
 @router.delete('/v1/system/menu/delete')
 async def delete(
-        id: str,
-        cfg: Config = Depends(get_config),
-        current_user: User = Depends(auto_current_user_permission),
+        uid: str,
+        db_engine=Depends(async_db_engine),
+        _: User = Depends(auto_current_user_permission),
 ):
-    db_client = get_db_client_c(cfg)
-    coll = db_client[DATABASE_NAME][COLL_ROLE]
+    coll = db_engine[DATABASE_NAME][COLL_ROLE]
     await coll.update_many(
         {},
         {'$pull': {
-            'menu_permission': {'id': id}
+            'menu_permission': {'uid': uid}
         }})
-    coll = db_client[DATABASE_NAME][COLL_MENU]
-    await coll.delete_one({'_id': ObjectId(id)})
-    db_client.close()
+    coll = db_engine[DATABASE_NAME][COLL_MENU]
+    await coll.delete_one({'_id': ObjectId(uid)})
+    db_engine.close()
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={'message': 'menu delete ok'}

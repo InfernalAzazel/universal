@@ -19,9 +19,9 @@ class Adapter(persist.Adapter):
             return
         role = Role(**self.doc)
         for v in role.interface_permission:
-            line = f'p, {role.id}, {v["path"]}, {v["method"]}'
+            line = f'p, {role.uid}, {v["path"]}, {v["method"]}'
             persist.load_policy_line(line, model)
         if role.interface_permission:
-            line = f'g, {role.name_en_us}, {role.id}'
+            line = f'g, {role.name_en_us}, {role.uid}'
             persist.load_policy_line(line, model)
             # print('load policy success')

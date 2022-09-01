@@ -64,7 +64,7 @@ export default {
 
     'system.users.association_role_delete': '请重新选择角色',
 
-    'system.users.id': 'ID',
+    'system.users.uid': 'UID',
     'system.users.username': '帐号',
     'system.users.name': '名称',
     'system.users.mail': '邮箱',
@@ -74,7 +74,7 @@ export default {
     'system.users.association_role': '关联角色',
 
 
-    'system.role.id': 'ID',
+    'system.role.uid': 'UID',
     'system.role.name_zh_cn': '角色名称 (中文)',
     'system.role.name_en_us': '角色名称 (英文)',
     'system.role.describe': '描述',
@@ -85,7 +85,7 @@ export default {
     'system.role.permission_btu': '保存',
     'system.role.permission_ok': '保存成功',
 
-    'system.menu.id': 'ID',
+    'system.menu.uid': 'UID',
     'system.menu.key': '节点',
     'system.menu.father': '父节点',
     'system.menu.path': '路径',
@@ -96,14 +96,14 @@ export default {
     'system.menu.order': '排序',
     'system.menu.create_time': '创建时间',
 
-    'system.interface.id': 'ID',
+    'system.interface.uid': 'UID',
     'system.interface.path': '路径',
     'system.interface.group': '分组',
     'system.interface.describe_zh_cn': '接口描述 (中文)',
     'system.interface.describe_en_us': '接口描述 (英文)',
     'system.interface.method': '请求方式',
 
-    'system.syslog.id': 'ID',
+    'system.syslog.uid': 'UID',
     'system.syslog.username':'帐号',
     'system.syslog.host':'IP',
     'system.syslog.browser':'浏览器',

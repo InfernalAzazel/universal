@@ -11,15 +11,15 @@
     "name":null,
     "password":"123456",
     "association_role":{
-      "id":"62e38dc83c3919cb67ac2b70",
+      "uid":"62e38dc83c3919cb67ac2b70",
       "name_zh_cn":"测试角色",
       "name_en_us":"TeseRole"
     },
     "create_at":{
-      "$date":1659071556000
+      "$date":"2022-07-29T13:12:36+0800"
     },
     "update_at":{
-      "$date":1659339576817
+      "$date":"2022-08-01T15:39:36.817+0800"
     }
   },
   {
@@ -28,16 +28,16 @@
     },
     "username":"a",
     "association_role":{
-      "id":"62e38dc83c3919cb67ac2b70",
+      "uid":"62e38dc83c3919cb67ac2b70",
       "name_zh_cn":"测试角色",
       "name_en_us":"TeseRole"
     },
     "create_at":{
-      "$date":1659336944240
+      "$date":"2022-08-01T14:55:44.240+0800"
     },
     "disabled":false,
     "update_at":{
-      "$date":1659348073953
+      "$date":"2022-08-01T18:01:13.953+0800"
     }
   }
 ]

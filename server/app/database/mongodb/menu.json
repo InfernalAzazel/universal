@@ -12,10 +12,10 @@
     "title_en_us":"syslog",
     "title_zh_cn":"日志",
     "update_at":{
-      "$date":1659347473049
+      "$date":"2022-08-01T17:51:13.049+0800"
     },
     "create_at":{
-      "$date":1659081489225
+      "$date":"2022-07-29T15:58:09.225+0800"
     }
   },
   {
@@ -31,10 +31,10 @@
     "title_en_us":"interface",
     "title_zh_cn":"接口",
     "update_at":{
-      "$date":1659081486096
+      "$date":"2022-07-29T15:58:06.096+0800"
     },
     "create_at":{
-      "$date":1659081486096
+      "$date":"2022-07-29T15:58:06.096+0800"
     }
   },
   {
@@ -50,10 +50,10 @@
     "title_en_us":"users",
     "title_zh_cn":"用户",
     "update_at":{
-      "$date":1659081475333
+      "$date":"2022-07-29T15:57:55.333+0800"
     },
     "create_at":{
-      "$date":1659081475333
+      "$date":"2022-07-29T15:57:55.333+0800"
     }
   },
   {
@@ -69,10 +69,10 @@
     "title_en_us":"role",
     "title_zh_cn":"角色",
     "update_at":{
-      "$date":1659081478079
+      "$date":"2022-07-29T15:57:58.079+0800"
     },
     "create_at":{
-      "$date":1659081478079
+      "$date":"2022-07-29T15:57:58.079+0800"
     }
   },
   {
@@ -88,10 +88,10 @@
     "title_en_us":"menu",
     "title_zh_cn":"菜单",
     "update_at":{
-      "$date":1659081482811
+      "$date":"2022-07-29T15:58:02.811+0800"
     },
     "create_at":{
-      "$date":1659081482811
+      "$date":"2022-07-29T15:58:02.811+0800"
     }
   },
   {
@@ -107,10 +107,10 @@
     "title_en_us":"system",
     "title_zh_cn":"系统",
     "update_at":{
-      "$date":1659081472501
+      "$date":"2022-07-29T15:57:52.501+0800"
     },
     "create_at":{
-      "$date":1659081472501
+      "$date":"2022-07-29T15:57:52.501+0800"
     }
   },
   {
@@ -126,10 +126,10 @@
     "title_en_us":"home",
     "title_zh_cn":"首页",
     "update_at":{
-      "$date":1659081500633
+      "$date":"2022-07-29T15:58:20.633+0800"
     },
     "create_at":{
-      "$date":1659081500633
+      "$date":"2022-07-29T15:58:20.633+0800"
     }
   },
   {
@@ -145,29 +145,10 @@
     "title_en_us":"home",
     "title_zh_cn":"首页",
     "update_at":{
-      "$date":1659081469686
+      "$date":"2022-07-29T15:57:49.686+0800"
     },
     "create_at":{
-      "$date":1659081469686
-    }
-  },
-  {
-    "_id":{
-      "$oid":"62ea273e3c3919cb67adc4ba"
-    },
-    "key":10,
-    "component":"views/system/settings/index.vue",
-    "create_at":{
-      "$date":1659512638694
-    },
-    "father":5,
-    "icon":"Setting",
-    "order":6,
-    "path":"/system/settings",
-    "title_en_us":"settings",
-    "title_zh_cn":"设置",
-    "update_at":{
-      "$date":1659512667634
+      "$date":"2022-07-29T15:57:49.686+0800"
     }
   }
 ]

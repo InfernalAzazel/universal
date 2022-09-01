@@ -42,7 +42,7 @@
         </el-popconfirm>
       </template>
       <template #table-association_role="{row, column, $index }">
-        <el-tag v-if="row.association_role.id==='***'" type="danger">
+        <el-tag v-if="row.association_role.uid==='***'" type="danger">
           {{ t(`system.users.association_role_delete`)}}
         </el-tag>
         <el-tag v-else>
@@ -53,11 +53,11 @@
         {{ $t(`selectBool.${row.disabled}`) }}
       </template>
       <template #detail-association_role="{ size, item }">
-        <div v-if="item.association_role.id==='***'">
+        <div v-if="item.association_role.uid==='***'">
           <span class="text-red-600">{{ t(`system.users.association_role_delete`)}}</span>
         </div>
         <div v-else>
-          <li>ID: <span>{{item.association_role.id}}</span></li>
+          <li>UID: <span>{{item.association_role.uid}}</span></li>
           <li>Name: <span>{{ state.locales === 'en-us'? item.association_role.name_en_us: item.association_role.name_zh_cn }}</span></li>
         </div>
       </template>
@@ -108,8 +108,8 @@ const selectBool = ref([
 ])
 const columns = defineCrudColumns([
   {
-    label: t(`system.users.id`),
-    prop: 'id',
+    label: t(`system.users.uid`),
+    prop: 'uid',
     component: 'el-input',
     detail: true,
     props:{
@@ -230,7 +230,6 @@ const {
   isFetching,
   beforeOpen,
   submit,
-  // search,
   deleteRow
 } = useCrud(Api.usersList,Api.usersAdd,Api.usersEdit, Api.usersDelete, true)
 
@@ -240,7 +239,7 @@ const search = defineCrudSearch(async (done, isValid, invalidFields) => {
     let data = JSON.parse(JSON.stringify(serachForm.value))
     let temp = {'association_role': data.association_role}
     if (data.association_role){
-      data.association_role_id = data.association_role.id
+      data.association_role_uid = data.association_role.uid
       delete data.association_role
       serachForm.value = data
       console.log(serachForm.value)

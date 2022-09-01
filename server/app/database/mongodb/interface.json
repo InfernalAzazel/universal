@@ -9,10 +9,10 @@
     "describe_en_us":"UsersAccount",
     "describe_zh_cn":"帐号信息",
     "update_at":{
-      "$date":1659081626893
+      "$date":"2022-07-29T16:00:26.893+0800"
     },
     "create_at":{
-      "$date":1659081626893
+      "$date":"2022-07-29T16:00:26.893+0800"
     }
   },
   {
@@ -25,10 +25,10 @@
     "describe_en_us":"UsersRoutes",
     "describe_zh_cn":"获取用户路由",
     "update_at":{
-      "$date":1659081620953
+      "$date":"2022-07-29T16:00:20.953+0800"
     },
     "create_at":{
-      "$date":1659081620953
+      "$date":"2022-07-29T16:00:20.953+0800"
     }
   },
   {
@@ -41,10 +41,10 @@
     "describe_en_us":"Userslist",
     "describe_zh_cn":"获取用户列表",
     "update_at":{
-      "$date":1659081629251
+      "$date":"2022-07-29T16:00:29.251+0800"
     },
     "create_at":{
-      "$date":1659081629251
+      "$date":"2022-07-29T16:00:29.251+0800"
     }
   },
   {
@@ -57,10 +57,10 @@
     "describe_en_us":"UsersAdd",
     "describe_zh_cn":"用户添加",
     "update_at":{
-      "$date":1659081613100
+      "$date":"2022-07-29T16:00:13.100+0800"
     },
     "create_at":{
-      "$date":1659081613100
+      "$date":"2022-07-29T16:00:13.100+0800"
     }
   },
   {
@@ -73,10 +73,10 @@
     "describe_en_us":"UsersEdit",
     "describe_zh_cn":"用户编辑",
     "update_at":{
-      "$date":1659081623480
+      "$date":"2022-07-29T16:00:23.480+0800"
     },
     "create_at":{
-      "$date":1659081623480
+      "$date":"2022-07-29T16:00:23.480+0800"
     }
   },
   {
@@ -89,10 +89,10 @@
     "describe_en_us":"UsersDelete",
     "describe_zh_cn":"用户删除",
     "update_at":{
-      "$date":1659081633614
+      "$date":"2022-07-29T16:00:33.614+0800"
     },
     "create_at":{
-      "$date":1659081633614
+      "$date":"2022-07-29T16:00:33.614+0800"
     }
   },
   {
@@ -105,10 +105,10 @@
     "describe_en_us":"MenuAll",
     "describe_zh_cn":"菜单获取全部",
     "update_at":{
-      "$date":1659081597072
+      "$date":"2022-07-29T15:59:57.072+0800"
     },
     "create_at":{
-      "$date":1659081597072
+      "$date":"2022-07-29T15:59:57.072+0800"
     }
   },
   {
@@ -121,10 +121,10 @@
     "describe_en_us":"MenuList (OptionalParameters)",
     "describe_zh_cn":"获取菜单全部 (条件)",
     "update_at":{
-      "$date":1659081586424
+      "$date":"2022-07-29T15:59:46.424+0800"
     },
     "create_at":{
-      "$date":1659081586424
+      "$date":"2022-07-29T15:59:46.424+0800"
     }
   },
   {
@@ -137,10 +137,10 @@
     "describe_en_us":"MenuEdit",
     "describe_zh_cn":"菜单编辑",
     "update_at":{
-      "$date":1659081589113
+      "$date":"2022-07-29T15:59:49.113+0800"
     },
     "create_at":{
-      "$date":1659081589113
+      "$date":"2022-07-29T15:59:49.113+0800"
     }
   },
   {
@@ -153,10 +153,10 @@
     "describe_en_us":"MenuAdd",
     "describe_zh_cn":"菜单添加",
     "update_at":{
-      "$date":1659081592332
+      "$date":"2022-07-29T15:59:52.332+0800"
     },
     "create_at":{
-      "$date":1659081592332
+      "$date":"2022-07-29T15:59:52.332+0800"
     }
   },
   {
@@ -169,10 +169,10 @@
     "describe_en_us":"MenuDelete",
     "describe_zh_cn":"菜单删除",
     "update_at":{
-      "$date":1659081594894
+      "$date":"2022-07-29T15:59:54.894+0800"
     },
     "create_at":{
-      "$date":1659081594894
+      "$date":"2022-07-29T15:59:54.894+0800"
     }
   },
   {
@@ -185,10 +185,10 @@
     "describe_en_us":"RoleList  (OptionalParameters)",
     "describe_zh_cn":"获取角色全部 (条件)",
     "update_at":{
-      "$date":1659081602679
+      "$date":"2022-07-29T16:00:02.679+0800"
     },
     "create_at":{
-      "$date":1659081602679
+      "$date":"2022-07-29T16:00:02.679+0800"
     }
   },
   {
@@ -201,10 +201,10 @@
     "describe_en_us":"RoleAdd",
     "describe_zh_cn":"添加角色",
     "update_at":{
-      "$date":1659081605262
+      "$date":"2022-07-29T16:00:05.262+0800"
     },
     "create_at":{
-      "$date":1659081605262
+      "$date":"2022-07-29T16:00:05.262+0800"
     }
   },
   {
@@ -217,10 +217,10 @@
     "describe_en_us":"RoleEdit",
     "describe_zh_cn":"角色编辑",
     "update_at":{
-      "$date":1659081607936
+      "$date":"2022-07-29T16:00:07.936+0800"
     },
     "create_at":{
-      "$date":1659081607936
+      "$date":"2022-07-29T16:00:07.936+0800"
     }
   },
   {
@@ -233,10 +233,10 @@
     "describe_en_us":"RoleDelete",
     "describe_zh_cn":"角色删除",
     "update_at":{
-      "$date":1659081610460
+      "$date":"2022-07-29T16:00:10.460+0800"
     },
     "create_at":{
-      "$date":1659081610460
+      "$date":"2022-07-29T16:00:10.460+0800"
     }
   },
   {
@@ -249,10 +249,10 @@
     "describe_en_us":"InterfaceAll",
     "describe_zh_cn":"获取接口全部",
     "update_at":{
-      "$date":1659081577750
+      "$date":"2022-07-29T15:59:37.750+0800"
     },
     "create_at":{
-      "$date":1659081577750
+      "$date":"2022-07-29T15:59:37.750+0800"
     }
   },
   {
@@ -265,10 +265,10 @@
     "describe_en_us":"InterfaceList (OptionalParameters)",
     "describe_zh_cn":"获取接口全部（条件）",
     "update_at":{
-      "$date":1659081579665
+      "$date":"2022-07-29T15:59:39.665+0800"
     },
     "create_at":{
-      "$date":1659081579665
+      "$date":"2022-07-29T15:59:39.665+0800"
     }
   },
   {
@@ -281,10 +281,10 @@
     "describe_en_us":"InterfaceAdd",
     "describe_zh_cn":"接口添加",
     "update_at":{
-      "$date":1659081575796
+      "$date":"2022-07-29T15:59:35.796+0800"
     },
     "create_at":{
-      "$date":1659081575796
+      "$date":"2022-07-29T15:59:35.796+0800"
     }
   },
   {
@@ -297,10 +297,10 @@
     "describe_en_us":"InterfaceEdit",
     "describe_zh_cn":"接口编辑",
     "update_at":{
-      "$date":1659081584108
+      "$date":"2022-07-29T15:59:44.108+0800"
     },
     "create_at":{
-      "$date":1659081584108
+      "$date":"2022-07-29T15:59:44.108+0800"
     }
   },
   {
@@ -313,10 +313,10 @@
     "describe_en_us":"InterfaceDelete",
     "describe_zh_cn":"接口删除",
     "update_at":{
-      "$date":1659081582081
+      "$date":"2022-07-29T15:59:42.081+0800"
     },
     "create_at":{
-      "$date":1659081582081
+      "$date":"2022-07-29T15:59:42.081+0800"
     }
   },
   {
@@ -329,10 +329,10 @@
     "describe_en_us":"RoleAll",
     "method":"GET",
     "update_at":{
-      "$date":1659081600414
+      "$date":"2022-07-29T16:00:00.414+0800"
     },
     "create_at":{
-      "$date":1659081600414
+      "$date":"2022-07-29T16:00:00.414+0800"
     }
   },
   {
@@ -345,7 +345,7 @@
     "describe_en_us":"SyslogAll",
     "method":"GET",
     "create_at":{
-      "$date":1659348997314
+      "$date":"2022-08-01T18:16:37.314+0800"
     }
   },
   {
@@ -358,10 +358,10 @@
     "describe_en_us":"SyslogList (OptionalParameters)",
     "method":"GET",
     "create_at":{
-      "$date":1659349118970
+      "$date":"2022-08-01T18:18:38.970+0800"
     },
     "update_at":{
-      "$date":1659404704941
+      "$date":"2022-08-02T09:45:04.941+0800"
     }
   },
   {
@@ -374,7 +374,7 @@
     "describe_en_us":"SyslogAdd",
     "method":"POST",
     "create_at":{
-      "$date":1659349182465
+      "$date":"2022-08-01T18:19:42.465+0800"
     }
   },
   {
@@ -387,7 +387,7 @@
     "describe_en_us":"SyslogEdit",
     "method":"PUT",
     "create_at":{
-      "$date":1659349277438
+      "$date":"2022-08-01T18:21:17.438+0800"
     }
   },
   {
@@ -400,46 +400,7 @@
     "describe_en_us":"SyslogDelete",
     "method":"DELETE",
     "create_at":{
-      "$date":1659349355375
-    }
-  },
-  {
-    "_id":{
-      "$oid":"62eb6ca13b203d3ea9717be4"
-    },
-    "path":"/api/v1/system/settings/data",
-    "group":"settings",
-    "describe_zh_cn":"设置数据",
-    "describe_en_us":"SettingsData",
-    "method":"GET",
-    "create_at":{
-      "$date":1659595937735
-    }
-  },
-  {
-    "_id":{
-      "$oid":"62eb6cea3b203d3ea9717bf5"
-    },
-    "path":"/api/v1/system/settings/default",
-    "group":"settings",
-    "describe_zh_cn":"设置默认",
-    "describe_en_us":"SettingsDefault",
-    "method":"GET",
-    "create_at":{
-      "$date":1659596010219
-    }
-  },
-  {
-    "_id":{
-      "$oid":"62eb6d1d3b203d3ea9717bfd"
-    },
-    "path":"/api/v1/system/settings/edit",
-    "group":"settings",
-    "describe_zh_cn":"设置编辑",
-    "describe_en_us":"SettingsEdit",
-    "method":"PUT",
-    "create_at":{
-      "$date":1659596061831
+      "$date":"2022-08-01T18:22:35.375+0800"
     }
   }
 ]

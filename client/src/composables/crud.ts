@@ -1,16 +1,9 @@
 import {
-    ICrudSubmit,
-    ICrudBeforeOpen,
-    IFormSubmit,
-    StringObject,
-    UnknownObject,
-    MaybeRef, defineCrudBeforeOpen, defineCrudSearch, defineCrudSubmit,
+    defineCrudBeforeOpen, defineCrudSearch, defineCrudSubmit,
 } from 'element-pro-components'
 import {reactive, ref, unref} from "vue";
 import {useDelete, useGet, usePost, usePut} from "./request";
-import {Api} from "../utils";
 import {PagesData} from "../utils/pubilc";
-import {isObject} from "@vueuse/core";
 
 
 export function useAll(urlSerach: string, immediate: boolean = false){
@@ -84,7 +77,7 @@ export function useCrud(urlSerach: string, urlAdd: string, urlEdit: string, urlD
 
     const detail = ref({})
     const currentRowID = reactive({
-        id: '',
+        uid: '',
     })
     const currentPage = ref(1)
     const pageSize = ref(10)
@@ -149,7 +142,7 @@ export function useCrud(urlSerach: string, urlAdd: string, urlEdit: string, urlD
     )
 
     const deleteRow = async (row: any) => {
-        currentRowID.id = row.id
+        currentRowID.uid = row.uid
         await exeDel()
         await loadList()
     }

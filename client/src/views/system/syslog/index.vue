@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-import {markRaw, ref} from 'vue'
+import {ref} from 'vue'
 import {
   defineCrudColumns,
   defineCrudMenuColumns,
@@ -79,8 +79,8 @@ const menu = defineCrudMenuColumns({
 })
 const columns = defineCrudColumns([
   {
-    label: t(`system.syslog.id`),
-    prop: 'id',
+    label: t(`system.syslog.uid`),
+    prop: 'uid',
     component: 'el-input',
     detail: true,
     props:{
@@ -198,15 +198,5 @@ const {
   search,
   deleteRow
 } = useCrud(Api.syslogList,Api.syslogAdd,Api.syslogEdit, Api.syslogDelete, true)
-
-const data = ref([
-  {
-    date: '2016-05-03',
-    user: {
-      name: 'John Brown',
-      address: 'New York No. 1 Lake Park222',
-    },
-  }
-])
 
 </script>

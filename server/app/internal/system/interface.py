@@ -7,8 +7,7 @@ from fastapi import APIRouter, Depends, status, Query
 from fastapi.encoders import jsonable_encoder
 from starlette.responses import JSONResponse
 
-from app.utils.cfg import Config
-from app.utils.dependencies import get_config, get_db_client_c, auto_current_user_permission
+from app.utils.dependencies import  async_db_engine, auto_current_user_permission
 from app.models.system.interface import SearchInterface, Interface
 from app.models.system.users import User
 from app.settings import DATABASE_NAME, COLL_INTERFACE, COLL_ROLE
@@ -21,11 +20,10 @@ router = APIRouter(
 
 @router.get('/v1/system/interface/all')
 async def all(
-        cfg: Config = Depends(get_config),
-        current_user: User = Depends(auto_current_user_permission),
+        db_engine=Depends(async_db_engine),
+        _: User = Depends(auto_current_user_permission),
 ):
-    db_client = get_db_client_c(cfg)
-    coll = db_client[DATABASE_NAME][COLL_INTERFACE]
+    coll = db_engine[DATABASE_NAME][COLL_INTERFACE]
 
     cursor = coll.find({}).sort([
         ('group', pymongo.ASCENDING),
@@ -34,7 +32,7 @@ async def all(
         data = [SearchInterface(**x) async for x in cursor]
     except Exception as _:
         data = []
-    db_client.close()
+    db_engine.close()
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
@@ -44,7 +42,7 @@ async def all(
 
 @router.get('/v1/system/interface/list')
 async def lists(
-        id: str = None,
+        uid: str = None,
         path: str = None,
         group: str = None,
         describe_zh_cn: str = None,
@@ -54,12 +52,11 @@ async def lists(
         update_at: list[datetime] = Query(None),
         current_page: int = 1,  # 跳过
         page_size: int = 10,  # 跳过
-        cfg: Config = Depends(get_config),
-        current_user: User = Depends(auto_current_user_permission),
+        db_engine=Depends(async_db_engine),
+        _: User = Depends(auto_current_user_permission),
 ):
     skip = (current_page - 1) * page_size
-    db_client = get_db_client_c(cfg)
-    coll = db_client[DATABASE_NAME][COLL_INTERFACE]
+    coll = db_engine[DATABASE_NAME][COLL_INTERFACE]
 
     search_interface = SearchInterface(
         path=path,
@@ -71,8 +68,8 @@ async def lists(
 
     query = search_interface.dict(exclude_none=True)
 
-    if id is not None and id != '':
-        query['_id'] = ObjectId(id)
+    if uid is not None and uid != '':
+        query['_id'] = ObjectId(uid)
     if update_at:
         query['update_at'] = {'$gte': update_at[0].astimezone(pytz.utc), '$lte': update_at[1].astimezone(pytz.utc)}
     if create_at:
@@ -86,7 +83,7 @@ async def lists(
         data = [Interface(**x) async for x in cursor]
     except Exception as _:
         data = []
-    db_client.close()
+    db_engine.close()
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
@@ -97,14 +94,14 @@ async def lists(
 @router.post('/v1/system/interface/add')
 async def add(
         interface: Interface,
-        cfg: Config = Depends(get_config),
-        current_user: User = Depends(auto_current_user_permission),
+        db_engine=Depends(async_db_engine),
+        _: User = Depends(auto_current_user_permission),
 ):
-    db_client = get_db_client_c(cfg)
-    coll = db_client[DATABASE_NAME][COLL_INTERFACE]
+
+    coll = db_engine[DATABASE_NAME][COLL_INTERFACE]
     interface.create_at = datetime.now(pytz.utc)
     await coll.insert_one(interface.dict())
-    db_client.close()
+    db_engine.close()
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={'message': 'interface added ok'}
@@ -114,17 +111,16 @@ async def add(
 @router.put('/v1/system/interface/edit')
 async def edit(
         interface: Interface,
-        cfg: Config = Depends(get_config),
-        current_user: User = Depends(auto_current_user_permission),
+        db_engine=Depends(async_db_engine),
+        _: User = Depends(auto_current_user_permission),
 ):
-    db_client = get_db_client_c(cfg)
-    coll = db_client[DATABASE_NAME][COLL_INTERFACE]
+    coll = db_engine[DATABASE_NAME][COLL_INTERFACE]
     interface.update_at = datetime.now(pytz.utc)
     await coll.find_one_and_update(
-        {'_id': ObjectId(interface.id)},
-        {'$set': interface.dict(exclude={'id', 'create_at'})},
+        {'_id': ObjectId(interface.uid)},
+        {'$set': interface.dict(exclude={'uid', 'create_at'})},
     )
-    db_client.close()
+    db_engine.close()
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={'message': 'interface edit ok'}
@@ -133,20 +129,19 @@ async def edit(
 
 @router.delete('/v1/system/interface/delete')
 async def delete(
-        id: str,
-        cfg: Config = Depends(get_config),
-        current_user: User = Depends(auto_current_user_permission)
+        uid: str,
+        db_engine=Depends(async_db_engine),
+        _: User = Depends(auto_current_user_permission)
 ):
-    db_client = get_db_client_c(cfg)
-    coll = db_client[DATABASE_NAME][COLL_ROLE]
+    coll = db_engine[DATABASE_NAME][COLL_ROLE]
     await coll.update_many(
         {},
         {'$pull': {
-            'interface_permission': {'id': id}
+            'interface_permission': {'uid': uid}
         }})
-    coll = db_client[DATABASE_NAME][COLL_INTERFACE]
-    await coll.delete_one({'_id': ObjectId(id)})
-    db_client.close()
+    coll = db_engine[DATABASE_NAME][COLL_INTERFACE]
+    await coll.delete_one({'_id': ObjectId(uid)})
+    db_engine.close()
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={'message': 'interface delete ok'}

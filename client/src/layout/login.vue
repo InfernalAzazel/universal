@@ -33,9 +33,9 @@
 </template>
 
 <script setup lang="ts">
-import {markRaw, onMounted, reactive, ref, watch} from 'vue'
+import {markRaw, onMounted, reactive, ref} from 'vue'
 import { useRouter } from 'vue-router'
-import { useDark, useMagicKeys, useTitle } from '@vueuse/core'
+import { useMagicKeys } from '@vueuse/core'
 import { Lock, User } from '@element-plus/icons-vue'
 import {
   defineFormColumns,
@@ -50,7 +50,6 @@ import LangBtu from './components/LangBtu/index.vue'
 import {useI18n} from "vue-i18n";
 const router = useRouter()
 const state = useGlobalState()
-const { enter } = useMagicKeys()
 const login = ref({} as IFormExpose)
 const {t} = useI18n()
 
@@ -109,13 +108,11 @@ const submit = defineFormSubmit(async (done, isValid) => {
 
   done()
 })
-const {data: initStateData, execute: exeInitState} = useGet<InitState>(Api.initState)
+// 自动判断初始化
+const {execute: exeAutoIFInit} = useGet<InitState>(Api.init)
 
 onMounted(async () => {
-  await exeInitState()
-  if (initStateData.value?.switch) {
-    await router.push('/init')
-  }
+  await exeAutoIFInit()
 })
 </script>
 

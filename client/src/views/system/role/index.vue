@@ -64,7 +64,7 @@
                 :data="menuTreeData"
                 show-checkbox
                 :default-checked-keys="menuCheckedKeys"
-                node-key="id"
+                node-key="uid"
                 :props="menuDefaultProps"
             />
           </el-tab-pane>
@@ -77,7 +77,7 @@
                 :data="interfaceTreeData"
                 show-checkbox
                 :default-checked-keys="interfaceCheckedKeys"
-                node-key="id"
+                node-key="uid"
                 :props="interfaceDefaultProps"
             >
               <template #default="{ node, data }">
@@ -116,7 +116,7 @@ import {useI18n} from "vue-i18n";
 const {t} = useI18n()
 
 interface Role {
-  id: string
+  uid: string
   key: string
   name_zh_ch: string
   name_en_us: string
@@ -146,7 +146,7 @@ const state = useGlobalState()
 const drawer = ref(false)
 // 当前
 const currentRoleRow = ref<Role>({
-  id: '',
+  uid: '',
   key: '',
   name_zh_ch: '',
   name_en_us: '',
@@ -158,8 +158,8 @@ const menuCheckedKeys = ref<string[]>([])
 const interfaceCheckedKeys = ref<string[]>([])
 const columns = defineCrudColumns([
   {
-    label: t(`system.role.id`),
-    prop: 'id',
+    label: t(`system.role.uid`),
+    prop: 'uid',
     component: 'el-input',
     detail: true,
     props: {
@@ -277,15 +277,15 @@ const openDrawer = (row: any) => {
   exeMenuAll()
   // 添加菜单Tree状态
   menuCheckedKeys.value = []
-  currentRoleRow.value.menu_permission.forEach((item: { id: any }) => {
-    menuCheckedKeys.value.push(item.id)
+  currentRoleRow.value.menu_permission.forEach((item: { uid: any }) => {
+    menuCheckedKeys.value.push(item.uid)
   })
   // 更新接口Tree
   exeInterfaceAll()
   // 添加接口Tree状态
   interfaceCheckedKeys.value = []
-  currentRoleRow.value.interface_permission.forEach((item: { id: any }) => {
-    interfaceCheckedKeys.value.push(item.id)
+  currentRoleRow.value.interface_permission.forEach((item: { uid: any }) => {
+    interfaceCheckedKeys.value.push(item.uid)
   })
 }
 
@@ -304,7 +304,6 @@ const handleInterfaceTreeOK = async () => {
   ElMessage.success(t(`system.role.permission_ok`))
   await loadList()
 }
-
 
 
 </script>

@@ -59,9 +59,7 @@
 </template>
 
 <script lang="ts" setup>
-import {h, ref} from 'vue'
-import {ElMessage} from 'element-plus'
-import {Setting} from '@element-plus/icons-vue'
+import {ref} from 'vue'
 import ExSelect from '../../../components/ExSelect/index.vue'
 import {
   defineCrudColumns,
@@ -103,10 +101,10 @@ const menu = defineCrudMenuColumns({
 })
 const columns = defineCrudColumns([
   {
-    label: t("system.menu.id"),
-    prop: 'id',
+    label: t("system.menu.uid"),
+    prop: 'uid',
     component: 'el-input',
-    search: true,
+    search: false,
     detail: true,
     width: '200',
   },
@@ -116,7 +114,7 @@ const columns = defineCrudColumns([
     component: 'el-input',
     add: true,
     edit: true,
-    search: true,
+    search: false,
     detail: true,
     width: '200'
   },
@@ -126,7 +124,7 @@ const columns = defineCrudColumns([
     component: 'el-input',
     add: true,
     edit: true,
-    search: true,
+    search: false,
     detail: true,
     width: '200'
   },
@@ -136,7 +134,7 @@ const columns = defineCrudColumns([
     component: 'el-input',
     add: true,
     edit: true,
-    search: true,
+    search: false,
     detail: true,
     width: '500'
   },
@@ -146,6 +144,7 @@ const columns = defineCrudColumns([
     component: 'el-input-number',
     add: true,
     edit: true,
+    search: false,
     detail: true,
     width: '200'
   },
@@ -159,7 +158,7 @@ const columns = defineCrudColumns([
     },
     add: true,
     edit: true,
-    search: true,
+    search: false,
     detail: true,
     width: '200'
   },
@@ -171,7 +170,7 @@ const columns = defineCrudColumns([
       min: "0",
       max: "10000",
     },
-    search: true,
+    search: false,
     add: true,
     edit: true,
     detail: true,
@@ -181,7 +180,7 @@ const columns = defineCrudColumns([
     label: t("system.menu.component"),
     prop: 'component',
     component: 'el-input',
-    search: true,
+    search: false,
     add: true,
     edit: true,
     detail: true,
@@ -194,7 +193,7 @@ const columns = defineCrudColumns([
     props: {
       data: selectIcon.value,
     },
-    search: true,
+    search: false,
     add: true,
     edit: true,
     detail: true,
@@ -212,7 +211,7 @@ const columns = defineCrudColumns([
       format:"YYYY-MM-DD",
       valueFormat:"YYYY-MM-DDTHH:mm:ss"
     },
-    search: true,
+    search: false,
     detail: true,
     width: '200'
   },
@@ -228,7 +227,7 @@ const columns = defineCrudColumns([
       format:"YYYY-MM-DD",
       valueFormat:"YYYY-MM-DDTHH:mm:ss"
     },
-    search: true,
+    search: false,
     detail: true,
     width: '200'
   },

@@ -51,14 +51,11 @@
 
 </template>
 <script lang="ts" setup>
-import { defineComponent, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ref } from 'vue'
 import {
   defineCrudColumns,
   defineCrudMenuColumns,
-  defineCrudSubmit,
-  defineCrudSearch,
-  defineCrudBeforeOpen,
+
 } from 'element-pro-components'
 import {useCrud} from "../../../composables/crud";
 import { Api } from "../../../utils";
@@ -91,8 +88,8 @@ const selectData = ref([
 ])
 const columns = defineCrudColumns([
   {
-    label: t(`system.interface.id`),
-    prop: 'id',
+    label: t(`system.interface.uid`),
+    prop: 'uid',
     component: 'el-input',
     detail: true,
     props:{

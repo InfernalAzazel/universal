@@ -4,7 +4,7 @@
       "$oid":"62e38dc83c3919cb67ac2b70"
     },
     "create_at":{
-      "$date":1659080136382
+      "$date":"2022-07-29T15:35:36.382+0800"
     },
     "describe":"测试角色",
     "interface_permission":[
@@ -14,7 +14,7 @@
         "describe_zh_cn":"获取接口全部",
         "describe_en_us":"InterfaceAll",
         "method":"GET",
-        "id":"62da589b1f5a9496cdb1ea1c",
+        "uid":"62da589b1f5a9496cdb1ea1c",
         "describe":"62da589b1f5a9496cdb1ea1c",
         "update_at":"2022-07-29T15:59:37.750000+08:00",
         "create_at":"2022-07-29T15:59:37.750000+08:00"
@@ -25,7 +25,7 @@
         "describe_zh_cn":"获取接口全部（条件）",
         "describe_en_us":"InterfaceList (OptionalParameters)",
         "method":"GET",
-        "id":"62da58c41f5a9496cdb1ea20",
+        "uid":"62da58c41f5a9496cdb1ea20",
         "describe":"62da58c41f5a9496cdb1ea20",
         "update_at":"2022-07-29T15:59:39.665000+08:00",
         "create_at":"2022-07-29T15:59:39.665000+08:00"
@@ -36,7 +36,7 @@
         "describe_zh_cn":"接口添加",
         "describe_en_us":"InterfaceAdd",
         "method":"POST",
-        "id":"62da58d91f5a9496cdb1ea23",
+        "uid":"62da58d91f5a9496cdb1ea23",
         "describe":"62da58d91f5a9496cdb1ea23",
         "update_at":"2022-07-29T15:59:35.796000+08:00",
         "create_at":"2022-07-29T15:59:35.796000+08:00"
@@ -47,7 +47,7 @@
         "describe_zh_cn":"接口编辑",
         "describe_en_us":"InterfaceEdit",
         "method":"PUT",
-        "id":"62da58ee1f5a9496cdb1ea26",
+        "uid":"62da58ee1f5a9496cdb1ea26",
         "describe":"62da58ee1f5a9496cdb1ea26",
         "update_at":"2022-07-29T15:59:44.108000+08:00",
         "create_at":"2022-07-29T15:59:44.108000+08:00"
@@ -58,7 +58,7 @@
         "describe_zh_cn":"接口删除",
         "describe_en_us":"InterfaceDelete",
         "method":"DELETE",
-        "id":"62da59021f5a9496cdb1ea29",
+        "uid":"62da59021f5a9496cdb1ea29",
         "describe":"62da59021f5a9496cdb1ea29",
         "update_at":"2022-07-29T15:59:42.081000+08:00",
         "create_at":"2022-07-29T15:59:42.081000+08:00"
@@ -69,7 +69,7 @@
         "describe_zh_cn":"菜单获取全部",
         "describe_en_us":"MenuAll",
         "method":"GET",
-        "id":"62da570d1f5a9496cdb1e9f9",
+        "uid":"62da570d1f5a9496cdb1e9f9",
         "describe":"62da570d1f5a9496cdb1e9f9",
         "update_at":"2022-07-29T15:59:57.072000+08:00",
         "create_at":"2022-07-29T15:59:57.072000+08:00"
@@ -80,7 +80,7 @@
         "describe_zh_cn":"获取菜单全部 (条件)",
         "describe_en_us":"MenuList (OptionalParameters)",
         "method":"GET",
-        "id":"62da57401f5a9496cdb1e9fc",
+        "uid":"62da57401f5a9496cdb1e9fc",
         "describe":"62da57401f5a9496cdb1e9fc",
         "update_at":"2022-07-29T15:59:46.424000+08:00",
         "create_at":"2022-07-29T15:59:46.424000+08:00"
@@ -91,7 +91,7 @@
         "describe_zh_cn":"菜单编辑",
         "describe_en_us":"MenuEdit",
         "method":"PUT",
-        "id":"62da57681f5a9496cdb1e9ff",
+        "uid":"62da57681f5a9496cdb1e9ff",
         "describe":"62da57681f5a9496cdb1e9ff",
         "update_at":"2022-07-29T15:59:49.113000+08:00",
         "create_at":"2022-07-29T15:59:49.113000+08:00"
@@ -102,7 +102,7 @@
         "describe_zh_cn":"菜单添加",
         "describe_en_us":"MenuAdd",
         "method":"POST",
-        "id":"62da57a61f5a9496cdb1ea04",
+        "uid":"62da57a61f5a9496cdb1ea04",
         "describe":"62da57a61f5a9496cdb1ea04",
         "update_at":"2022-07-29T15:59:52.332000+08:00",
         "create_at":"2022-07-29T15:59:52.332000+08:00"
@@ -113,7 +113,7 @@
         "describe_zh_cn":"菜单删除",
         "describe_en_us":"MenuDelete",
         "method":"DELETE",
-        "id":"62da57d21f5a9496cdb1ea09",
+        "uid":"62da57d21f5a9496cdb1ea09",
         "describe":"62da57d21f5a9496cdb1ea09",
         "update_at":"2022-07-29T15:59:54.894000+08:00",
         "create_at":"2022-07-29T15:59:54.894000+08:00"
@@ -124,7 +124,7 @@
         "describe_zh_cn":"获取角色全部 (条件)",
         "describe_en_us":"RoleList  (OptionalParameters)",
         "method":"GET",
-        "id":"62da57fc1f5a9496cdb1ea0c",
+        "uid":"62da57fc1f5a9496cdb1ea0c",
         "describe":"62da57fc1f5a9496cdb1ea0c",
         "update_at":"2022-07-29T16:00:02.679000+08:00",
         "create_at":"2022-07-29T16:00:02.679000+08:00"
@@ -135,7 +135,7 @@
         "describe_zh_cn":"添加角色",
         "describe_en_us":"RoleAdd",
         "method":"POST",
-        "id":"62da58481f5a9496cdb1ea12",
+        "uid":"62da58481f5a9496cdb1ea12",
         "describe":"62da58481f5a9496cdb1ea12",
         "update_at":"2022-07-29T16:00:05.262000+08:00",
         "create_at":"2022-07-29T16:00:05.262000+08:00"
@@ -146,7 +146,7 @@
         "describe_zh_cn":"角色编辑",
         "describe_en_us":"RoleEdit",
         "method":"PUT",
-        "id":"62da58601f5a9496cdb1ea15",
+        "uid":"62da58601f5a9496cdb1ea15",
         "describe":"62da58601f5a9496cdb1ea15",
         "update_at":"2022-07-29T16:00:07.936000+08:00",
         "create_at":"2022-07-29T16:00:07.936000+08:00"
@@ -157,7 +157,7 @@
         "describe_zh_cn":"角色删除",
         "describe_en_us":"RoleDelete",
         "method":"DELETE",
-        "id":"62da587d1f5a9496cdb1ea19",
+        "uid":"62da587d1f5a9496cdb1ea19",
         "describe":"62da587d1f5a9496cdb1ea19",
         "update_at":"2022-07-29T16:00:10.460000+08:00",
         "create_at":"2022-07-29T16:00:10.460000+08:00"
@@ -168,40 +168,10 @@
         "describe_zh_cn":"获取角色全部",
         "describe_en_us":"RoleAll",
         "method":"GET",
-        "id":"62e109ac342afd0070930ec1",
+        "uid":"62e109ac342afd0070930ec1",
         "describe":"62e109ac342afd0070930ec1",
         "update_at":"2022-07-29T16:00:00.414000+08:00",
         "create_at":"2022-07-29T16:00:00.414000+08:00"
-      },
-      {
-        "path":"/api/v1/system/settings/data",
-        "group":"settings",
-        "describe_zh_cn":"设置数据",
-        "describe_en_us":"SettingsData",
-        "method":"GET",
-        "id":"62eb6ca13b203d3ea9717be4",
-        "describe":"62eb6ca13b203d3ea9717be4",
-        "create_at":"2022-08-04T14:52:17.735000+08:00"
-      },
-      {
-        "path":"/api/v1/system/settings/default",
-        "group":"settings",
-        "describe_zh_cn":"设置默认",
-        "describe_en_us":"SettingsDefault",
-        "method":"GET",
-        "id":"62eb6cea3b203d3ea9717bf5",
-        "describe":"62eb6cea3b203d3ea9717bf5",
-        "create_at":"2022-08-04T14:53:30.219000+08:00"
-      },
-      {
-        "path":"/api/v1/system/settings/edit",
-        "group":"settings",
-        "describe_zh_cn":"设置编辑",
-        "describe_en_us":"SettingsEdit",
-        "method":"PUT",
-        "id":"62eb6d1d3b203d3ea9717bfd",
-        "describe":"62eb6d1d3b203d3ea9717bfd",
-        "create_at":"2022-08-04T14:54:21.831000+08:00"
       },
       {
         "path":"/api/v1/system/syslog/all",
@@ -209,7 +179,7 @@
         "describe_zh_cn":"系统日志获取全部",
         "describe_en_us":"SyslogAll",
         "method":"GET",
-        "id":"62e7a8050ba96e5f3f972ecc",
+        "uid":"62e7a8050ba96e5f3f972ecc",
         "describe":"62e7a8050ba96e5f3f972ecc",
         "create_at":"2022-08-01T18:16:37.314000+08:00"
       },
@@ -219,7 +189,7 @@
         "describe_zh_cn":"系统日志获取全部 (条件)",
         "describe_en_us":"SyslogList (OptionalParameters)",
         "method":"GET",
-        "id":"62e7a87e0ba96e5f3f972ed7",
+        "uid":"62e7a87e0ba96e5f3f972ed7",
         "describe":"62e7a87e0ba96e5f3f972ed7",
         "create_at":"2022-08-01T18:18:38.970000+08:00",
         "update_at":"2022-08-02T09:45:04.941000+08:00"
@@ -230,7 +200,7 @@
         "describe_zh_cn":"系统日志添加",
         "describe_en_us":"SyslogAdd",
         "method":"POST",
-        "id":"62e7a8be0ba96e5f3f972eda",
+        "uid":"62e7a8be0ba96e5f3f972eda",
         "describe":"62e7a8be0ba96e5f3f972eda",
         "create_at":"2022-08-01T18:19:42.465000+08:00"
       },
@@ -240,7 +210,7 @@
         "describe_zh_cn":"系统日志编辑",
         "describe_en_us":"SyslogEdit",
         "method":"PUT",
-        "id":"62e7a91d0ba96e5f3f972edf",
+        "uid":"62e7a91d0ba96e5f3f972edf",
         "describe":"62e7a91d0ba96e5f3f972edf",
         "create_at":"2022-08-01T18:21:17.438000+08:00"
       },
@@ -250,7 +220,7 @@
         "describe_zh_cn":"系统日志删除",
         "describe_en_us":"SyslogDelete",
         "method":"DELETE",
-        "id":"62e7a96b0ba96e5f3f972ee2",
+        "uid":"62e7a96b0ba96e5f3f972ee2",
         "describe":"62e7a96b0ba96e5f3f972ee2",
         "create_at":"2022-08-01T18:22:35.375000+08:00"
       },
@@ -260,7 +230,7 @@
         "describe_zh_cn":"帐号信息",
         "describe_en_us":"UsersAccount",
         "method":"GET",
-        "id":"62cd16f41db5004e1234d3d8",
+        "uid":"62cd16f41db5004e1234d3d8",
         "describe":"62cd16f41db5004e1234d3d8",
         "update_at":"2022-07-29T16:00:26.893000+08:00",
         "create_at":"2022-07-29T16:00:26.893000+08:00"
@@ -271,7 +241,7 @@
         "describe_zh_cn":"获取用户路由",
         "describe_en_us":"UsersRoutes",
         "method":"GET",
-        "id":"62da56201f5a9496cdb1e9e8",
+        "uid":"62da56201f5a9496cdb1e9e8",
         "describe":"62da56201f5a9496cdb1e9e8",
         "update_at":"2022-07-29T16:00:20.953000+08:00",
         "create_at":"2022-07-29T16:00:20.953000+08:00"
@@ -282,7 +252,7 @@
         "describe_zh_cn":"获取用户列表",
         "describe_en_us":"Userslist",
         "method":"GET",
-        "id":"62da56591f5a9496cdb1e9eb",
+        "uid":"62da56591f5a9496cdb1e9eb",
         "describe":"62da56591f5a9496cdb1e9eb",
         "update_at":"2022-07-29T16:00:29.251000+08:00",
         "create_at":"2022-07-29T16:00:29.251000+08:00"
@@ -293,7 +263,7 @@
         "describe_zh_cn":"用户添加",
         "describe_en_us":"UsersAdd",
         "method":"POST",
-        "id":"62da56941f5a9496cdb1e9ee",
+        "uid":"62da56941f5a9496cdb1e9ee",
         "describe":"62da56941f5a9496cdb1e9ee",
         "update_at":"2022-07-29T16:00:13.100000+08:00",
         "create_at":"2022-07-29T16:00:13.100000+08:00"
@@ -304,7 +274,7 @@
         "describe_zh_cn":"用户编辑",
         "describe_en_us":"UsersEdit",
         "method":"PUT",
-        "id":"62da56bb1f5a9496cdb1e9f3",
+        "uid":"62da56bb1f5a9496cdb1e9f3",
         "describe":"62da56bb1f5a9496cdb1e9f3",
         "update_at":"2022-07-29T16:00:23.480000+08:00",
         "create_at":"2022-07-29T16:00:23.480000+08:00"
@@ -315,7 +285,7 @@
         "describe_zh_cn":"用户删除",
         "describe_en_us":"UsersDelete",
         "method":"DELETE",
-        "id":"62da56db1f5a9496cdb1e9f6",
+        "uid":"62da56db1f5a9496cdb1e9f6",
         "describe":"62da56db1f5a9496cdb1e9f6",
         "update_at":"2022-07-29T16:00:33.614000+08:00",
         "create_at":"2022-07-29T16:00:33.614000+08:00"
@@ -331,7 +301,7 @@
         "icon":"House",
         "component":"layout/base.vue",
         "order":3,
-        "id":"62c79bef76a04c01fd6d6561",
+        "uid":"62c79bef76a04c01fd6d6561",
         "update_at":"2022-07-29T15:57:49.686000+08:00",
         "create_at":"2022-07-29T15:57:49.686000+08:00",
         "children":[
@@ -344,7 +314,7 @@
             "icon":"House",
             "component":"views/home/index.vue",
             "order":1,
-            "id":"62c79bef76a04c01fd6d6562",
+            "uid":"62c79bef76a04c01fd6d6562",
             "update_at":"2022-07-29T15:58:20.633000+08:00",
             "create_at":"2022-07-29T15:58:20.633000+08:00"
           }
@@ -359,7 +329,7 @@
         "icon":"House",
         "component":"views/home/index.vue",
         "order":1,
-        "id":"62c79bef76a04c01fd6d6562",
+        "uid":"62c79bef76a04c01fd6d6562",
         "update_at":"2022-07-29T15:58:20.633000+08:00",
         "create_at":"2022-07-29T15:58:20.633000+08:00"
       },
@@ -372,7 +342,7 @@
         "icon":"Setting",
         "component":"layout/base.vue",
         "order":4,
-        "id":"62c79bef76a04c01fd6d6563",
+        "uid":"62c79bef76a04c01fd6d6563",
         "update_at":"2022-07-29T15:57:52.501000+08:00",
         "create_at":"2022-07-29T15:57:52.501000+08:00",
         "children":[
@@ -385,7 +355,7 @@
             "icon":"User",
             "component":"views/system/users/index.vue",
             "order":1,
-            "id":"62da5a0bdc655c5c2b15238c",
+            "uid":"62da5a0bdc655c5c2b15238c",
             "update_at":"2022-07-29T15:57:55.333000+08:00",
             "create_at":"2022-07-29T15:57:55.333000+08:00"
           },
@@ -398,7 +368,7 @@
             "icon":"Bicycle",
             "component":"views/system/role/index.vue",
             "order":2,
-            "id":"62c79bef76a04c01fd6d6565",
+            "uid":"62c79bef76a04c01fd6d6565",
             "update_at":"2022-07-29T15:57:58.079000+08:00",
             "create_at":"2022-07-29T15:57:58.079000+08:00"
           },
@@ -411,7 +381,7 @@
             "icon":"CreditCard",
             "component":"views/system/menu/index.vue",
             "order":3,
-            "id":"62c79bef76a04c01fd6d6564",
+            "uid":"62c79bef76a04c01fd6d6564",
             "update_at":"2022-07-29T15:58:02.811000+08:00",
             "create_at":"2022-07-29T15:58:02.811000+08:00"
           },
@@ -424,7 +394,7 @@
             "icon":"Cherry",
             "component":"views/system/interface/index.vue",
             "order":4,
-            "id":"62da5ad3dc655c5c2b1523d4",
+            "uid":"62da5ad3dc655c5c2b1523d4",
             "update_at":"2022-07-29T15:58:06.096000+08:00",
             "create_at":"2022-07-29T15:58:06.096000+08:00"
           },
@@ -437,22 +407,9 @@
             "icon":"Tickets",
             "component":"views/system/syslog/index.vue",
             "order":5,
-            "id":"62da5c6ddc655c5c2b15246c",
+            "uid":"62da5c6ddc655c5c2b15246c",
             "update_at":"2022-08-01T17:51:13.049000+08:00",
             "create_at":"2022-07-29T15:58:09.225000+08:00"
-          },
-          {
-            "key":10,
-            "father":5,
-            "path":"/system/settings",
-            "title_zh_cn":"设置",
-            "title_en_us":"settings",
-            "icon":"Setting",
-            "component":"views/system/settings/index.vue",
-            "order":6,
-            "id":"62ea273e3c3919cb67adc4ba",
-            "create_at":"2022-08-03T15:43:58.694000+08:00",
-            "update_at":"2022-08-03T15:44:27.634000+08:00"
           }
         ]
       },
@@ -465,7 +422,7 @@
         "icon":"User",
         "component":"views/system/users/index.vue",
         "order":1,
-        "id":"62da5a0bdc655c5c2b15238c",
+        "uid":"62da5a0bdc655c5c2b15238c",
         "update_at":"2022-07-29T15:57:55.333000+08:00",
         "create_at":"2022-07-29T15:57:55.333000+08:00"
       },
@@ -478,7 +435,7 @@
         "icon":"Bicycle",
         "component":"views/system/role/index.vue",
         "order":2,
-        "id":"62c79bef76a04c01fd6d6565",
+        "uid":"62c79bef76a04c01fd6d6565",
         "update_at":"2022-07-29T15:57:58.079000+08:00",
         "create_at":"2022-07-29T15:57:58.079000+08:00"
       },
@@ -491,7 +448,7 @@
         "icon":"CreditCard",
         "component":"views/system/menu/index.vue",
         "order":3,
-        "id":"62c79bef76a04c01fd6d6564",
+        "uid":"62c79bef76a04c01fd6d6564",
         "update_at":"2022-07-29T15:58:02.811000+08:00",
         "create_at":"2022-07-29T15:58:02.811000+08:00"
       },
@@ -504,7 +461,7 @@
         "icon":"Cherry",
         "component":"views/system/interface/index.vue",
         "order":4,
-        "id":"62da5ad3dc655c5c2b1523d4",
+        "uid":"62da5ad3dc655c5c2b1523d4",
         "update_at":"2022-07-29T15:58:06.096000+08:00",
         "create_at":"2022-07-29T15:58:06.096000+08:00"
       },
@@ -517,28 +474,15 @@
         "icon":"Tickets",
         "component":"views/system/syslog/index.vue",
         "order":5,
-        "id":"62da5c6ddc655c5c2b15246c",
+        "uid":"62da5c6ddc655c5c2b15246c",
         "update_at":"2022-08-01T17:51:13.049000+08:00",
         "create_at":"2022-07-29T15:58:09.225000+08:00"
-      },
-      {
-        "key":10,
-        "father":5,
-        "path":"/system/settings",
-        "title_zh_cn":"设置",
-        "title_en_us":"settings",
-        "icon":"Setting",
-        "component":"views/system/settings/index.vue",
-        "order":6,
-        "id":"62ea273e3c3919cb67adc4ba",
-        "create_at":"2022-08-03T15:43:58.694000+08:00",
-        "update_at":"2022-08-03T15:44:27.634000+08:00"
       }
     ],
     "name_en_us":"TeseRole",
     "name_zh_cn":"测试角色",
     "update_at":{
-      "$date":1659596077949
+      "$date":"2022-12-20T15:45:35.714+0800"
     }
   }
 ]
