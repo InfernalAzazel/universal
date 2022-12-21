@@ -47,10 +47,9 @@ English | [简体中文](./README-zh_CN.md)
 
 ## Work List
 
-- [ ] Add Demo
-- [ ] Add front end
-- [ ] Add rear end
-- [ ] Add Deployment method
+- [ x ] Add front end
+- [ x ] Add rear end
+- [ x ] Add Deployment method
 
 ## Communicate
 
