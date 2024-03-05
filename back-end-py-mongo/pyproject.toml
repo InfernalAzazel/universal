@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "back-end-py-mongo"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.110.0"
+uvicorn = "^0.27.1"
+motor = "^3.3.2"
+casbin = "^1.36.0"
+python-jose = "^3.3.0"
+python-multipart = "^0.0.9"
+orjson = "^3.9.15"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

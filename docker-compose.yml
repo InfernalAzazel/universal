@@ -27,12 +27,11 @@ services:
     image: server
     build:
       context: .
-      dockerfile: server/Dockerfile
+      dockerfile: back-end-py-mongo/Dockerfile
     container_name: server
     hostname: server
     restart: always
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - server:/code
     ports:
       - "80:80"

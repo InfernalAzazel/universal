@@ -1,0 +1,24 @@
+[
+  {
+    "_id":{
+      "$oid":"62b98323bc765ef1413bcd0f"
+    },
+    "username":"admin",
+    "company":null,
+    "department":null,
+    "disabled":false,
+    "mail":null,
+    "name":null,
+    "password":"123456",
+    "create_at":{
+      "$date":"2022-07-29T13:12:36+0800"
+    },
+    "update_at":{
+      "$date":"2024-03-04T09:49:12.691+0800"
+    },
+    "role_names":[
+      "超级管理员",
+      "测试管理员"
+    ]
+  }
+]
