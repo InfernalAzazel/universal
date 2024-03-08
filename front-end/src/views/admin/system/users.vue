@@ -7,6 +7,7 @@ import {
 import {useI18n} from "vue-i18n";
 import { useUsersCrudRequest } from '@/services'
 import RoleSelect from '@/views/admin/system/components/RoleSelect.vue'
+import { splitString } from '@/utils'
 
 const {t} = useI18n()
 const menu = defineCrudMenuColumns({
@@ -177,7 +178,7 @@ const {
       :table-columns="tableColumns"
       :total="total"
       @load="loadList"
-      @search-reset="searchReset"
+      @search-reset="loadList"
       :rules="rules"
       layout="total, ->, jumper, prev, pager, next, sizes"
       border
@@ -202,11 +203,21 @@ const {
           </template>
         </el-popconfirm>
       </template>
-      <template #table-disabled="{row }">
-        {{ $t(`selectBool.${row.disabled}`) }}
+      <template #table-role_names="{ row, size }">
+        <template v-for="(value, index) in row?.role_names" :key="index">
+          <el-tag class="ml-1" :size="size" type="primary">{{ value }}</el-tag>
+        </template>
       </template>
-      <template #detail-disabled="{ size, item }">
-        {{ $t(`selectBool.${item.disabled}`) }}
+      <template #table-disabled="{row }">
+        <el-switch v-model="row.disabled" disabled/>
+      </template>
+      <template #detail-role_names="{ item, size }">
+        <template v-for="(value, index) in item?.role_names" :key="index">
+          <el-tag class="ml-1" :size="size" type="primary">{{ value }}</el-tag>
+        </template>
+      </template>
+      <template #detail-disabled="{item}">
+        <el-switch v-model="item.disabled" disabled/>
       </template>
     </pro-crud>
   </pro-card>

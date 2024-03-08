@@ -5,15 +5,19 @@ import { useMagicKeys } from '@vueuse/core'
 import { type API, useAutoInitRequest } from '@/services'
 import  {useLoginRequest} from '@/services'
 import { useI18n } from 'vue-i18n'
+import { Lock, User } from '@element-plus/icons-vue'
 import {
   defineFormColumns,
   defineFormMenuColumns,
   defineFormSubmit,
-  IFormExpose,
+
 } from 'element-pro-components'
+import type { IFormExpose, } from 'element-pro-components'
 import { useGlobalState } from '@/composables/store'
+import Lang from '@/layouts/components/Lang.vue'
+
 const router = useRouter()
-const loginRef = ref<IFormExpose>({})
+const loginRef = ref<IFormExpose>()
 const {t} = useI18n()
 const state = useGlobalState()
 
@@ -22,10 +26,10 @@ const columns = defineFormColumns<API.LoginForm>([
     label: t('layout.login.username'),
     prop: 'username',
     component: 'el-input',
-    rules: { required: true, message: '请输入用户名', trigger: 'blur' },
+    rules: { required: true, message: t(`rules.layout.login.username`), trigger: 'blur' },
     props: {
       clearable: true,
-      // prefixIcon: markRaw(User),
+      prefixIcon: markRaw(User),
       placeholder: t('layout.login.placeholder.username'),
       class: 'bg-blue-100',
     },
@@ -35,14 +39,14 @@ const columns = defineFormColumns<API.LoginForm>([
     prop: 'password',
     component: 'el-input',
     rules: [
-      { required: true, message: '请输入密码', trigger: 'blur' },
-      { min: 5, max: 16, message: '长度 5 到 16 个字符', trigger: 'blur' },
+      { required: true, message: t(`rules.layout.login.password`), trigger: 'blur' },
+      { min: 5, max: 30, message: t(`rules.layout.login.password_len`), trigger: 'blur' },
     ],
     props: {
       type: 'password',
       clearable: true,
       showPassword: true,
-      // prefixIcon: markRaw(Lock),
+      prefixIcon: markRaw(Lock),
       placeholder: t('layout.login.placeholder.password'),
     },
   },
@@ -56,7 +60,7 @@ const form = reactive<API.LoginForm>({
   password:''
 })
 const submit = defineFormSubmit(async (done, isValid) => {
-  const valid = await loginRef.value.validate();
+  const valid = await loginRef.value?.validate();
   if(valid){
     const {data, execute} = useLoginRequest(form);
     await execute();
@@ -80,12 +84,13 @@ onMounted(async () => {
 
 
 <template>
-  <div class="flex justify-center items-center w-full h-screen">
-    <el-card class="w-3/12 max-w[90%] login-button bg-white/0">
+  <div
+    class="login flex justify-center items-center w-full h-screen"
+  >
+    <el-card class="w-3/12 max-w[90%] login-button">
       <div class="flex flex-row-reverse">
-
+        <Lang></Lang>
       </div>
-
       <div class="flex flex-row justify-center space-x-1 items-center">
         <el-image
           style="width: 32px;
@@ -112,6 +117,9 @@ onMounted(async () => {
   </div>
 </template>
 <style>
+.login {
+  background: url('../../../assets/background.svg') no-repeat;
+}
 .login-button .el-button{
   width: 100%;
 }

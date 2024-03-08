@@ -5,8 +5,8 @@ import { useGlobalState } from '@/composables/store'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 // @ts-ignore
 import enUS from 'element-plus/dist/locale/en.mjs'
-
 const {locale} = useGlobalState()
+
 
 </script>
 

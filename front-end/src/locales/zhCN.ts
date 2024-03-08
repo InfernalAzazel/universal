@@ -11,10 +11,10 @@ export default {
   'crud.submitText': '提交',
   'crud.resetText': '重置',
   'crud.clone': '克隆',
-  'selectBool.false': '否',
-  'selectBool.true': '是',
   'el-date-picker.create_at': '创建时间',
   'el-date-picker.update_at': '更新时间',
+  'multipurpose.info': '信息',
+  'multipurpose.error': '错误',
 
   'layout.title': '通用管理系统',
   'layout.avatar.exit': '退出',
@@ -34,6 +34,9 @@ export default {
   'router.menu.title_mark.admin_system_interface': '接口',
   'router.menu.title_mark.admin_system_menu': '菜单',
 
+  'rules.layout.login.username': '请输入用户名',
+  'rules.layout.login.password': '请输入密码',
+  'rules.layout.login.password_len': '长度 5 到 30 个字符',
 
   'rules.role.title':'请输入角色名称',
   'rules.role.description':'请输入描述内容',

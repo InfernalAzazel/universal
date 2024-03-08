@@ -24,4 +24,4 @@ export const RequestLimit = 20
 
 /** 路由白名单 */
 
-export const AllowList = ['/login']
+export const AllowList = ['/login', '/docs']

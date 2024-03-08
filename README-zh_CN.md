@@ -48,9 +48,9 @@
 ```
 
 ## 效果
-![1.png](resource/1.png)
-![2.png](resource/2.png)
-![3.png](resource/3.png)
+![1.png](docs/resource/1.png)
+![2.png](docs/resource/2.png)
+![3.png](docs/resource/3.png)
 ## 办事列表
 
 

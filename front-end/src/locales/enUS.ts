@@ -11,10 +11,10 @@ export default {
   'crud.submitText': 'Submit',
   'crud.resetText': 'Reset',
   'crud.clone': 'Clone',
-  'selectBool.false': 'No',
-  'selectBool.true': 'Yes',
   'el-date-picker.create_at': 'CreateAt',
   'el-date-picker.update_at': 'UpdateAt',
+  'multipurpose.info': 'info',
+  'multipurpose.error': 'error',
 
   'layout.avatar.exit': 'Exit',
   'layout.title': 'Universal',
@@ -33,6 +33,10 @@ export default {
   'router.menu.title_mark.admin_system_role': 'Role',
   'router.menu.title_mark.admin_system_interface': 'Interface',
   'router.menu.title_mark.admin_system_menu': 'Menu',
+
+  'rules.layout.login.username': 'Please enter one user name',
+  'rules.layout.login.password': 'Please enter password',
+  'rules.layout.login.password_len': '5 to 30 characters in length',
 
   'rules.role.title':'Please enter a character title',
   'rules.role.description':'Please enter a description',

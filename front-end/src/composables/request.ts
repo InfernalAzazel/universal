@@ -2,13 +2,14 @@ import { RequestAuthKey } from '@/config'
 import type { MaybeRef, UseFetchReturn } from '@vueuse/core'
 import { createFetch, isObject } from '@vueuse/core'
 import { computed, unref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElNotification } from 'element-plus'
 import router from '@/router'
 import type { LocationQueryRaw } from 'vue-router'
 import { stringifyQuery } from 'vue-router'
 import { useGlobalState } from '@/composables/store'
+import i18n from '@/locales'
 
-
+const t = i18n.global.t;
 const useRequest = createFetch({
   // baseUrl: '', // 基础路由
   options: {
@@ -27,22 +28,43 @@ const useRequest = createFetch({
     // 在请求后处理数据，如：拦截错误、处理过期
     // 获取请求返回后将立即运行。在任何 2xx 响应后运行
     async afterFetch({ data, response }) {
+      // 处理成功响应
+      const state = useGlobalState()
+      if(data.success){
+        if(data.status_code !== 200){
+          ElNotification.info({
+            title:  t('multipurpose.info'),
+            message: data.detail,
+            duration: 3,
+          })
+        }
+      }else {
+        console.log(data)
+        // 定义一个数组，包含导致访问令牌失效的HTTP状态码
+        const resetTokenStatusCodes = [419, 423, 480];
+        // JWT过期 用户被禁用
+        // 检查返回的状态码是否需要重置访问令牌
+        if (resetTokenStatusCodes.includes(data.status_code)) {
+          console.log('666')
+          state.value.access_token = '';
+          await router.push({ path: `/login?redirect=${router.currentRoute.value.path}` })
+        }
+        ElNotification.error({
+          title: t('multipurpose.error'),
+          message: data.detail,
+          duration: 3,
+        });
+      }
       return { data, response }
     },
     // 请求错误
     // 获取请求返回后将立即运行。在任何 4xx 和 5xx 响应之后运行
     async onFetchError({ data, response, error }) {
-      const state = useGlobalState()
-      if (response?.status === 401) {
-        state.value.access_token = ''
-        ElMessage.error({
-          message: '登录已过期，请重新登录',
-          type: 'success'
-        })
-        // console.error(status)
-        data = null
-        await router.push({ path: `/login?redirect=${router.currentRoute.value.path}` })
-      }
+      ElNotification.error({
+        title: t('multipurpose.error'),
+        message: data.detail,
+        duration: 3,
+      });
 
       // console.error(error)
       return { data, error }

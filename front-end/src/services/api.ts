@@ -1,10 +1,10 @@
 import { usePost, useGet, usePut } from '@/composables/request'
-import type { API, ResData, PagesData, ResCode, ResponseMessages } from './typings.d'
+import type { API, PagesData, ResponseMessages } from './typings.d'
 import { useCrud } from '@/composables/crud'
 import type { MaybeRef, UseFetchReturn } from '@vueuse/core'
 import { computed, unref } from 'vue'
 export function useAutoInitRequest(){
-    return useGet<ResponseMessages>('/api/v1/public/init/auto')
+    return useGet('/api/v1/public/init/auto')
 }
 
 export function useLoginRequest(from: any) {
@@ -49,7 +49,7 @@ export function useUsersCrudRequest(immediate: boolean = false){
 
 // -------- 业务 ----------
 // --- 信息 路由
-export function useGetInfoRoutesRequest(){
+export function useGetInfoRoutesRequest():  UseFetchReturn<ResponseMessages<any>>{
     return useGet('/api/v1/private/root/info/routes')
 }
 

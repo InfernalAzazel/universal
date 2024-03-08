@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.api.private.admin.system import menu, interface, role, users
 from app.api.private.root import info
@@ -28,6 +29,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     language: str = get_language(request)
     return ResponseMessages(locale=language, status_code=StatusCode.bad_request, success=False, detail=str(exc))
 
+
 app.include_router(init.router)
 app.include_router(auth.router)
 app.include_router(info.router)
@@ -35,6 +37,7 @@ app.include_router(users.router)
 app.include_router(menu.router)
 app.include_router(role.router)
 app.include_router(interface.router)
+
 
 # app.mount('/', StaticFiles(directory='app/static/dist', html=True), name='static')
 

@@ -1,0 +1,38 @@
+/* 确保外层容器填充剩余空间，并且不会滚动 */
+.flex-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* 或者根据你的布局设置固定高度 */
+    overflow: hidden;
+}
+
+
+/* 基本重置样式 */
+ul, li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.docs-nav {
+    width: 300px;
+    padding-top: 1rem;
+    padding-left: 2rem;
+}
+/* 顶层标题样式 */
+.docs-nav > ul > li > a {
+    font-weight: bold; /* 粗体 */
+    color: #333; /* 深色 */
+    /* 其他样式... */
+}
+
+/* 子层标题样式 */
+.docs-nav ul ul span {
+    font-weight: normal; /* 正常字体 */
+    color: #777; /* 灰色 */
+    /* 其他样式... */
+}
+
+.markdown-container {
+    overflow-y: scroll; /* 在垂直方向上溢出时显示滚动条 */
+}

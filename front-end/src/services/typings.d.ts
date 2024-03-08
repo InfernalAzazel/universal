@@ -2,15 +2,6 @@ export interface PagesData<T> extends ResponseMessages<T>{
     total: number
 }
 
-export interface ResCode {
-    code: number
-    msg_type: number
-}
-export interface ResData<T> extends ResCode<T>{
-    data: T
-}
-
-
 export interface ResponseMessages <T>{
     status_code: number
     success: boolean
@@ -81,11 +72,17 @@ declare namespace API {
     }
 
     type Router = {
+        key?: number
+        father?: number
         path: string
-        name?: string
         title?: string
-        icon?: string // NOTE: icon 需要通过全局注册
-        roles?: string[]
+        title_mark?: string
+        name?: string
+        redirect?: string
+        icon?: string
+        component?: string
+        order?: number
+        hide?: boolean
         children?: Router[]
     }
 

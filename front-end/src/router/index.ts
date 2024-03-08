@@ -7,6 +7,7 @@ import { getTreeDataAndHalfCheckedKeys } from '@/utils';
 import { useGlobalState } from '@/composables/store';
 import i18n from '@/locales';
 
+
 const t = i18n.global.t
 
 const routes: RouteRecordRaw[] = [
@@ -14,6 +15,11 @@ const routes: RouteRecordRaw[] = [
     path: '/login',
     meta:{ hidden: true },
     component: () => import('@/views/root/auth/login.vue'),
+  },
+  {
+    path: '/docs',
+    meta:{ hidden: true },
+    component: () => import('@/views/docs/developer.vue'),
   },
   // {
   //   path: '/admin',
@@ -102,7 +108,7 @@ function generateRoutes(list: API.Router[]): RouteRecordRaw[] {
         icon: item.icon,
         hide: item.hide,
       },
-    }
+    } as RouteRecordRaw
 
     return [...all, current]
   }, [] as RouteRecordRaw[])

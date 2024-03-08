@@ -40,7 +40,7 @@ const menu = defineCrudMenuColumns({
 })
 
 
-const currentRow = ref<API.Role>({})
+const currentRow = ref<API.Role | any>({})
 const currentUID = ref<string>('')
 
 const columns = defineCrudColumns([
@@ -128,9 +128,8 @@ const treeDefaultProps = ref({
 })
 
 const rules = {
-  key: { required: true, message: t(`rules.role.key`), trigger: 'blur' },
   title: { required: true, message: t(`rules.role.title`), trigger: 'blur' },
-  description: { required: true, message: t(`rules.role.describe`), trigger: 'blur' }
+  description: { required: true, message: t(`rules.role.description`), trigger: 'blur' }
 }
 
 const {

@@ -137,7 +137,7 @@ const rules = {
 
 
 
-function clone(row) {
+function clone(row: any) {
   form.value = row;
   crudRef.value.openDialog('add')
 }
@@ -176,8 +176,6 @@ function clone(row) {
       <template #action>
         <pro-column-setting
           v-model="tableColumns"
-          :allow-drag="(node) => console.log(node)"
-          :allow-drop="(draggingNode, dropNode, type)=>console.log(draggingNode)"
           default-expand-all
           icon="SettingOutlined"
         />
@@ -207,7 +205,7 @@ function clone(row) {
         </template>
       </template>
       <template #detail-method="{ item, size }">
-        <el-tag class="ml-1" :size="size" :type="getTagType(row?.method)">{{ item?.method }}</el-tag>
+        <el-tag class="ml-1" :size="size" :type="getTagType(item?.method)">{{ item?.method }}</el-tag>
       </template>
       <template #detail-group="{ item, size }">
         <template v-for="(value, index) in splitString(item?.group)" :key="index">
