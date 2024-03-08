@@ -6,23 +6,22 @@ import { createFetch } from '@vueuse/core'
 
 const en_us_data: SidebarType[] = [
   {
-    title: '入门',
+    title: 'start',
     items: [
       {
-        title: '介绍',
-        link: 'https://raw.githubusercontent.com/hairyf/naive-ui-pro-components/main/docs/docs/intro.md'
+        title: 'intro',
+        link: 'https://raw.githubusercontent.com/InfernalAzazel/universal/master/docs/developer/en_us/intro.md'
       },
       {
-        title: '快速开始',
-        link: 'https://raw.githubusercontent.com/hairyf/naive-ui-pro-components/main/docs/docs/faq.md'
+        title: 'get started quickly',
+        link: 'https://raw.githubusercontent.com/InfernalAzazel/universal/master/docs/developer/en_us/faq.md'
       }
     ]
   },
   {
-    title: '必需品',
+    title: 'other',
     items: [
-      { title: '创建应用程序', link: 'https://raw.githubusercontent.com/InfernalAzazel/universal/master/README.md' },
-      { title: '模板语法', link: 'http://10.219.127.34/extittivns03/testdocs/raw/master/README.md?inline=false' }
+      { title: 'QA', link: 'https://raw.githubusercontent.com/InfernalAzazel/universal/master/docs/developer/en_us/introduce.md' },
     ]
   }
 
