@@ -27,33 +27,15 @@
       "62da5ad3dc655c5c2b1523d4",
       "62da5a0bdc655c5c2b15238c",
       "62c79bef76a04c01fd6d6565",
-      "62c79bef76a04c01fd6d6564"
-    ],
-    "name_en_us":"TeseRole",
-    "update_at":{
-      "$date":"2024-03-04T13:16:55.796+0800"
-    },
-    "title":"超级管理员",
-    "description":"超级管理员"
-  },
-  {
-    "_id":{
-      "$oid":"65e52884f692320c8ccb92eb"
-    },
-    "title":"测试管理员",
-    "description":"测试",
-    "menu_permission":[
+      "62c79bef76a04c01fd6d6564",
       "62c79bef76a04c01fd6d6561",
       "62c79bef76a04c01fd6d6562"
     ],
-    "interface_permission":[
-      "65e52cf6395ba83827b079d6"
-    ],
-    "create_at":{
-      "$date":"2024-03-04T09:48:52.890+0800"
-    },
+    "name_en_us":"TeseRole",
     "update_at":{
-      "$date":"2024-03-04T13:16:52.792+0800"
-    }
+      "$date":"2024-03-13T16:02:28.172+0800"
+    },
+    "title":"超级管理员",
+    "description":"超级管理员"
   }
 ]
