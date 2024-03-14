@@ -1,16 +1,15 @@
 from datetime import datetime
 from datetime import timezone
+
 import bson
 from bson import ObjectId
 from fastapi import APIRouter, Depends
 
 from app.models.common import ResponseModel, ResponseTotalModel, PagingQueryParams
-from app.models.system.menu import MenuResponseModel
-from app.models.system.role import RoleResponseModel
 from app.models.system.user import QueryParams, UserResponseModel, UserAddModel, UserEditModel
 from app.utils.custom_response import ResponseMessages, StatusCode
 from app.utils.db import async_db_engine, pagination_query
-from app.utils.dependencies import auto_current_user_permission, get_language
+from app.utils.dependencies import get_language
 
 router = APIRouter(
     prefix="/api",
@@ -97,13 +96,7 @@ async def edit(
     return ResponseMessages(locale=language, status_code=StatusCode.user_modify_successfully, success=True)
 
 
-@router.delete(
-    '/v1/private/admin/system/users',
-    responses={
-        200: {"model": ResponseModel},
-        422: {"model": ResponseModel}
-    }
-)
+@router.delete('/v1/private/admin/system/users')
 async def delete(
         uid: str,
         language: str = Depends(get_language),

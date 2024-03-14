@@ -16,11 +16,6 @@ const routes: RouteRecordRaw[] = [
     meta:{ hidden: true },
     component: () => import('@/views/root/auth/login.vue'),
   },
-  {
-    path: '/docs',
-    meta:{ hidden: true },
-    component: () => import('@/views/docs/developer.vue'),
-  },
   // {
   //   path: '/admin',
   //   redirect: '/admin/system/users',

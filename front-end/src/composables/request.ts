@@ -1,4 +1,3 @@
-import { RequestAuthKey } from '@/config'
 import type { MaybeRef, UseFetchReturn } from '@vueuse/core'
 import { createFetch, isObject } from '@vueuse/core'
 import { computed, unref } from 'vue'
@@ -18,11 +17,12 @@ const useRequest = createFetch({
     // 在请求前修改配置，如：注入 token 值
     async beforeFetch({ options }) {
       const state = useGlobalState()
-      if (RequestAuthKey && state.value.access_token) {
-        options.headers = Object.assign(options.headers || {}, {
-          [RequestAuthKey]: `${state.value.token_type} ${state.value.access_token}`
-        })
-      }
+      options.headers = Object.assign(options.headers || {}, {
+        // 如果 access_token 存在，则设置 Authorization 头部
+        ...(state.value.access_token ? { 'Authorization': `Bearer ${state.value.access_token}` } : {}),
+        // 如果locale存在，则设置 Customize-Language 头部
+        ...(state.value.locale ? { 'Customize-Language': state.value.locale} : {}),
+      })
       return { options }
     },
     // 在请求后处理数据，如：拦截错误、处理过期
@@ -32,39 +32,37 @@ const useRequest = createFetch({
       const state = useGlobalState()
       if(data.success){
         if(data.status_code !== 200){
-          ElNotification.info({
+          ElNotification({
             title:  t('multipurpose.info'),
             message: data.detail,
-            duration: 3,
+            type: 'info',
           })
         }
       }else {
-        console.log(data)
         // 定义一个数组，包含导致访问令牌失效的HTTP状态码
         const resetTokenStatusCodes = [419, 423, 480];
         // JWT过期 用户被禁用
         // 检查返回的状态码是否需要重置访问令牌
         if (resetTokenStatusCodes.includes(data.status_code)) {
-          console.log('666')
           state.value.access_token = '';
           await router.push({ path: `/login?redirect=${router.currentRoute.value.path}` })
         }
-        ElNotification.error({
+        ElNotification({
           title: t('multipurpose.error'),
           message: data.detail,
-          duration: 3,
-        });
+          type: 'error',
+        })
       }
       return { data, response }
     },
     // 请求错误
     // 获取请求返回后将立即运行。在任何 4xx 和 5xx 响应之后运行
     async onFetchError({ data, response, error }) {
-      ElNotification.error({
+      ElNotification({
         title: t('multipurpose.error'),
         message: data.detail,
-        duration: 3,
-      });
+        type: 'error',
+      })
 
       // console.error(error)
       return { data, error }

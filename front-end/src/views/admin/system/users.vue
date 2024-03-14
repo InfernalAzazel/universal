@@ -7,7 +7,6 @@ import {
 import {useI18n} from "vue-i18n";
 import { useUsersCrudRequest } from '@/services'
 import RoleSelect from '@/views/admin/system/components/RoleSelect.vue'
-import { splitString } from '@/utils'
 
 const {t} = useI18n()
 const menu = defineCrudMenuColumns({

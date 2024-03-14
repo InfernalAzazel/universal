@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {markRaw, onMounted, reactive, ref} from 'vue'
 import { useRouter } from 'vue-router'
-import { useMagicKeys } from '@vueuse/core'
 import { type API, useAutoInitRequest } from '@/services'
 import  {useLoginRequest} from '@/services'
 import { useI18n } from 'vue-i18n'

@@ -1,7 +1,6 @@
 
 
 export interface DocsConfigType {
-  title: string
   root: string
   locales: LocaleType[]
 }
@@ -9,6 +8,7 @@ export interface DocsConfigType {
 export interface LocaleType {
   mark: string
   label: string
+  title: string
   indexLink: string
   sidebars: SidebarType[]
 }

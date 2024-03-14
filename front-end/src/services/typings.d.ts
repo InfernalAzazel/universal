@@ -9,6 +9,39 @@ export interface ResponseMessages <T>{
     data: T[] | any
 }
 
+export interface OSInfo{
+    operating_system: string
+    os_version_detail: string
+    os_release: string
+    computer_network_name: string
+    processor_info: string
+    python_version: string
+}
+export interface CPUUsage {
+    logical_cpus_total: string
+    physical_cpus_total: string
+    percent: string
+}
+
+export interface MemoryUsage {
+    total: string
+    used: string
+    percent: string
+}
+
+export interface NetworkTraffic {
+    bytes_sent: string
+    bytes_recv: string
+}
+
+export interface Disk {
+    device: string
+    mountpoint: string
+    total: string
+    used: string
+    percent: string
+}
+
 declare namespace API {
 
    
@@ -20,6 +53,13 @@ declare namespace API {
         access_token: string
         token_type: string
     };
+    type Monitor = {
+        os_info: OSInfo
+        cpu_usage: CPUUsage
+        memory_usage: MemoryUsage
+        network_traffic: NetworkTraffic
+        disk_usage: Disk[]
+    }
 
     type User = {
         uid: string

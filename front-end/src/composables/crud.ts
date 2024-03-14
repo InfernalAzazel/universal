@@ -11,7 +11,7 @@ import {ref, unref, computed} from "vue";
 
  * @param immediate 是否立即获取数据列表
  */
-export function useCrud(url, immediate: boolean = false) {
+export function useCrud(url: string, immediate: boolean = false) {
 
   const detail = ref({})
   const currentRowUID = ref('')

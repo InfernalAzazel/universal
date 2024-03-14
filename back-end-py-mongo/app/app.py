@@ -1,8 +1,12 @@
-from fastapi import FastAPI, Request
-from fastapi.exceptions import RequestValidationError
+from fastapi import FastAPI, Request, security
+from fastapi.exceptions import RequestValidationError, HTTPException
+from fastapi.security import HTTPBasicCredentials
 from fastapi.staticfiles import StaticFiles
+from starlette import status
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import JSONResponse
 
+from app.api.private.admin.dashboard import monitor
 from app.api.private.admin.system import menu, interface, role, users
 from app.api.private.root import info
 from app.api.public import auth, init
@@ -33,13 +37,14 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 app.include_router(init.router)
 app.include_router(auth.router)
 app.include_router(info.router)
+# 系统
+app.include_router(monitor.router)
 app.include_router(users.router)
 app.include_router(menu.router)
 app.include_router(role.router)
 app.include_router(interface.router)
 
-
-# app.mount('/', StaticFiles(directory='app/static/dist', html=True), name='static')
+# app.mount('/', StaticFiles(directory='app/static/docs/developer', html=True), name='static')
 
 
 @app.on_event('startup')

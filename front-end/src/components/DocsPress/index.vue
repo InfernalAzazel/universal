@@ -2,13 +2,13 @@
 import { ElAvatar, ElMenu } from 'element-plus'
 import logo from '@/assets/logo.svg'
 import Markdown from './Markdown.vue'
-import type { SidebarType } from './typings.d'
+import type { DocsConfigType, LocaleType, SidebarType } from './typings.d'
 import './styles.css'
-import { toRefs } from 'vue'
 import Sidebar from '@/components/DocsPress/Sidebar.vue'
+import { ref, watch, watchEffect } from 'vue'
 
 const props = defineProps<{
-  sourceData: SidebarType[];
+  configData: DocsConfigType;
   currentArticle: string
 }>()
 
@@ -16,6 +16,8 @@ const emit = defineEmits<{
   (event: 'onSidebarSelect', link: string): void;
 }>()
 
+const title = ref('')
+const sidebars = ref<SidebarType[]>([])
 // 分配ID
 function getAssignIdsData(data: SidebarType[]) {
   let currentId = 0;
@@ -32,6 +34,12 @@ function getAssignIdsData(data: SidebarType[]) {
   }
   return assignIds(data)
 }
+
+function getRootLocale(configData: DocsConfigType) {
+  return configData?.locales?.find((value) => value?.mark === configData?.root)
+}
+
+
 async function sidebarSelectArticle(link: string) {
   // 重置滚动位置
   const markdownContainer = document.querySelector('.markdown-container')
@@ -40,6 +48,13 @@ async function sidebarSelectArticle(link: string) {
   }
   emit('onSidebarSelect', link)
 }
+
+watchEffect(()=>{
+  const locale = getRootLocale(props.configData)
+  title.value = locale?.title || '';
+  sidebars.value= getAssignIdsData(locale?.sidebars || [])
+})
+
 
 </script>
 
@@ -50,7 +65,7 @@ async function sidebarSelectArticle(link: string) {
         <el-icon size="32">
           <component is="Reading"></component>
         </el-icon>
-        <span> Element logo </span>
+        <span> {{ title }} </span>
       </el-menu-item>
       <div class="flex-grow"/>
 
@@ -70,7 +85,7 @@ async function sidebarSelectArticle(link: string) {
     </ElMenu>
     <div class="flex flex-row h-full w-full">
       <div class="docs-nav overflow-y-scroll">
-        <Sidebar :data="getAssignIdsData(props.sourceData)" :onSelect="sidebarSelectArticle" />
+        <Sidebar :data="sidebars" :onSelect="sidebarSelectArticle" />
       </div>
       <div class='w-full p-10 markdown-container'>
         <Markdown :markdown="props.currentArticle"></Markdown>

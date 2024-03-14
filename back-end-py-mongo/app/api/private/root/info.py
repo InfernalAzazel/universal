@@ -1,4 +1,5 @@
 import bson
+import httpx
 from bson import ObjectId
 from fastapi import APIRouter, Depends
 from app.models.common import ResponseModel
@@ -12,16 +13,14 @@ from app.utils.dependencies import auto_current_user_permission, get_language
 router = APIRouter(
     prefix="/api",
     tags=["private root"],
-)
-
-
-@router.get(
-    '/v1/private/root/info/account',
     responses={
         200: {"model": ResponseModel},
         422: {"model": ResponseModel}
     }
 )
+
+
+@router.get('/v1/private/root/info/account')
 async def account(
         language: str = Depends(get_language),
         current_user: UserResponseModel = Depends(auto_current_user_permission),
@@ -29,13 +28,7 @@ async def account(
     return ResponseMessages(locale=language, data=current_user)
 
 
-@router.get(
-    '/v1/private/root/info/routes',
-    responses={
-        200: {"model": ResponseModel},
-        422: {"model": ResponseModel}
-    }
-)
+@router.get('/v1/private/root/info/routes')
 async def routers(
         language: str = Depends(get_language),
         current_user: UserResponseModel = Depends(auto_current_user_permission),

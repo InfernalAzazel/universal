@@ -11,6 +11,10 @@ export function useLoginRequest(from: any) {
     const sp = new URLSearchParams(from)
     return  usePost<API.ResLogin>('/api/v1/public/auth/login', sp)
 }
+// 仪表盘
+export function useMonitorDictRequest(){
+    return useGet<ResponseMessages<API.Monitor>>('/api/v1/private/admin/dashboard/monitor')
+}
 
 // --- 菜单 ---
 export function useMenuArrayRequest(query?: MaybeRef<unknown>){

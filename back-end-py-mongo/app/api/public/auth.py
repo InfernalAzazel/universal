@@ -47,4 +47,8 @@ async def login(
         expires_delta=access_token_expires
     )
 
-    return ResponseMessages(locale=language, access_token=access_token, token_type="bearer")
+    return ResponseMessages(
+        locale=language,
+        access_token=access_token,
+        token_type="bearer"
+    )
