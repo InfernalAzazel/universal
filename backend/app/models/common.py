@@ -1,9 +1,9 @@
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Set, Dict
 from bson import ObjectId
 from fastapi.params import Query
 from pydantic import BaseModel, Field, AliasChoices
-from app.utils.db import PyObjectId
 
 
 class ResponseModel(BaseModel):
@@ -23,7 +23,7 @@ class ResponseLoginModel(ResponseModel):
 
 
 class AttachResponseModel(BaseModel):
-    uid: PyObjectId | None = Field(None, validation_alias=AliasChoices('_id', 'uid'))
+    id: str | None = Field(None, validation_alias=AliasChoices('_id', 'id'))
     create_at: datetime | None = Field(None)  # 创建时间
     update_at: datetime | None = Field(None)  # 更新时间
 
@@ -40,6 +40,12 @@ class BaseQueryParams:
 
     def to_mongo_query(self, exclude_none=True, exclude: Set[str] = None) -> Dict[str, Any]:
         """将查询参数转换为 MongoDB 查询格式。"""
+
+        if exclude is None:
+            exclude = set()
+        # 过滤查询全部
+        exclude.add('is_all_query')
+
         query_dict = self.to_dict(exclude_none=exclude_none, exclude=exclude)
         mongo_query = {}
 
@@ -56,7 +62,7 @@ class BaseQueryParams:
                         '$gte': value[0].astimezone(timezone.utc),
                         '$lte': value[1].astimezone(timezone.utc)
                     }
-                elif key == 'uids' and value is not None:
+                elif key == 'ids' and value is not None:
                     mongo_query['_id'] = {"$in": [ObjectId(v) for v in value]}
                 else:
                     mongo_query[key] = {"$in": value}
@@ -64,7 +70,7 @@ class BaseQueryParams:
                 # 假定字典已经是Mongo查询操作符的格式
                 mongo_query[key] = value
             else:
-                if key == 'uid' and value is not None:
+                if key == 'id' and value is not None:
                     mongo_query['_id'] = ObjectId(value)
                 else:
                     mongo_query[key] = value
@@ -72,14 +78,10 @@ class BaseQueryParams:
         return mongo_query
 
 
+@dataclass
 class PagingQueryParams(BaseQueryParams):
-    def __init__(
-            self,
-            current_page: int = Query(1),
-            page_size: int = Query(10),
-    ):
-        self.current_page = current_page
-        self.page_size = page_size
+    current_page: int = Query(1)
+    page_size: int = Query(10)
 
     def to_mongo_query(self, exclude_none=True, exclude: Set[str] = None) -> Dict[str, Any]:
         # 预定义要排除的字段

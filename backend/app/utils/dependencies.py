@@ -12,7 +12,7 @@ from app.utils.custom_response import ExceptionResponse, StatusCode
 from app.utils.db import async_db_engine
 from app.utils.jwt import decode_access_token
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/public/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/external/auth/login")
 
 
 def get_language(request: Request):

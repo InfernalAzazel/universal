@@ -1,24 +1,29 @@
-from fastapi import FastAPI, Request, security
-from fastapi.exceptions import RequestValidationError, HTTPException
-from fastapi.security import HTTPBasicCredentials
-from fastapi.staticfiles import StaticFiles
-from starlette import status
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import JSONResponse
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 
-from app.api.private.admin.dashboard import monitor
-from app.api.private.admin.system import menu, interface, role, users
-from app.api.private.root import info
-from app.api.public import auth, init
+from app.api.external import auth
 from app.settings import APP_NAME
 from app.utils.custom_response import ExceptionResponse, ResponseMessages, StatusCode
+from app.utils.db import connect
 from app.utils.dependencies import get_language
+
+from app.api.admin import interface, menu, role, users
 
 app = FastAPI(
     title=APP_NAME,
     description=f'{APP_NAME} API',
     version="stable 0.0.1",
 )
+
+
+@app.on_event('startup')
+async def startup():
+    await connect()
+
+
+@app.on_event("shutdown")
+def on_shutdown():
+    pass
 
 
 @app.exception_handler(ExceptionResponse)
@@ -34,19 +39,22 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     return ResponseMessages(locale=language, status_code=StatusCode.bad_request, success=False, detail=str(exc))
 
 
-app.include_router(init.router)
-app.include_router(auth.router)
-app.include_router(info.router)
-# 系统
-app.include_router(monitor.router)
-app.include_router(users.router)
-app.include_router(menu.router)
-app.include_router(role.router)
-app.include_router(interface.router)
+# app.include_router(init.router)
+# app.include_router(auth.router)
+# app.include_router(info.router)
+# # 系统
+# app.include_router(monitor.router)
+# app.include_router(users.router)
+# app.include_router(menu.router)
+# app.include_router(role.router)
+# app.include_router(interface.router)
 
 # app.mount('/', StaticFiles(directory='app/static/docs/developer', html=True), name='static')
 
+app.include_router(auth.router)
 
-@app.on_event('startup')
-async def startup():
-    pass
+
+app.include_router(interface.router)
+app.include_router(menu.router)
+app.include_router(role.router)
+app.include_router(users.router)
