@@ -9,10 +9,12 @@ from app.models.common import BaseQueryParams
 from app.utils.mixin import DBMixin
 
 
+# ----------------- 系统 --------------------------
 class User(DBMixin, Document):
     username: str = Field()  # 帐号： quid1111
     password: str = Field()  # 密码
     disabled: bool = Field(False)  # 禁用：True == 禁用
+    is_super: bool = Field(False)  # 是否为超级管理员
     role_names: list[str] = Field([])  # 关联角色
     name: str | None = Field(None)  # 姓名:  张三
     mail: str | None = Field(None)  # 邮箱
@@ -54,6 +56,7 @@ class UserEditBody(BaseModel):
 class Role(DBMixin, Document):
     title: str | None = Field(None)
     description: str | None = Field(None)
+    is_super: bool = Field(False)  # 是否超级管理员
     menu_permission: list[str] = Field([])
     interface_permission: list[str] = Field([])
 
@@ -121,12 +124,13 @@ class InterfaceEditBody(BaseModel):
 
 class Menu(DBMixin, Document):
     key: int = Field()
+    father: int = Field()
     path: str = Field()
     title: str = Field()
     title_mark: str = Field()
-    name: str = Field(None)
-    redirect: str = Field(None)
-    icon: str = Field(None)
+    name: str | None = Field(None)
+    redirect: str | None = Field(None)
+    icon: str | None = Field(None)
     component: str = Field()
     order: int = Field()
 
@@ -137,31 +141,38 @@ class Menu(DBMixin, Document):
 @dataclass
 class MenuQueryParams(BaseQueryParams):
     is_all_query: bool = Query(False)
-    id: str = Query(None)
-    ids: list[str] = Query(None)
-    title: str = Query(None)
-    name: str = Query(None)
-    path: str = Query(None)
-    group: str = Query(None)
-    method: str = Query(None)
-    create_at: list[datetime] = Query(None)
-    update_at: list[datetime] = Query(None)
+    id: str | None = Query(None)
+    ids: list[str] | None = Query(None)
+    key: int | None = Query(None)
+    father: int | None = Query(None)
+    path: str | None = Query(None)
+    title: str | None = Query(None)
+    title_mark: str | None = Query(None)
+    name: str | None = Query(None)
+    redirect: str | None = Query(None)
+    icon: str | None = Query(None)
+    component: str | None = Query(None)
+    order: int | None = Query(None)
+    create_at: list[datetime] | None = Query(None)
+    update_at: list[datetime] | None = Query(None)
 
 
 class MenuCreateBody(BaseModel):
     key: int = Field()
+    father: int = Field()
     path: str = Field()
     title: str = Field()
     title_mark: str = Field()
-    name: str = Field(None)
-    redirect: str = Field(None)
-    icon: str = Field(None)
+    name: str | None = Field(None)
+    redirect: str | None = Field(None)
+    icon: str | None = Field(None)
     component: str = Field()
     order: int = Field()
 
 
 class MenuEditBody(BaseModel):
     key: int | None = Field(None)
+    father: int | None = Field(None)
     path: str | None = Field(None)
     title: str | None = Field(None)
     title_mark: str | None = Field(None)

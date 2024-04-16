@@ -19,7 +19,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     label: key,
   })
 }
-const menuTrees = ref([])
+const menuTrees = ref<any[]>([])
 const menu = defineCrudMenuColumns({
   label: t(`crud.label`),
   addText: t(`crud.addText`),
@@ -38,8 +38,8 @@ const menu = defineCrudMenuColumns({
 })
 const columns = defineCrudColumns([
   {
-    label: t("system.menu.uid"),
-    prop: 'uid',
+    label: t("system.menu.id"),
+    prop: 'id',
     component: 'el-input',
     search: false,
     detail: true,

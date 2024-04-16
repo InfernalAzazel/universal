@@ -32,8 +32,8 @@ const selectBool = ref([
 
 const columns = defineCrudColumns([
   {
-    label: t(`system.users.uid`),
-    prop: 'uid',
+    label: t(`system.users.id`),
+    prop: 'id',
     component: 'el-input',
     detail: true,
     props:{
@@ -49,6 +49,25 @@ const columns = defineCrudColumns([
     search: true,
     detail: true,
     width: '200'
+  },
+  {
+    label: t(`system.users.password`),
+    prop: 'password',
+    component: 'el-input',
+    form: true,
+    search: false,
+    detail: false,
+    width: '200'
+  },
+  {
+    label: t(`system.users.is_super`),
+    prop: 'is_super',
+    component: 'pro-select',
+    detail: true,
+    width: '200',
+    props: {
+      data: selectBool.value
+    },
   },
   {
     label: t(`system.users.name`),
@@ -138,6 +157,7 @@ const tableColumns = ref(JSON.parse(JSON.stringify(columns)))
 
 const rules = {
   username: {required: true, message: t('rules.users.username'), trigger: 'blur'},
+  password: {required: true, message: t('rules.users.password'), trigger: 'blur'},
   disabled: {required: true, message: t('rules.users.disabled'), trigger: 'blur'},
   role_names: {required: true, message: t('rules.users.role_names'), trigger: 'blur'},
 }
@@ -207,6 +227,9 @@ const {
           <el-tag class="ml-1" :size="size" type="primary">{{ value }}</el-tag>
         </template>
       </template>
+      <template #table-is_super="{row }">
+        <el-switch v-model="row.is_super" disabled/>
+      </template>
       <template #table-disabled="{row }">
         <el-switch v-model="row.disabled" disabled/>
       </template>
@@ -214,6 +237,9 @@ const {
         <template v-for="(value, index) in item?.role_names" :key="index">
           <el-tag class="ml-1" :size="size" type="primary">{{ value }}</el-tag>
         </template>
+      </template>
+      <template #detail-is_super="{item}">
+        <el-switch v-model="item.is_super" disabled/>
       </template>
       <template #detail-disabled="{item}">
         <el-switch v-model="item.disabled" disabled/>

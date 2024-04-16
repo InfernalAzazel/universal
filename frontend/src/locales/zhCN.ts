@@ -58,6 +58,7 @@ export default {
   'rules.interface.method': '请选择请求方式',
 
   'rules.users.username':'请输入帐号',
+  'rules.users.password': '请输入密码',
   'rules.users.disabled':'请选择是否禁用',
   'rules.users.role_names':'请选择关联角色',
 
@@ -86,8 +87,10 @@ export default {
   'dashboard.monitor.disk_info.used':'使用量',
   'dashboard.monitor.disk_info.percent':'百分比',
 
-  'system.users.uid': 'UID',
+  'system.users.id': 'ID',
   'system.users.username': '帐号',
+  'system.users.password': '密码',
+  'system.users.is_super': '超级管理员',
   'system.users.name': '名称',
   'system.users.mail': '邮箱',
   'system.users.company': '公司',
@@ -95,7 +98,7 @@ export default {
   'system.users.disabled': '禁用',
   'system.users.role_names': '角色名称',
 
-  'system.role.uid': 'UID',
+  'system.role.id': 'ID',
   'system.role.title': '角色名称',
   'system.role.description': '描述',
   'system.role.menu_permissions': '菜单',
@@ -105,7 +108,7 @@ export default {
   'system.role.permissions_cancel': '取消',
   'system.role.permissions_save': '保存',
 
-  'system.menu.uid': 'UID',
+  'system.menu.id': 'ID',
   'system.menu.key': '节点',
   'system.menu.father': '父节点',
   'system.menu.path': '路径',
@@ -118,7 +121,7 @@ export default {
   'system.menu.order': '排序',
   'system.menu.create_time': '创建时间',
 
-  'system.interface.uid': 'UID',
+  'system.interface.id': 'ID',
   'system.interface.path': '路径',
   'system.interface.title': '接口',
   'system.interface.group': '分组',

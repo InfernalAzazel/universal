@@ -3,7 +3,7 @@ export interface PagesData<T> extends ResponseMessages<T>{
 }
 
 export interface ResponseMessages <T>{
-    status_code: number
+    code: number
     success: boolean
     detail : string,
     data: T[] | any

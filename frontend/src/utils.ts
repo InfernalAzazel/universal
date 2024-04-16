@@ -36,7 +36,7 @@ export function getTreeDataAndHalfCheckedKeys(
   depth: number = 0
 ): { treeData: any[]; halfCheckedKeys: string[] } {
   const treeData: any[] = []; // 存储树形数据的数组
-  const halfCheckedKeys: Set<string> = new Set(); // 存储半选中的键的唯一 uid
+  const halfCheckedKeys: Set<string> = new Set(); // 存储半选中的键的唯一 id
 
   // 遍历数据
   data
@@ -50,7 +50,7 @@ export function getTreeDataAndHalfCheckedKeys(
       );
 
       if (itemChildren.length > 0) {
-        halfCheckedKeys.add(item.uid); // 添加当前父节点的 uid
+        halfCheckedKeys.add(item.id); // 添加当前父节点的 id
         item[childrenKey] = itemChildren; // 将子节点添加到父节点的 children 属性中
         childHalfCheckedKeys.forEach((node) => halfCheckedKeys.add(node)); // 将子节点的半选中键合并到当前父节点数组中
       }

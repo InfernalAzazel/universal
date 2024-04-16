@@ -31,7 +31,7 @@ const useRequest = createFetch({
       // 处理成功响应
       const state = useGlobalState()
       if(data.success){
-        if(data.status_code !== 200){
+        if(data.code !== 200){
           ElNotification({
             title:  t('multipurpose.info'),
             message: data.detail,
@@ -43,7 +43,7 @@ const useRequest = createFetch({
         const resetTokenStatusCodes = [419, 423, 480];
         // JWT过期 用户被禁用
         // 检查返回的状态码是否需要重置访问令牌
-        if (resetTokenStatusCodes.includes(data.status_code)) {
+        if (resetTokenStatusCodes.includes(data.code)) {
           state.value.access_token = '';
           await router.push({ path: `/login?redirect=${router.currentRoute.value.path}` })
         }

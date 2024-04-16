@@ -54,6 +54,7 @@ export default {
   'rules.menu.icon': 'Please select an icon',
 
   'rules.users.username':'please enter your account',
+  'rules.users.password': 'Please enter your password',
   'rules.users.disabled':'Please choose whether to disable',
   'rules.users.role_names':'Please select an associated role',
 
@@ -88,8 +89,10 @@ export default {
   'dashboard.monitor.disk_info.used':'Used',
   'dashboard.monitor.disk_info.percent':'Percent',
 
-  'system.users.uid': 'UID',
+  'system.users.id': 'ID',
   'system.users.username': 'UserName',
+  'system.users.password': 'Password',
+  'system.users.is_super': 'SuperAdmin',
   'system.users.name': 'Name',
   'system.users.mail': 'Mail',
   'system.users.company': 'Company',
@@ -97,7 +100,7 @@ export default {
   'system.users.disabled': 'Disabled',
   'system.users.role_names': 'RoleName',
 
-  'system.role.uid': 'UID',
+  'system.role.id': 'ID',
   'system.role.title': 'RoleName',
   'system.role.description': 'Description',
   'system.role.menu_permissions': 'Menu',
@@ -108,7 +111,7 @@ export default {
   'system.role.permissions_save': 'Save',
 
 
-  'system.menu.uid': 'UID',
+  'system.menu.id': 'ID',
   'system.menu.key': 'Key',
   'system.menu.father': 'Father',
   'system.menu.path': 'Path',
@@ -120,7 +123,7 @@ export default {
   'system.menu.component': 'Component',
   'system.menu.order': 'Order',
 
-  'system.interface.uid': 'UID',
+  'system.interface.id': 'ID',
   'system.interface.title': 'Title',
   'system.interface.path': 'Path',
   'system.interface.group': 'Group',

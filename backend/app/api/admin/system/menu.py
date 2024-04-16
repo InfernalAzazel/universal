@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, Query, Body
 
-from app.models.admin import Menu, MenuQueryParams, MenuCreateBody, MenuEditBody
+from app.models.admin import Menu, MenuQueryParams, MenuCreateBody, MenuEditBody, User
 from app.models.common import ResponseTotalModel, ResponseModel, PagingQueryParams
 from app.utils.api_response import StatusCode, DefaultCodes
+from app.utils.dependencies import auto_current_user_permission
 
 router = APIRouter(
     prefix="/api/v1",
-    tags=["private admin"],
+    tags=["admin"],
     responses={
         200: {"model": ResponseModel},
         422: {"model": ResponseModel}
@@ -36,7 +37,7 @@ _codes = DefaultCodes(
 async def array(
         qp: MenuQueryParams = Depends(),
         ppq: PagingQueryParams = Depends(PagingQueryParams),
-        # _: UserResponseModel = Depends(auto_current_user_permission),
+        _: User = Depends(auto_current_user_permission),
 ):
     return await Menu.crud_list(Menu, qp, ppq)
 
@@ -44,7 +45,7 @@ async def array(
 @router.post('/admin/system/menu')
 async def add(
         body: MenuCreateBody,
-        # _: UserResponseModel = Depends(auto_current_user_permission),
+        _: User = Depends(auto_current_user_permission),
 ):
     return await Menu.crud_add(Menu, body, _codes)
 
@@ -52,7 +53,7 @@ async def add(
 @router.get('/admin/system/menu/{id}')
 async def retrieve(
         menu_id: str = Query(..., alias='id'),
-        # _: UserResponseModel = Depends(auto_current_user_permission),
+        _: User = Depends(auto_current_user_permission),
 ):
     return await Menu.crud_retrieve(Menu, menu_id, _codes)
 
@@ -61,7 +62,7 @@ async def retrieve(
 async def edit(
         menu_id: str = Query(..., alias='id'),
         body: MenuEditBody = Body(...),
-        # _: UserResponseModel = Depends(auto_current_user_permission),
+        _: User = Depends(auto_current_user_permission),
 ):
     return await Menu.crud_edit(Menu, menu_id, body, _codes)
 
@@ -69,6 +70,6 @@ async def edit(
 @router.delete('/admin/system/menu/{id}')
 async def delete(
         menu_id: str = Query(..., alias='id'),
-        # _: UserResponseModel = Depends(auto_current_user_permission)
+        _: User = Depends(auto_current_user_permission)
 ):
     return await Menu.crud_delete(Menu, menu_id, _codes)

@@ -42,7 +42,12 @@ class DBMixin(BaseModel):
         return obj, total
 
     @staticmethod
-    async def crud_list(queryset: Type[Document], qp, ppq) -> APIResponse:
+    async def crud_list(
+            queryset: Type[Document],
+            qp,
+            ppq,
+            exclude: set[int] | set[str] | dict[int, Any] | dict[str, Any] | None = None
+    ) -> APIResponse:
         """
         分页查询或返回全部数据。
 
@@ -50,6 +55,7 @@ class DBMixin(BaseModel):
             queryset (Type[Document]): 操作的 MongoDB 文档类。
             qp: 包含查询参数，具体依赖于其 to_mongo_query 方法的实现。
             ppq: 另一组查询参数，可能用于权限过滤等，具体依赖于其 to_mongo_query 方法的实现。
+            exclude: 设置需要过滤的字段，默认 None
 
         Returns:
             APIResponse: 包含查询结果和状态信息的响应对象。
@@ -65,11 +71,13 @@ class DBMixin(BaseModel):
         if not qp.is_all_query:
             # 如果不是请求全部数据，执行分页查询
             obj, total = await DBMixin.paginate_queryset(queryset, query, ppq)
-            return APIResponse(obj, total=total)
+            data = [d.dict(exclude=exclude) for d in obj]
+            return APIResponse(data, total=total)
 
         # 如果请求全部数据，查询并返回所有符合条件的数据
         obj = await queryset.find(query).to_list()
-        return APIResponse(obj)
+        data = [d.dict(exclude=exclude) for d in obj]
+        return APIResponse(data)
 
     @staticmethod
     async def crud_add(
@@ -111,7 +119,8 @@ class DBMixin(BaseModel):
     async def crud_retrieve(
             queryset: Type[Document],
             data_id: str,
-            codes: DefaultCodes
+            codes: DefaultCodes,
+            exclude: set[int] | set[str] | dict[int, Any] | dict[str, Any] | None = None,
     ):
         """
         向数据库编辑一条记录
@@ -121,7 +130,7 @@ class DBMixin(BaseModel):
             data_id: 数据 ID
             body: 包含数据模型的基础模型实例
             codes: 成功代码标志, 失败代码标志, 找不到数据代码标志
-
+            exclude: 设置需要过滤的字段，默认 None
         Returns:
             APIResponse: 包含操作结果的响应对象
         """
@@ -130,7 +139,7 @@ class DBMixin(BaseModel):
 
         if not result:
             return APIResponse(code=codes.failed_retrieve_code)
-        return APIResponse(result, success=True, code=codes.success_retrieve_code)
+        return APIResponse(result.dict(exclude=exclude), success=True, code=codes.success_retrieve_code, exclude=exclude)
 
     @staticmethod
     async def crud_edit(
@@ -151,7 +160,7 @@ class DBMixin(BaseModel):
         Returns:
             APIResponse: 包含操作结果的响应对象
         """
-        update_data = {'$set': body.model_dump()}
+        update_data = {'$set': body.model_dump(exclude_none=True)}
         existing_record = await queryset.get(data_id)
 
         if not existing_record:

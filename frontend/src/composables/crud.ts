@@ -14,7 +14,7 @@ import {ref, unref, computed} from "vue";
 export function useCrud(url: string, immediate: boolean = false) {
 
   const detail = ref({})
-  const currentRowUID = ref('')
+  const currentRowID = ref('')
   const currentPage = ref(1)
   const pageSize = ref(10)
   const list = ref<any[]>([])
@@ -25,7 +25,10 @@ export function useCrud(url: string, immediate: boolean = false) {
     page_size: pageSize.value,
   })
 
-  const _url = computed(() => (`${url}?uid=${currentRowUID.value}`))
+
+
+  const _url = computed(() => `${url}/${currentRowID.value}?id=${currentRowID.value}`);
+
   const {isFetching, data, execute: exeList} = useGet<PagesData<any>>(url, searchForm)
   const {execute: exeAdd} = usePost(url, form)
   const {execute: exeEdit} = usePut(_url, form);
@@ -49,7 +52,7 @@ export function useCrud(url: string, immediate: boolean = false) {
   const beforeOpen = defineCrudBeforeOpen((done, type, row) => {
     if (type === 'edit') {
       form.value = row || {}
-      currentRowUID.value = row.uid || ''
+      currentRowID.value = row.id || ''
 
     } else if (type === 'detail') {
       detail.value = row || {}
@@ -80,7 +83,7 @@ export function useCrud(url: string, immediate: boolean = false) {
     }
   )
   const deleteRow = async (row: any) => {
-    currentRowUID.value = row.uid
+    currentRowID.value = row.id
     await exeDel()
     await loadList()
   }
@@ -94,7 +97,7 @@ export function useCrud(url: string, immediate: boolean = false) {
     list,
     total,
     isFetching,
-    currentRowUID,
+    currentRowID,
     beforeOpen,
     submit,
     search,

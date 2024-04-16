@@ -38,8 +38,8 @@ const selectData = ref([
 
 const columns = defineCrudColumns([
   {
-    label: t(`system.interface.uid`),
-    prop: 'uid',
+    label: t(`system.interface.id`),
+    prop: 'id',
     component: 'el-input',
     search: true,
     detail: true,

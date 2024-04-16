@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field, AliasChoices
 
 
 class ResponseModel(BaseModel):
-    status_code: int = Field()
+    code: int = Field()
     success: bool = Field()
     detail: str = Field()
     data: list[Any] | Any = Field()
@@ -20,12 +20,6 @@ class ResponseTotalModel(ResponseModel):
 class ResponseLoginModel(ResponseModel):
     access_token: str = Field()
     token_type: str = Field()
-
-
-class AttachResponseModel(BaseModel):
-    id: str | None = Field(None, validation_alias=AliasChoices('_id', 'id'))
-    create_at: datetime | None = Field(None)  # 创建时间
-    update_at: datetime | None = Field(None)  # 更新时间
 
 
 class BaseQueryParams:

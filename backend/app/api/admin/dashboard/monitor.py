@@ -1,14 +1,16 @@
 import platform
+
 import psutil
 from fastapi import APIRouter, Depends
 
+from app.models.admin import User
 from app.models.common import ResponseModel
-from app.utils.custom_response import ResponseMessages
-from app.utils.dependencies import get_language
+from app.utils.api_response import APIResponse
+from app.utils.dependencies import auto_current_user_permission
 
 router = APIRouter(
-    prefix="/api",
-    tags=["private admin"],
+    prefix="/api/v1",
+    tags=["admin"],
     responses={
         200: {"model": ResponseModel},
         422: {"model": ResponseModel}
@@ -25,12 +27,11 @@ def convert_bytes(n):
     return f"{n:.2f} YB"
 
 
-@router.get("/v1/private/admin/dashboard/monitor")
+@router.get("/admin/dashboard/monitor")
 def read_system_info(
-        language: str = Depends(get_language),
-        # _: UserResponseModel = Depends(auto_current_user_permission),
+        _: User = Depends(auto_current_user_permission),
 ):
-    system_info = {
+    data = {
         # 操作系统和Python的相关信息
         "os_info": {
             "operating_system": platform.system(),
@@ -67,4 +68,4 @@ def read_system_info(
         } for disk in psutil.disk_partitions()],
 
     }
-    return ResponseMessages(locale=language, data=system_info)
+    return APIResponse(data)

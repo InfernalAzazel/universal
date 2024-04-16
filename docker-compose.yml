@@ -23,16 +23,22 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin
     ports:
       - "27017:27017"
-  server:
-    image: server
+  web:
+    image: web
     build:
       context: .
-      dockerfile: back-end-py-mongo/Dockerfile
-    container_name: server
-    hostname: server
+      dockerfile: backend/Dockerfile
+    container_name: web
+    hostname: web
+    env_file:
+      -.env
+    command: wait-for-it --strict --timeout=120 web:80 -- sh -c "
+      ./manage.py dbenv i
+      uvicorn app.app:app --host 0.0.0.0 --port 80
+      "
     restart: always
     volumes:
-      - server:/code
+      - web:/code
     ports:
       - "80:80"
 volumes:
@@ -42,5 +48,5 @@ volumes:
     name: mongoData
   mongoConfig:
     name: mongoConfig
-  server:
-    name: server
+  web:
+    name: web

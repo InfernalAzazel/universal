@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, Query, Body
 
-from app.models.admin import Interface, InterfaceQueryParams, InterfaceCreateBody, InterfaceEditBody
+from app.models.admin import Interface, InterfaceQueryParams, InterfaceCreateBody, InterfaceEditBody, User
 from app.models.common import ResponseTotalModel, ResponseModel, PagingQueryParams
 from app.utils.api_response import StatusCode, DefaultCodes
+from app.utils.dependencies import auto_current_user_permission
 
 router = APIRouter(
     prefix="/api/v1",
-    tags=["private admin"],
+    tags=["admin"],
     responses={
         200: {"model": ResponseModel},
         422: {"model": ResponseModel}
@@ -36,7 +37,7 @@ _codes = DefaultCodes(
 async def array(
         qp: InterfaceQueryParams = Depends(),
         ppq: PagingQueryParams = Depends(PagingQueryParams),
-        # _: UserResponseModel = Depends(auto_current_user_permission),
+        _: User = Depends(auto_current_user_permission),
 ):
     return await Interface.crud_list(Interface, qp, ppq)
 
@@ -44,7 +45,7 @@ async def array(
 @router.post('/admin/system/interface')
 async def add(
         body: InterfaceCreateBody,
-        # _: UserResponseModel = Depends(auto_current_user_permission),
+        _: User = Depends(auto_current_user_permission),
 ):
     return await Interface.crud_add(Interface, body, _codes)
 
@@ -52,7 +53,7 @@ async def add(
 @router.get('/admin/system/interface/{id}')
 async def retrieve(
         interface_id: str = Query(..., alias='id'),
-        # _: UserResponseModel = Depends(auto_current_user_permission),
+        _: User = Depends(auto_current_user_permission),
 ):
     return await Interface.crud_retrieve(Interface, interface_id, _codes)
 
@@ -61,7 +62,7 @@ async def retrieve(
 async def edit(
         interface_id: str = Query(..., alias='id'),
         body: InterfaceEditBody = Body(...),
-        # _: UserResponseModel = Depends(auto_current_user_permission),
+        _: User = Depends(auto_current_user_permission),
 ):
     return await Interface.crud_edit(Interface, interface_id, body, _codes)
 
@@ -69,6 +70,6 @@ async def edit(
 @router.delete('/admin/system/interface/{id}')
 async def delete(
         interface_id: str = Query(..., alias='id'),
-        # _: UserResponseModel = Depends(auto_current_user_permission)
+        _: User = Depends(auto_current_user_permission)
 ):
     return await Interface.crud_delete(Interface, interface_id, _codes)

@@ -9,12 +9,6 @@ from app.settings import JWT_MINUTES
 from app.utils.api_response import APIResponse, StatusCode
 from app.utils.jwt import create_access_token
 
-# from app.settings import JWT_MINUTES
-# from app.utils.api_response import APIResponse, StatusCode
-# from app.utils.dependencies import get_language
-# from app.utils.helper import m_p
-# from app.utils.jwt import create_access_token
-
 router = APIRouter(
     prefix="/api/v1",
     tags=["external"],

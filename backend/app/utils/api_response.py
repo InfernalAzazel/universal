@@ -73,6 +73,8 @@ class StatusCode(Enum):
     role_modify_successfully = (1207, "角色修改成功")
     role_modify_failed = (1208, "角色修改失败")
     role_not_found = (1209, "未找到角色")
+    role_delete_admin_failed = (12010, "超级管理员角色是不允许删除的，该操作已被记录")
+    role_modify_admin_failed = (12011, "超级管理员账号才能编辑超级管理员角色，该操作已被记录")
     user_add_successfully = (1301, "用户添加成功")
     user_add_failed = (1302, "用户添加失败")
     user_delete_successfully = (1303, "用户删除成功")
@@ -82,6 +84,8 @@ class StatusCode(Enum):
     user_modify_successfully = (1307, "用户修改成功")
     user_modify_failed = (1308, "用户修改失败")
     user_not_found = (1309, "未找到用户")
+    user_delete_admin_failed = (13010, "超级管理员账号是不允许删除的，该操作已被记录")
+    user_modify_admin_failed = (13011, "超级管理员账号才能编辑超级管理员账号，该操作已被记录")
 
     def __new__(cls, value, message):
         obj = object.__new__(cls)
@@ -105,7 +109,6 @@ class APIResponse(ORJSONResponse):
             code: int = StatusCode.ok.value,
             success: bool | None = None,
             detail: str | None = None,
-            by_alias: bool = False,
             **kwargs
     ):
         """
@@ -117,7 +120,6 @@ class APIResponse(ORJSONResponse):
             code: 状态码，默认值为 200.
             success: 成功，默认值为 状态码200 时 True，否则需要自行设置成功状态
             detail: 详细和错误信息
-            by_alias: 转成 Json 是否按照别名转化，默认关闭
             kwargs: 添加额外字段.
 
         Returns:
@@ -131,4 +133,15 @@ class APIResponse(ORJSONResponse):
             "data": data,
         }
         content.update(kwargs)
-        super().__init__(content=jsonable_encoder(content, by_alias=by_alias))
+        super().__init__(content=jsonable_encoder(content, by_alias=False))
+
+
+class ExceptionResponse(Exception):
+    def __init__(
+            self,
+            code: int,
+            detail: Any = None,
+    ):
+        message = StatusCode.get_message(code=code)
+        self.code = code
+        self.detail = detail if detail is not None else str(message)

@@ -1,15 +1,14 @@
 import casbin
+from beanie.operators import In
 from bson import ObjectId
 from fastapi import Depends, Request
 from fastapi.security import OAuth2PasswordBearer
 from jose import ExpiredSignatureError
 from jose.exceptions import JWTClaimsError, JWTError
-from app.models.system.interface import InterfaceResponseModel
-from app.models.system.role import RoleResponseModel
-from app.models.system.user import UserResponseModel
-from app.utils.custom_adapter import Adapter
-from app.utils.custom_response import ExceptionResponse, StatusCode
-from app.utils.db import async_db_engine
+
+from app.models.admin import User, Role, Interface
+from app.utils.api_response import ExceptionResponse, StatusCode
+from app.utils.casbin_adapter import Adapter
 from app.utils.jwt import decode_access_token
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/external/auth/login")
@@ -22,76 +21,67 @@ def get_language(request: Request):
 
 # 获取当前用户
 async def get_current_user(
-        language: str = Depends(get_language),
         token: str = Depends(oauth2_scheme),
 ):
     try:
         payload = decode_access_token(token)
         username: str = payload.get("sub")
         if username is None:
-            raise ExceptionResponse(locale=language, status_code=StatusCode.jwt_decode_failed)
+            raise ExceptionResponse(code=StatusCode.jwt_decode_failed.value)
     except ExpiredSignatureError as _:
-        raise ExceptionResponse(locale=language, status_code=StatusCode.jwt_expired)
+        raise ExceptionResponse(code=StatusCode.jwt_expired.value)
     except JWTClaimsError as _:
-        raise ExceptionResponse(locale=language, status_code=StatusCode.jwt_decode_failed)
+        raise ExceptionResponse(code=StatusCode.jwt_decode_failed.value)
     except JWTError as _:
-        raise ExceptionResponse(locale=language, status_code=StatusCode.jwt_decode_failed)
-    db_client = async_db_engine()
-    doc = await db_client[UserResponseModel.Config.name].find_one({'username': username})
+        raise ExceptionResponse(code=StatusCode.jwt_decode_failed.value)
 
-    if doc is None:
-        raise ExceptionResponse(locale=language, status_code=StatusCode.username_password_error)
-
-    user_model = UserResponseModel(**doc)
-
-    return user_model
+    user = await User.find_one(User.username == username)
+    if user is None:
+        raise ExceptionResponse(code=StatusCode.credentials_invalid.value)
+    return user
 
 
 # 自动用户认证权限
 async def auto_current_user_permission(
         request: Request,
-        language: str = Depends(get_language),
-        current_user: UserResponseModel = Depends(get_current_user)):
+        current_user: User = Depends(get_current_user)
+):
     path = request.url.path
     method = request.method
 
     interface_permission = []
-    role_models = []
 
     if current_user.disabled:
-        raise ExceptionResponse(locale=language, status_code=StatusCode.user_disabled)
+        raise ExceptionResponse(code=StatusCode.user_disabled.value)
 
-    db_client = async_db_engine()
-    coll = db_client[RoleResponseModel.Config.name]
-    cursor = coll.find({'title': {'$in': current_user.role_names}})
+    roles = await Role.find(In(Role.title, current_user.role_names)).to_list()
 
     # 添加多个角色接口权限
-    async for x in cursor:
-        role_model = RoleResponseModel(**x)
-        role_models.append(role_model)
-        interface_permission.extend(role_model.interface_permission)
+    for role in roles:
+        interface_permission.extend(role.interface_permission)
 
     # 获取角色失败
     if not interface_permission:
-        raise ExceptionResponse(locale=language, status_code=StatusCode.get_roles_failed)
+        raise ExceptionResponse(code=StatusCode.get_roles_failed.value)
     # 多角色接口权限 -> 去重
     interface_permission = list(set(interface_permission))
+
     # 获取接口
-    coll = db_client[InterfaceResponseModel.Config.name]
     obj_uids = [ObjectId(uid) for uid in interface_permission]
-    cursor = coll.find({'_id': {'$in': obj_uids}})
-    interface_models = [InterfaceResponseModel(**x) async for x in cursor]
+    interfaces = await Interface.find({'_id': {'$in': obj_uids}}).to_list()
 
     # 设置适配器
-    adapter = Adapter(role_models, interface_models)
+    adapter = Adapter(roles, interfaces)
     e = casbin.Enforcer('rbac_model.conf', adapter)
-    role_uids = '|'.join([role_model.uid for role_model in role_models])
+    role_ids = '|'.join([str(role.id) for role in roles])
+    print(role_ids, path, method)
     # 验证接口权限
-    if e.enforce(role_uids, path, method):
+    if e.enforce(role_ids, path, method):
+        print(role_ids, path, method)
         pass
     else:
         # 非法登录
-        if path == '/api/v1/private/root/info/routes':
-            raise ExceptionResponse(locale=language, status_code=StatusCode.illegal_login)
-        raise ExceptionResponse(locale=language, status_code=StatusCode.unauthorized)
+        if path == '/api/v1/root/info/routes':
+            raise ExceptionResponse(code=StatusCode.illegal_login.value)
+        raise ExceptionResponse(code=StatusCode.unauthorized.value)
     return current_user

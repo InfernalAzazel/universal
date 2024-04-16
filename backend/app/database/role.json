@@ -20,7 +20,12 @@
       "65e03309bf9243cdd1eeb3aa",
       "65e03336bf9243cdd1eeb3ad",
       "62e109ac342afd0070930ec1",
-      "65e52cf6395ba83827b079d6"
+      "661dec63f5d029cc68435029",
+      "661dec7af5d029cc6843502a",
+      "661dec85f5d029cc6843502b",
+      "65e52cf6395ba83827b079d6",
+      "661e20f8348fed245c6a75ec",
+      "661e217a348fed245c6a75ed"
     ],
     "menu_permission":[
       "62c79bef76a04c01fd6d6563",
@@ -36,6 +41,7 @@
       "$date":"2024-03-13T16:02:28.172+0800"
     },
     "title":"超级管理员",
-    "description":"超级管理员"
+    "description":"超级管理员",
+    "is_super":true
   }
 ]

@@ -63,6 +63,7 @@ router.beforeEach( async (to, form, next) => {
   } else if (!initRoute && to.path !== '/login' && state.value.access_token) {
     // 获取路由 -> 转化 -> addRoute
     await exeInfoRoutes()
+
     if (infoRoutesData.value){
       const {treeData} = getTreeDataAndHalfCheckedKeys(infoRoutesData.value?.data || [])
       generateRoutes(treeData).forEach((item) => {

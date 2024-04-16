@@ -7,4 +7,4 @@ g = _, _
 [policy_effect]
 e = some(where (p.eft == allow))
 [matchers]
-m = g(r.sub, p.sub) && r.obj == p.obj && r.act == p.act
+m = g(r.sub, p.sub) && regexMatch(r.obj, p.obj) && r.act == p.act

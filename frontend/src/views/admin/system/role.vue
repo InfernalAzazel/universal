@@ -14,7 +14,7 @@ import {
 import { getTagType, getTreeDataAndHalfCheckedKeys, splitString } from '@/utils'
 
 type InterfaceGroupTree = {
-  uid: string;
+  id: string;
   isFather: boolean;
   title: string;
   children: API.Interface[];
@@ -41,12 +41,12 @@ const menu = defineCrudMenuColumns({
 
 
 const currentRow = ref<API.Role | any>({})
-const currentUID = ref<string>('')
+const currentID = ref<string>('')
 
 const columns = defineCrudColumns([
   {
-    label: t(`system.role.uid`),
-    prop: 'uid',
+    label: t(`system.role.id`),
+    prop: 'id',
     component: 'el-input',
     detail: true,
     props: {
@@ -113,14 +113,14 @@ const permissionType = ref<number>(0)
 const menuTreeRef = ref<InstanceType<typeof ElTree>>()
 const menuCheckedKeys = ref<string[]>([])
 const menuQuery = ref({})
-const menuTrees = ref([])
-const menuAllHalfCheckedKeys = ref([])
+const menuTrees = ref<any[]>([])
+const menuAllHalfCheckedKeys = ref<any[]>([])
 
 const interfaceTreeRef = ref<InstanceType<typeof ElTree>>()
 const interfaceCheckedKeys = ref<string[]>([])
-const interfaceQuery = ref({})
-const InterfaceTrees = ref([])
-const interfaceAllHalfCheckedKeys = ref([])
+const interfaceQuery = ref<any>({})
+const InterfaceTrees = ref<any[]>([])
+const interfaceAllHalfCheckedKeys = ref<any[]>([])
 
 const treeDefaultProps = ref({
   children: 'children',
@@ -150,7 +150,7 @@ const {
 
 const { data: interfaceData, execute: exeInterface } = useInterfaceArrayRequest(interfaceQuery)
 const { data: menuData, execute: exeMenu } = useMenuArrayRequest(menuQuery)
-const { execute: exeRoleEdit } = useRoleEditRequest(currentUID, currentRow)
+const { execute: exeRoleEdit } = useRoleEditRequest(currentID, currentRow)
 
 function getInterfaceGroupTrees(data: API.Interface[]) {
   const halfCheckedKeys: Set<string> = new Set()
@@ -159,9 +159,9 @@ function getInterfaceGroupTrees(data: API.Interface[]) {
     if (group) {
       group.children.push(entry)
     } else {
-      const uid = nanoid()
-      halfCheckedKeys.add(uid)
-      acc.push({ uid: uid, title: entry.group, isFather: true, children: [entry] })
+      const id = nanoid()
+      halfCheckedKeys.add(id)
+      acc.push({ id: id, title: entry.group, isFather: true, children: [entry] })
     }
     return acc
   }, [])
@@ -171,7 +171,7 @@ function getInterfaceGroupTrees(data: API.Interface[]) {
 async function handleOpenDialogPermission(value: number, row: any) {
   // value == 0 代表打开菜单 1 代表打开接口
   permissionType.value = value
-  currentUID.value = row.uid || ''
+  currentID.value = row.id || ''
   currentRow.value = row
   if (value === 0) {
     menuQuery.value = { is_all_query: true }
@@ -265,7 +265,7 @@ async function handleSave() {
       <template v-if="permissionType === 0">
         <el-tree
           ref="menuTreeRef"
-          node-key="uid"
+          node-key="id"
           :props="treeDefaultProps"
           :default-checked-keys="menuCheckedKeys"
           :data="menuTrees"
@@ -276,7 +276,7 @@ async function handleSave() {
       <template v-else>
         <el-tree
           ref="interfaceTreeRef"
-          node-key="uid"
+          node-key="id"
           :props="treeDefaultProps"
           :default-checked-keys="interfaceCheckedKeys"
           :data="InterfaceTrees"
@@ -284,8 +284,8 @@ async function handleSave() {
         >
           <template #default="{ node, data }">
             <template v-for="(value, index) in splitString(node.label)" :key="index">
-              <el-tag v-if="data.isFather" class="ml-1" :size="size" type="info">{{ value }}</el-tag>
-              <el-tag v-else class="ml-1" :size="size" :type="getTagType(data.method)">{{ value }}</el-tag>
+              <el-tag v-if="data.isFather" class="ml-1" type="info">{{ value }}</el-tag>
+              <el-tag v-else class="ml-1" :type="getTagType(data.method)">{{ value }}</el-tag>
             </template>
           </template>
         </el-tree>
