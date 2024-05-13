@@ -1,12 +1,13 @@
 from datetime import datetime
 
 import bson
-from beanie import before_event, Save, Update, Replace, Insert, Document
+from bunnet import before_event, Save, Update, Replace, Insert
+from bunnet.odm.documents import DocType
 from pydantic import BaseModel, Field
 from typing_extensions import Mapping
 
 from app.utils.api_response import APIResponse, StatusCode, DefaultCodes
-from typing import Type, Any
+from typing import Any, Optional
 
 
 class DBMixin(BaseModel):
@@ -14,36 +15,39 @@ class DBMixin(BaseModel):
     update_at: datetime = Field(default_factory=datetime.utcnow)
 
     @before_event(Save)
-    async def before_save(self):
-        """ 保存修改一条 """
-        self.update_at = datetime.utcnow()
+    def before_save(self):
+        """ 创建和修改一条 """
+        if self.create_at:
+            self.update_at = datetime.utcnow()
+        else:
+            self.create_at = datetime.utcnow()
 
     @before_event(Update)
-    async def before_update(self) -> None:
+    def before_update(self) -> None:
         """ 更新一条  """
         self.update_at = datetime.utcnow()
 
     @before_event(Replace)
-    async def before_replace(self) -> None:
+    def before_replace(self) -> None:
         """ 替换一条 """
         self.update_at = datetime.utcnow()
 
     @before_event(Insert)
-    async def before_insert(self) -> None:
+    def before_insert(self) -> None:
         """ 插入单条 """
         self.create_at = datetime.utcnow()
 
-    @staticmethod
-    async def paginate_queryset(queryset: Type[Document], query: dict, ppq):
+    @classmethod
+    def paginate_queryset(cls, query: dict, ppq):
         skip = (ppq.current_page - 1) * ppq.page_size
-        q = queryset.find(query)
-        obj = await q.skip(skip).limit(ppq.page_size).to_list()
-        total = await q.count()
+        q = cls.find(query)
+        obj = q.skip(skip).limit(ppq.page_size).to_list()
+        total = q.count()
         return obj, total
 
-    @staticmethod
-    async def crud_list(
-            queryset: Type[Document],
+    @classmethod
+    def crud_list(
+            cls,
             qp,
             ppq,
             exclude: set[int] | set[str] | dict[int, Any] | dict[str, Any] | None = None
@@ -52,7 +56,6 @@ class DBMixin(BaseModel):
         分页查询或返回全部数据。
 
         Args:
-            queryset (Type[Document]): 操作的 MongoDB 文档类。
             qp: 包含查询参数，具体依赖于其 to_mongo_query 方法的实现。
             ppq: 另一组查询参数，可能用于权限过滤等，具体依赖于其 to_mongo_query 方法的实现。
             exclude: 设置需要过滤的字段，默认 None
@@ -70,18 +73,18 @@ class DBMixin(BaseModel):
 
         if not qp.is_all_query:
             # 如果不是请求全部数据，执行分页查询
-            obj, total = await DBMixin.paginate_queryset(queryset, query, ppq)
+            obj, total = cls.paginate_queryset(query, ppq)
             data = [d.dict(exclude=exclude) for d in obj]
             return APIResponse(data, total=total)
 
         # 如果请求全部数据，查询并返回所有符合条件的数据
-        obj = await queryset.find(query).to_list()
+        obj = cls.find(query).to_list()
         data = [d.dict(exclude=exclude) for d in obj]
         return APIResponse(data)
 
-    @staticmethod
-    async def crud_add(
-            queryset: Type[Document],
+    @classmethod
+    def crud_add(
+            cls,
             body: BaseModel,
             codes: DefaultCodes,
             query_filter: Mapping[str, Any] | bool | None = None
@@ -93,7 +96,6 @@ class DBMixin(BaseModel):
           - `query_filter` 使用时，Document 查询不支持直接通过 ID 查询, 如果需要通过 ID 进行过滤，请使用原生 dict
 
         Args:
-            queryset: 操作的文档类。
             body: 包含数据模型的基础模型实例。
             codes: 成功代码标志, 失败代码标志, 找不到数据代码标志
             query_filter: 用于查找记录的过滤器字典, 如果提供，且记录已存在则不添加。
@@ -104,20 +106,20 @@ class DBMixin(BaseModel):
         b = body.model_dump()
 
         if query_filter:
-            existing_record = await queryset.find_one(query_filter)
+            existing_record: Optional[DocType] = ~cls.find_one(query_filter)
             if existing_record:
                 return APIResponse(code=codes.not_found_code)
 
-        result = await queryset(**b).save()
+        result = cls(**b).save() or None
 
         if not result:
             return APIResponse(code=codes.failed_add_code)
 
         return APIResponse(result, success=True, code=codes.success_add_code)
 
-    @staticmethod
-    async def crud_retrieve(
-            queryset: Type[Document],
+    @classmethod
+    def crud_retrieve(
+            cls,
             data_id: str,
             codes: DefaultCodes,
             exclude: set[int] | set[str] | dict[int, Any] | dict[str, Any] | None = None,
@@ -126,24 +128,22 @@ class DBMixin(BaseModel):
         向数据库编辑一条记录
 
         Args:
-            queryset: 操作的文档类
             data_id: 数据 ID
-            body: 包含数据模型的基础模型实例
             codes: 成功代码标志, 失败代码标志, 找不到数据代码标志
             exclude: 设置需要过滤的字段，默认 None
         Returns:
             APIResponse: 包含操作结果的响应对象
         """
-
-        result = await queryset.get(data_id)
+        result: Optional[DocType] = ~cls.get(data_id)
 
         if not result:
             return APIResponse(code=codes.failed_retrieve_code)
-        return APIResponse(result.dict(exclude=exclude), success=True, code=codes.success_retrieve_code, exclude=exclude)
+        return APIResponse(result.dict(exclude=exclude), success=True, code=codes.success_retrieve_code,
+                           exclude=exclude)
 
-    @staticmethod
-    async def crud_edit(
-            queryset: Type[Document],
+    @classmethod
+    def crud_edit(
+            cls,
             data_id: str,
             body: BaseModel,
             codes: DefaultCodes
@@ -152,7 +152,6 @@ class DBMixin(BaseModel):
         向数据库编辑一条记录
 
         Args:
-            queryset: 操作的文档类
             data_id: 数据 ID
             body: 包含数据模型的基础模型实例
             codes: 成功代码标志, 失败代码标志, 找不到数据代码标志
@@ -161,20 +160,20 @@ class DBMixin(BaseModel):
             APIResponse: 包含操作结果的响应对象
         """
         update_data = {'$set': body.model_dump(exclude_none=True)}
-        existing_record = await queryset.get(data_id)
+        existing_record: Optional[DocType] = ~cls.get(data_id)
 
         if not existing_record:
             return APIResponse(code=codes.not_found_code)
 
-        result = await existing_record.update(update_data)
+        result = existing_record.update(update_data)
 
-        if not result:
+        if result is None:
             return APIResponse(code=codes.failed_modify_code)
         return APIResponse(success=True, code=codes.success_modify_code)
 
-    @staticmethod
-    async def crud_delete(
-            queryset: Type[Document],
+    @classmethod
+    def crud_delete(
+            cls,
             data_id: str,
             codes: DefaultCodes,
     ) -> APIResponse:
@@ -182,20 +181,20 @@ class DBMixin(BaseModel):
         向数据库删除一条记录
 
         Args:
-            queryset: 操作的文档类
             data_id: 数据 ID
             codes: 成功代码标志, 失败代码标志, 找不到数据代码标志
 
         Returns:
             APIResponse: 包含操作结果的响应对象
         """
-        existing_record = await queryset.get(data_id)
+        existing_record: Optional[DocType] = ~cls.get(data_id)
 
         if not existing_record:
             return APIResponse(code=codes.not_found_code)
 
-        result = await existing_record.delete()
+        result = existing_record.delete()
 
         if result.deleted_count == 0:
             return APIResponse(code=codes.failed_delete_code)
         return APIResponse(success=True, code=codes.success_delete_code)
+

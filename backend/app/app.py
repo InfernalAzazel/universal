@@ -17,8 +17,8 @@ app = FastAPI(
 
 
 @app.on_event('startup')
-async def startup():
-    await connect()
+def startup():
+    connect()
 
 
 @app.on_event("shutdown")
@@ -27,18 +27,18 @@ def on_shutdown():
 
 
 @app.exception_handler(ExceptionResponse)
-async def http_exception_handler(request: Request, exc: ExceptionResponse):
+def http_exception_handler(request: Request, exc: ExceptionResponse):
     """HTTP 异常处理程序 """
     return APIResponse(success=False, code=exc.code, detail=exc.detail)
 
 
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
+def validation_exception_handler(request: Request, exc: RequestValidationError):
     """422 客户端输入数据验证异常"""
     return APIResponse(success=False, code=StatusCode.bad_request.value, detail=str(exc))
 
-# 公开
 
+# 公开
 app.include_router(auth.router)
 
 # 系统

@@ -1,5 +1,7 @@
+from typing import Optional
+
 import casbin
-from beanie.operators import In
+from bunnet.operators import In
 from bson import ObjectId
 from fastapi import Depends, Request
 from fastapi.security import OAuth2PasswordBearer
@@ -11,7 +13,7 @@ from app.utils.api_response import ExceptionResponse, StatusCode
 from app.utils.casbin_adapter import Adapter
 from app.utils.jwt import decode_access_token
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/external/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/auth/login")
 
 
 def get_language(request: Request):
@@ -20,7 +22,7 @@ def get_language(request: Request):
 
 
 # 获取当前用户
-async def get_current_user(
+def get_current_user(
         token: str = Depends(oauth2_scheme),
 ):
     try:
@@ -35,7 +37,8 @@ async def get_current_user(
     except JWTError as _:
         raise ExceptionResponse(code=StatusCode.jwt_decode_failed.value)
 
-    user = await User.find_one(User.username == username)
+    user: Optional[User] = ~User.find_one(User.username == username)
+
     if user is None:
         raise ExceptionResponse(code=StatusCode.credentials_invalid.value)
     return user
@@ -54,7 +57,7 @@ async def auto_current_user_permission(
     if current_user.disabled:
         raise ExceptionResponse(code=StatusCode.user_disabled.value)
 
-    roles = await Role.find(In(Role.title, current_user.role_names)).to_list()
+    roles = Role.find(In(Role.title, current_user.role_names)).to_list()
 
     # 添加多个角色接口权限
     for role in roles:
@@ -68,16 +71,15 @@ async def auto_current_user_permission(
 
     # 获取接口
     obj_uids = [ObjectId(uid) for uid in interface_permission]
-    interfaces = await Interface.find({'_id': {'$in': obj_uids}}).to_list()
+    interfaces = Interface.find({'_id': {'$in': obj_uids}}).to_list()
 
     # 设置适配器
     adapter = Adapter(roles, interfaces)
     e = casbin.Enforcer('rbac_model.conf', adapter)
     role_ids = '|'.join([str(role.id) for role in roles])
-    print(role_ids, path, method)
+
     # 验证接口权限
     if e.enforce(role_ids, path, method):
-        print(role_ids, path, method)
         pass
     else:
         # 非法登录

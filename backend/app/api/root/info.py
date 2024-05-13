@@ -1,5 +1,5 @@
 import bson
-from beanie.operators import In
+from bunnet.operators import In
 from bson import ObjectId
 from fastapi import APIRouter, Depends
 
@@ -19,18 +19,18 @@ router = APIRouter(
 
 
 @router.get('/root/info/account')
-async def account(
+def account(
         current_user: User = Depends(auto_current_user_permission),
 ):
     return APIResponse(data=current_user)
 
 
 @router.get('/root/info/routes')
-async def routers(
+def routers(
         current_user: User = Depends(auto_current_user_permission)
 ):
     # 获取当前用户的角色
-    roles = await Role.find(In(Role.title, current_user.role_names)).to_list()
+    roles = Role.find(In(Role.title, current_user.role_names)).to_list()
 
     # 获取角色关联的菜单权限
     menu_permissions = []
@@ -49,7 +49,7 @@ async def routers(
         return APIResponse(code=StatusCode.not_valid_object_id.value)
 
     # 根据菜单权限获取菜单详情
-    menus = await Menu.find(In(Menu.id, obj_uids)).to_list()
+    menus = Menu.find(In(Menu.id, obj_uids)).to_list()
 
     if not menus:
         return APIResponse(code=StatusCode.illegal_login.value)

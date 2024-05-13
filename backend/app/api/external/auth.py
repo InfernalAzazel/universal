@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import Optional
 
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
@@ -19,8 +20,8 @@ router = APIRouter(
 )
 
 
-@router.post('/external/auth/login')
-async def login(
+@router.post('/auth/login')
+def login(
         form_data: OAuth2PasswordRequestForm = Depends(),
 ):
     """
@@ -28,7 +29,7 @@ async def login(
     """
 
     # 数据库校验
-    user = await User.find_one(User.username == form_data.username, User.password == form_data.password)
+    user: Optional[User] = ~User.find_one(User.username == form_data.username)
 
     if not user:
         return APIResponse(success=False, code=StatusCode.credentials_invalid.value)

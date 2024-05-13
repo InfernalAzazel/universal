@@ -9,7 +9,7 @@ export function useAutoInitRequest(){
 
 export function useLoginRequest(from: any): UseFetchReturn<API.ResLogin> {
     const sp = new URLSearchParams(from)
-    return  usePost<API.ResLogin>('/api/v1/external/auth/login', sp)
+    return  usePost<API.ResLogin>('/api/v1/auth/login', sp)
 }
 // 仪表盘
 export function useMonitorDictRequest():  UseFetchReturn<ResponseMessages<API.Monitor>>{

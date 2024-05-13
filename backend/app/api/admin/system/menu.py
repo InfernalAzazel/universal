@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Query, Body
 
-from app.models.admin import Menu, MenuQueryParams, MenuCreateBody, MenuEditBody, User
+from app.models.admin import Menu, User
+from app.models.admin_dtos import MenuQueryParams, MenuCreateBody, MenuEditBody
 from app.models.common import ResponseTotalModel, ResponseModel, PagingQueryParams
 from app.utils.api_response import StatusCode, DefaultCodes
 from app.utils.dependencies import auto_current_user_permission
@@ -34,42 +35,42 @@ _codes = DefaultCodes(
         422: {"model": ResponseModel}
     }
 )
-async def array(
+def array(
         qp: MenuQueryParams = Depends(),
         ppq: PagingQueryParams = Depends(PagingQueryParams),
         _: User = Depends(auto_current_user_permission),
 ):
-    return await Menu.crud_list(Menu, qp, ppq)
+    return Menu.crud_list(qp, ppq)
 
 
 @router.post('/admin/system/menu')
-async def add(
+def add(
         body: MenuCreateBody,
         _: User = Depends(auto_current_user_permission),
 ):
-    return await Menu.crud_add(Menu, body, _codes)
+    return Menu.crud_add(body, _codes)
 
 
 @router.get('/admin/system/menu/{id}')
-async def retrieve(
+def retrieve(
         menu_id: str = Query(..., alias='id'),
         _: User = Depends(auto_current_user_permission),
 ):
-    return await Menu.crud_retrieve(Menu, menu_id, _codes)
+    return Menu.crud_retrieve(menu_id, _codes)
 
 
 @router.put('/admin/system/menu/{id}')
-async def edit(
+def edit(
         menu_id: str = Query(..., alias='id'),
         body: MenuEditBody = Body(...),
         _: User = Depends(auto_current_user_permission),
 ):
-    return await Menu.crud_edit(Menu, menu_id, body, _codes)
+    return Menu.crud_edit(menu_id, body, _codes)
 
 
 @router.delete('/admin/system/menu/{id}')
-async def delete(
+def delete(
         menu_id: str = Query(..., alias='id'),
         _: User = Depends(auto_current_user_permission)
 ):
-    return await Menu.crud_delete(Menu, menu_id, _codes)
+    return Menu.crud_delete(menu_id, _codes)

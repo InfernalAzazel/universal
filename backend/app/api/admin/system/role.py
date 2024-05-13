@@ -1,6 +1,9 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends, Query, Body
 
-from app.models.admin import Role, RoleQueryParams, RoleCreateBody, RoleEditBody, User
+from app.models.admin import Role, User
+from app.models.admin_dtos import RoleQueryParams, RoleCreateBody, RoleEditBody
 from app.models.common import ResponseTotalModel, ResponseModel, PagingQueryParams
 from app.utils.api_response import StatusCode, DefaultCodes, APIResponse
 from app.utils.dependencies import auto_current_user_permission
@@ -34,37 +37,37 @@ _codes = DefaultCodes(
         422: {"model": ResponseModel}
     }
 )
-async def array(
+def array(
         qp: RoleQueryParams = Depends(),
         ppq: PagingQueryParams = Depends(PagingQueryParams),
         _: User = Depends(auto_current_user_permission),
 ):
-    return await Role.crud_list(Role, qp, ppq)
+    return Role.crud_list(qp, ppq)
 
 
 @router.post('/admin/system/role')
-async def add(
+def add(
         body: RoleCreateBody,
         _: User = Depends(auto_current_user_permission),
 ):
-    return await Role.crud_add(Role, body, _codes)
+    return Role.crud_add(body, _codes)
 
 
 @router.get('/admin/system/role/{id}')
-async def retrieve(
+def retrieve(
         role_id: str = Query(..., alias='id'),
         _: User = Depends(auto_current_user_permission),
 ):
-    return await Role.crud_retrieve(Role, role_id, _codes)
+    return Role.crud_retrieve(role_id, _codes)
 
 
 @router.put('/admin/system/role/{id}')
-async def edit(
+def edit(
         role_id: str = Query(..., alias='id'),
         body: RoleEditBody = Body(...),
         current_user: User = Depends(auto_current_user_permission),
 ):
-    role = await Role.get(role_id)
+    role: Optional[Role] = ~Role.get(role_id)
     if not role:
         return APIResponse(success=False, code=_codes.not_found_code)
 
@@ -73,19 +76,19 @@ async def edit(
         return APIResponse(success=False, code=StatusCode.role_modify_admin_failed.value)
 
     # 更新用户的角色名称
-    await User.find({"role_names": role.title}).update(
+    User.find({"role_names": role.title}).update(
         {"$set": {"role_names.$[elem]": body.title}},
         array_filters=[{"elem": role.title}]
-    )
-    return await Role.crud_edit(Role, role_id, body, _codes)
+    ).run()
+    return Role.crud_edit(role_id, body, _codes)
 
 
 @router.delete('/admin/system/role/{id}')
-async def delete(
+def delete(
         role_id: str = Query(..., alias='id'),
         _: User = Depends(auto_current_user_permission),
 ):
-    role = await Role.get(role_id)
+    role: Optional[Role] = ~Role.get(role_id)
 
     if not role:
         return APIResponse(code=_codes.not_found_code)
@@ -95,7 +98,7 @@ async def delete(
         return APIResponse(code=StatusCode.role_delete_admin_failed.value)
 
     # 删除相关用户角色
-    await User.find({"role_names": role.title}).update(
+    User.find({"role_names": role.title}).update(
         {"$pull": {"role_names": role.title}}
-    )
-    return await Role.crud_delete(Role, role_id, _codes)
+    ).run()
+    return Role.crud_delete(role_id, _codes)

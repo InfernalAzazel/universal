@@ -1,7 +1,8 @@
 from zoneinfo import ZoneInfo
 
 import motor.motor_asyncio
-from beanie import init_beanie
+from bunnet import init_bunnet
+from pymongo import MongoClient
 
 from app.models.admin import Interface, User, Menu, Role
 from app.settings import MONGODB_USERNAME, MONGODB_PASSWORD, MONGODB_HOST, TZ_INFO, MONGODB_DATABASE_NAME
@@ -15,12 +16,18 @@ def async_db_engine():
     )[MONGODB_DATABASE_NAME]
 
 
-async def connect():
-    client = async_db_engine()
+def connect():
+    client = MongoClient(
+        f'mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_HOST}',
+        tz_aware=True,
+        tzinfo=ZoneInfo(TZ_INFO)
+    )[MONGODB_DATABASE_NAME]
     models = [
         User,
         Interface,
         Menu,
-        Role
+        Role,
+        # 业务
     ]
-    return await init_beanie(database=client, document_models=models)
+    # 使用 Product 文档类和数据库初始化 bunnet
+    return init_bunnet(database=client, document_models=models)
