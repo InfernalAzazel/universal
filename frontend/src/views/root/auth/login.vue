@@ -66,7 +66,7 @@ const submit = defineFormSubmit(async (done, isValid) => {
     if (data.value) {
       state.value.access_token = data.value?.access_token;
       state.value.token_type = data.value?.token_type;
-      await router.push('/')
+      await router.push('/admin')
       router.go(0)
     }
   }
