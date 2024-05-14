@@ -7,6 +7,7 @@ import {
 import {useI18n} from "vue-i18n";
 import { useUsersCrudRequest } from '@/services'
 import RoleSelect from '@/views/admin/system/components/RoleSelect.vue'
+import { dateformat } from '@/utils'
 
 const {t} = useI18n()
 const menu = defineCrudMenuColumns({
@@ -243,6 +244,19 @@ const {
       </template>
       <template #detail-disabled="{item}">
         <el-switch v-model="item.disabled" disabled/>
+      </template>
+      <!--      时间显示处理-->
+      <template #table-create_at="{ row }">
+        <span> {{ dateformat(row?.create_at)}}</span>
+      </template>
+      <template #table-update_at="{ row }">
+        <span> {{ dateformat(row?.update_at)}}</span>
+      </template>
+      <template #detail-create_at="{ item }">
+        <span> {{ dateformat(item?.update_at)}}</span>
+      </template>
+      <template #detail-update_at="{ item }">
+        <span> {{ dateformat(item?.update_at)}}</span>
       </template>
     </pro-crud>
   </pro-card>

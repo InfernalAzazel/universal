@@ -1,4 +1,5 @@
-
+import { ref } from 'vue'
+import dayjs from 'dayjs'
 
 export function splitString(value: any) {
   const newValue = typeof value === 'string' ? value : '';
@@ -62,4 +63,9 @@ export function getTreeDataAndHalfCheckedKeys(
     });
 
   return { treeData, halfCheckedKeys: Array.from(halfCheckedKeys) }; // 转换 Set 为数组并返回
+}
+
+
+export function dateformat(value: string, template: string = 'YYYY-MM-DD HH:mm:ss') {
+  return dayjs(value).format(template)
 }

@@ -11,7 +11,7 @@ import {
   useRoleCrudRequest,
   useRoleEditRequest
 } from '@/services'
-import { getTagType, getTreeDataAndHalfCheckedKeys, splitString } from '@/utils'
+import { dateformat, getTagType, getTreeDataAndHalfCheckedKeys, splitString } from '@/utils'
 
 type InterfaceGroupTree = {
   id: string;
@@ -259,6 +259,19 @@ async function handleSave() {
             </el-button>
           </template>
         </el-popconfirm>
+      </template>
+      <!--      时间显示处理-->
+      <template #table-create_at="{ row }">
+        <span> {{ dateformat(row?.create_at)}}</span>
+      </template>
+      <template #table-update_at="{ row }">
+        <span> {{ dateformat(row?.update_at)}}</span>
+      </template>
+      <template #detail-create_at="{ item }">
+        <span> {{ dateformat(item?.update_at)}}</span>
+      </template>
+      <template #detail-update_at="{ item }">
+        <span> {{ dateformat(item?.update_at)}}</span>
       </template>
     </pro-crud>
     <el-dialog v-model="isDialogPermission" :title="permissionType===0?t(`system.role.menu_permissions_set`): t(`system.role.interface_permissions_set`)">

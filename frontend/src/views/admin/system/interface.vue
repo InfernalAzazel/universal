@@ -7,7 +7,7 @@ import {
 } from 'element-pro-components'
 import {useI18n} from "vue-i18n";
 import { useInterfaceCrudRequest } from '@/services'
-import { getTagType, splitString } from '@/utils'
+import { getTagType, splitString, dateformat } from '@/utils'
 
 const {t} = useI18n()
 const crudRef = ref()
@@ -211,6 +211,20 @@ function clone(row: any) {
         <template v-for="(value, index) in splitString(item?.group)" :key="index">
           <el-tag class="ml-1" :size="size" type="primary">{{ value }}</el-tag>
         </template>
+      </template>
+
+      <!--      时间显示处理-->
+      <template #table-create_at="{ row }">
+        <span> {{ dateformat(row?.create_at)}}</span>
+      </template>
+      <template #table-update_at="{ row }">
+        <span> {{ dateformat(row?.update_at)}}</span>
+      </template>
+      <template #detail-create_at="{ item }">
+        <span> {{ dateformat(item?.update_at)}}</span>
+      </template>
+      <template #detail-update_at="{ item }">
+        <span> {{ dateformat(item?.update_at)}}</span>
       </template>
     </pro-crud>
   </pro-card>

@@ -1,41 +1,17 @@
 from datetime import datetime
+from typing import Any, Optional
 
 import bson
-from bunnet import before_event, Save, Update, Replace, Insert
 from bunnet.odm.documents import DocType
 from pydantic import BaseModel, Field
 from typing_extensions import Mapping
 
 from app.utils.api_response import APIResponse, StatusCode, DefaultCodes
-from typing import Any, Optional
 
 
 class DBMixin(BaseModel):
     create_at: datetime = Field(default_factory=datetime.utcnow)
     update_at: datetime = Field(default_factory=datetime.utcnow)
-
-    @before_event(Save)
-    def before_save(self):
-        """ 创建和修改一条 """
-        if self.create_at:
-            self.update_at = datetime.utcnow()
-        else:
-            self.create_at = datetime.utcnow()
-
-    @before_event(Update)
-    def before_update(self) -> None:
-        """ 更新一条  """
-        self.update_at = datetime.utcnow()
-
-    @before_event(Replace)
-    def before_replace(self) -> None:
-        """ 替换一条 """
-        self.update_at = datetime.utcnow()
-
-    @before_event(Insert)
-    def before_insert(self) -> None:
-        """ 插入单条 """
-        self.create_at = datetime.utcnow()
 
     @classmethod
     def paginate_queryset(cls, query: dict, ppq):
@@ -159,7 +135,9 @@ class DBMixin(BaseModel):
         Returns:
             APIResponse: 包含操作结果的响应对象
         """
-        update_data = {'$set': body.model_dump(exclude_none=True)}
+        body_dict = body.model_dump(exclude_none=True)
+        body_dict['update_at'] = datetime.utcnow()
+        update_data = {'$set': body_dict}
         existing_record: Optional[DocType] = ~cls.get(data_id)
 
         if not existing_record:
@@ -197,4 +175,3 @@ class DBMixin(BaseModel):
         if result.deleted_count == 0:
             return APIResponse(code=codes.failed_delete_code)
         return APIResponse(success=True, code=codes.success_delete_code)
-

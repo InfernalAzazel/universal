@@ -9,7 +9,7 @@ import {markRaw} from 'vue'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import {useI18n} from "vue-i18n";
 import { useMenuCrudRequest } from '@/services'
-import { getTreeDataAndHalfCheckedKeys } from '@/utils'
+import { dateformat, getTreeDataAndHalfCheckedKeys } from '@/utils'
 
 const {t} = useI18n()
 const selectIcon = ref<any[]>([])
@@ -279,6 +279,19 @@ watch(list, ()=>{
           <component :is="item.icon"/>
         </el-icon>
         <span>{{ item.icon }}</span>
+      </template>
+      <!--      时间显示处理-->
+      <template #table-create_at="{ row }">
+        <span> {{ dateformat(row?.create_at)}}</span>
+      </template>
+      <template #table-update_at="{ row }">
+        <span> {{ dateformat(row?.update_at)}}</span>
+      </template>
+      <template #detail-create_at="{ item }">
+        <span> {{ dateformat(item?.update_at)}}</span>
+      </template>
+      <template #detail-update_at="{ item }">
+        <span> {{ dateformat(item?.update_at)}}</span>
       </template>
     </pro-crud>
   </pro-card>
